@@ -1,0 +1,87 @@
+/* UserSection.css */
+.user-section {
+  margin: 0;
+}
+
+.logged {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-profile-image-container{
+  margin-right: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.user-profile-image-container button {
+  margin: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.user-profile-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0;
+}
+
+.default-profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgb(19, 92, 113);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  font-size: 1.2rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.logout-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.logout-button {
+  cursor: pointer;
+  background-color: rgb(19, 92, 113);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  padding: 8px 16px;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #3949ab;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+
+.logged-out{
+  display: flex;
+  justify-content: center;
+}
+
+.logged-out a{
+  padding: 1rem;
+}

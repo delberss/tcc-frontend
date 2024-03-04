@@ -1,0 +1,107 @@
+/* Adicione essas regras ao seu arquivo CSS */
+
+.container-conquistas {
+    max-width: 90vw;
+    margin: 20px auto;
+    padding: 0 20px;
+    text-align: center;
+  }
+  
+  .container-conquistas h2 {
+    margin-bottom: 10px;
+  }
+  
+  .container-conquistas p {
+    line-height: 1.5;
+    font-size: 1.2rem;
+  }
+  
+  .container-conquistas h3 {
+    margin-top: 20px;
+  }
+  
+  .container-conquistas ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .container-conquistas li {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 10px;
+    padding: 15px;
+    max-width: 300px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .container-conquistas li strong {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .conquista-concluida {
+    background-color: #8eff8e; /* Cor de fundo verde para indicar conquistas concluídas */
+    color: #000;
+  }
+  
+  /* Adicione ao seu arquivo CSS */
+  
+  .container-conquistas .legenda {
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .container-conquistas .conquista-legenda {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    width: 80vw;
+  }
+  
+  .container-conquistas .quadrado-conquista {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+ 
+  
+   .quadrado-conquista .conquista-concluida {
+    background-color: #8eff8e;
+  }
+  .container-conquistas .quadrado-conquista {
+    height: 30px;
+  }
+  
+  .container-conquistas li{
+    width: 200px;
+    height: 250px;
+  }
+  .container-conquistas .conquista-legenda strong {
+    font-size: 1rem;
+  }
+  
+  .imgConquista{
+    width: 100px;
+    height: 100px;
+  }
+  /* Restante do seu estilo CSS permanece inalterado */
+  
+  .legenda-conquistas{
+    display: flex;
+    justify-content: center;
+  }
+
+  .legenda{
+    width: 150px;
+  }

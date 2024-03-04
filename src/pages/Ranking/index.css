@@ -1,0 +1,72 @@
+.ranking {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px auto;
+    max-width: 750px;
+    overflow-x: auto;
+}
+
+thead {
+    background-color: #f2f2f2;
+}
+
+th{
+    text-transform: uppercase;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+td span{
+    font-size: 1rem;
+}
+
+th {
+    background-color: rgb(19, 92, 113);
+    color: white;
+}
+
+.table-row {
+    transition: background-color 0.3s ease;
+}
+
+.table-row:hover {
+    background-color: #f0f0f027;
+}
+
+
+.icon-medal{
+    font-size: 1.5rem;
+}
+
+.top-users {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.medal-icon {
+    font-size: 1.5rem;
+}
+
+
+.posicao {
+    border-radius: 50%;
+    padding: 8px;
+    background-color: #dadada0c;
+}
+
+.highlighted-row {
+    background-color: #1c1c1cb2; 
+  }
+  
+
+  .current-user-row{
+    background-color: rgb(7, 62, 77);
+  }

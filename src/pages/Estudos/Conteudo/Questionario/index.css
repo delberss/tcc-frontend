@@ -1,0 +1,188 @@
+.questionario{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.questionario span{
+  margin: 10px 0;
+}
+
+.container-questionario {
+    max-width: 600px;
+    min-width: 600px;
+    display: flex;
+    flex-direction: column;
+    margin: auto auto 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #8d8c8c18;
+  }
+  
+  .pergunta-item {
+    margin-bottom: 20px;
+  }
+
+  .pergunta-item p {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .centralizar-perguntas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .centralizar-perguntas input{
+    cursor: pointer;
+  }
+
+  .botoes{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .unico-botao{
+    justify-content: center;
+  }
+
+  .outros-botoes {
+    justify-content: space-between;
+  }
+  
+  .opcao-span {
+    flex: 0 0 80%;
+  }
+  
+  .centralizar input {
+    flex: 0 0 20%;
+  }
+  
+  .button-questionario {
+    width: 40%;
+    align-self: center;
+    margin-top: 20px;
+    padding: 15px 30px;
+
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .button-questionario:hover {
+    background-color: #0056b3;
+  }
+  
+
+  .questionario-off{
+    display: flex;
+  }
+
+  .button-voltar {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin: 20px 10px;
+  }
+  
+  .button-voltar:hover {
+    background-color: #0056b3;
+  }
+  
+  .icon {
+    margin-right: 8px;
+  }
+  
+
+  /* Adicione isso ao seu arquivo 'index.css' ou em um novo arquivo de estilos */
+.tempo-restante {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px; /* Ajuste conforme necessário */
+  height: 50px; /* Ajuste conforme necessário */
+  background-color: #3498db; /* Cor de fundo do círculo */
+  color: #fff; /* Cor do texto dentro do círculo */
+  border-radius: 50%; /* Torna o elemento um círculo */
+  font-size: 1.5rem; /* Ajuste conforme necessário */
+  font-weight: bold;
+  margin: 10px; /* Ajuste conforme necessário */
+}
+
+
+.ativar-questionario{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  margin: 10px;
+}
+
+.button-ativar {
+  background-color: #28a745; /* Cor de fundo do botão */
+  color: #fff; /* Cor do texto do botão */
+  padding: 10px 20px; /* Espaçamento interno do botão */
+  border: none; /* Remove a borda do botão */
+  border-radius: 4px; /* Borda arredondada do botão */
+  cursor: pointer; /* Cursor ao passar sobre o botão */
+  font-size: 16px; /* Tamanho da fonte do texto do botão */
+  text-align: center;
+
+  margin: 20px auto;
+}
+
+.button-ativar:hover {
+  background-color: #218838; /* Cor de fundo do botão ao passar o mouse */
+}
+
+
+/* Adicione isso ao seu arquivo de estilo CSS ou ao seu componente se estiver usando estilos em linha */
+.instrucoes-estudo,
+.materiais-estudo{
+  width: 100%;
+}
+
+.instrucoes-estudo ul {
+  list-style-type: disc; /* Utiliza uma bolinha como marcador */
+  padding-left: 20px; /* Ajusta o espaço entre a bolinha e o texto */
+}
+
+.instrucoes-estudo li {
+  margin-bottom: 10px; /* Ajusta o espaçamento entre os itens da lista */
+}
+
+.materiais-estudo ul{
+  list-style-type: disc; /* Utiliza uma bolinha como marcador */
+  padding-left: 20px; /* Ajusta o espaço entre a bolinha e o texto */
+}
+
+.materiais-estudo li {
+  margin-bottom: 10px; /* Ajusta o espaçamento entre os itens da lista */
+}
+
+.materiais-estudo li  a{
+  color: #3698d4;
+}
+
+.titulo-estudo{
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.subtitulos-estudo-questionario{
+  font-weight: bold;
+}

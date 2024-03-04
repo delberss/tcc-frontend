@@ -1,0 +1,83 @@
+/* Adicione essas regras ao seu arquivo CSS */
+
+.container-home {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.container-home h2 {
+  margin-bottom: 10px;
+}
+
+.container-home p {
+  line-height: 1.5;
+  font-size: 1.2rem;
+}
+
+.container-home h3 {
+  margin-top: 20px;
+}
+
+.container-home ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.container-home li {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 10px;
+  padding: 15px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.container-home li strong {
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.conquista-concluida {
+  background-color: #8eff8e; /* Cor de fundo verde para indicar conquistas concluídas */
+  color: #000;
+}
+
+/* Adicione ao seu arquivo CSS */
+
+.container-home .legenda {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.container-home .conquista-legenda {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  width: 80vw;
+
+}
+
+.container-home .quadrado-conquista {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.container-home .quadrado-conquista.conquista-concluida {
+  background-color: #8eff8e;
+}
+
+.container-home .conquista-legenda strong {
+  font-size: 1rem;
+}
+
+/* Restante do seu estilo CSS permanece inalterado */
+

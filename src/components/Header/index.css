@@ -1,0 +1,30 @@
+/* Header.css */
+.logo img {
+  cursor: pointer;
+  width: 50px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100vw;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  margin: 0;
+  background-color: #333;
+}
+
+a {
+  font-size: 1rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+header a:hover {
+  cursor: pointer;
+  transition: 0.3s ease, color 0.3s ease; 
+  border-radius: 4px;
+  background-color: #555;
+  color: #fff; 
+}

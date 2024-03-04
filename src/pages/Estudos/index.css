@@ -1,0 +1,36 @@
+.container-estudos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    text-align: center;
+    margin-top: 20px;
+    max-width: 1180px;
+    margin: auto;
+    padding: 0;
+}
+
+.container-estudos button {
+    font-size: 20px;
+    margin: 20px 40px;
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 250px;
+    background-color: rgb(21, 54, 63);
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    position: relative; /* Adiciona posicionamento relativo para o pseudo-elemento */
+
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 1px 1px 5px rgb(40, 82, 94);
+
+  }
+
+  .container-estudos button:hover {
+    transform: scale(1.01);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  

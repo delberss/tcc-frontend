@@ -1,0 +1,20 @@
+/* NavBar.css */
+.menu-header,
+.menu-list {
+  display: flex;
+}
+
+.menu-link {
+  padding: 1rem;
+}
+
+.item {
+  margin-right: 2rem;
+  color: #fff;
+  
+  transition: color 0.3s ease; 
+}
+
+.item:hover {
+  color: #2a7591;
+}
