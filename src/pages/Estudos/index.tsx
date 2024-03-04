@@ -11,7 +11,7 @@ const Estudos: React.FC = () => {
   useEffect(() => {
     const fetchTiposDeEstudo = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/estudos`);
+        const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/estudos`);
         const data = await response.json();
 
         // Extrair os tipos de estudo da resposta

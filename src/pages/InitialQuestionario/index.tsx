@@ -67,7 +67,7 @@ const InitialQuestionario: React.FC = () => {
       alert('Por favor, responda todas as perguntas antes de enviar o formulário.');
     } else {
       try {
-        const response = await fetch("http://localhost:4000/questionnaire-responses", {
+        const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/questionnaire-responses`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -40,7 +40,7 @@ const Register: React.FC = () => {
     }
 
     try {
-      const apiUrl = `http://localhost:4000/register`;
+      const apiUrl = `${import.meta.env.REACT_APP_API_URL}/register`;
 
       const response = await fetch(apiUrl, {
         method: 'POST',

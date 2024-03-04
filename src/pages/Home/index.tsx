@@ -19,7 +19,7 @@ const Home: React.FC = () => {
     const fetchData = async () => {
       try {
         // Fetch preferenciaEstudo do usuário
-        const responseUsuario = await fetch(`http://localhost:4000/user-preference-study/${user?.id}`);
+        const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/user-preference-study/${user?.id}`);
         const dataUsuario = await responseUsuario.json();
 
         if (dataUsuario.success) {

@@ -38,7 +38,7 @@ const Questionario: React.FC = () => {
 
     const fetchPerguntas = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/perguntas/${conteudoId}`);
+        const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/perguntas/${conteudoId}`);
         if (!response.ok) {
           throw new Error(`Erro na requisição: ${response.statusText}`);
         }
@@ -57,7 +57,7 @@ const Questionario: React.FC = () => {
 
   const fetchMateriais = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/materiais/${conteudoId}`);
+      const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/materiais/${conteudoId}`);
       if (!response.ok) {
         throw new Error(`Erro na requisição: ${response.statusText}`);
       }
@@ -138,7 +138,7 @@ const Questionario: React.FC = () => {
           resposta_do_usuario,
         }));
 
-        const response = await fetch('http://localhost:4000/respostas', {
+        const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/respostas`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -22,7 +22,7 @@ const UserSection: React.FC<UserSectionProps> = ({ isAuthenticated, user, primei
             {user?.profileImageUrl ? (
               <button onClick={openModal}>
                 <img
-                  src={`http://localhost:4000/uploads/${user?.profileImageUrl}`}
+                  src={`${import.meta.env.REACT_APP_API_URL}/uploads/${user?.profileImageUrl}`}
                   alt={`Profile`}
                   className='user-profile-image'
                 />

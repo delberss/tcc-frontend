@@ -73,7 +73,7 @@ const Conquistas: React.FC = () => {
       const fetchData = async () => {
         try {
           // Fetch conquistas do usuário
-          const responseUsuario = await fetch(`http://localhost:4000/conquistas-usuario/${user?.id}`);
+          const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/conquistas-usuario/${user?.id}`);
           const dataUsuario = await responseUsuario.json();
   
           if (responseUsuario.ok) {
@@ -83,7 +83,7 @@ const Conquistas: React.FC = () => {
           }
   
           // Fetch todas as conquistas
-          const responseTodas = await fetch('http://localhost:4000/conquistas');
+          const responseTodas = await fetch(`${import.meta.env.REACT_APP_API_URL}/conquistas`);
           const dataTodas = await responseTodas.json();
   
           if (responseTodas.ok) {

@@ -77,8 +77,8 @@ const Conteudo: React.FC = () => {
   useEffect(() => {
     const fetchConteudos = async () => {
       try {
-        const idResponse = await fetchData(`http://localhost:4000/id/${tipo}`);
-        const estudosResponse = await fetchData(`http://localhost:4000/conteudos/${idResponse}`);
+        const idResponse = await fetchData(`${import.meta.env.REACT_APP_API_URL}/id/${tipo}`);
+        const estudosResponse = await fetchData(`${import.meta.env.REACT_APP_API_URL}/conteudos/${idResponse}`);
 
         setConteudos(estudosResponse);
       } catch (error) {
@@ -111,7 +111,7 @@ const Conteudo: React.FC = () => {
 
   const contudoConcluido = async (conteudoId: number) => {
     try {
-      const idResponse = await fetchData(`http://localhost:4000/verificar-conclusao/${user?.id}/${conteudoId}`);
+      const idResponse = await fetchData(`${import.meta.env.REACT_APP_API_URL}/verificar-conclusao/${user?.id}/${conteudoId}`);
       const conclusao = idResponse.conclusao;
       return conclusao;
     } catch (error) {
@@ -124,7 +124,7 @@ const Conteudo: React.FC = () => {
   useEffect(() => {
     const fetchQuantidades = async (conteudoId: number) => {
       try {
-        const response = await fetch(`http://localhost:4000/quantidade-acertos/${conteudoId}`, {
+        const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/quantidade-acertos/${conteudoId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

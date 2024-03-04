@@ -39,7 +39,7 @@ const Header: React.FC = () => {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await fetch(`http://localhost:4000/upload`, {
+      const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/upload`, {
         method: 'POST',
         body: formData,
         headers: {

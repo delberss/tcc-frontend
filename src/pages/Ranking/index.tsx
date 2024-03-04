@@ -20,7 +20,7 @@ const Ranking: React.FC = () => {
         if(token !== null){
             const fetchUsers = async () => {
                 try {
-                    const response = await fetch(`http://localhost:4000/users`, {
+                    const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/users`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${token}`,

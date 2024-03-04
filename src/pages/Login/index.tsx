@@ -41,7 +41,7 @@ const Login: React.FC = () => {
     }
 
     try {
-      const apiUrl = `http://localhost:4000/login`;
+      const apiUrl = `${import.meta.env.REACT_APP_API_URL}/login`;
 
       const response = await fetch(apiUrl, {
         method: 'POST',
