@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormField from '../../components/FormFieldProps';
 import ErrorMessage from '../../components/ErrorMessage';
 import SubmitButton from '../../components/SubmitButton';
@@ -107,7 +107,7 @@ const Register: React.FC = () => {
 
         <div className='login-from-register'>
           <span>
-            Já possui uma conta? <a href={'/login'}> Fazer login</a>
+            Já possui uma conta? <Link to='/login'> Fazer login</Link>
           </span>
         </div>
       </form>
