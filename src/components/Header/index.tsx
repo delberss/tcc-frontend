@@ -6,7 +6,7 @@ import './index.css';
 import UploadModal from '../UploadModal';
 import NavBar from '../NavBar';
 import UserSection from '../UserSection';
-
+import logo from '../../../src/assets/iconeoficial.png'
 
 
 const Header: React.FC = () => {
@@ -65,7 +65,7 @@ const Header: React.FC = () => {
   return (
     <header>
       <div className='logo' onClick={handleLogoClick}>
-        <img src="src/assets/iconeoficial.png" alt="logo" />
+        <img src={logo} alt="logo" />
       </div>
 
       <div className='menu-header'>
