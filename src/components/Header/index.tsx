@@ -65,7 +65,7 @@ const Header: React.FC = () => {
   return (
     <header>
       <div className='logo' onClick={handleLogoClick}>
-        <img src="src/assets/icone.webp" alt="logo" />
+        <img src="src/assets/iconeoficial.png" alt="logo" />
       </div>
 
       <div className='menu-header'>
