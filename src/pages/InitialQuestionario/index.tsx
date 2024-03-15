@@ -34,6 +34,8 @@ const InitialQuestionario: React.FC = () => {
       }));
     }
   }, [location.state]);
+  
+  const [respostasPorPergunta, setRespostasPorPergunta] = useState<{ [key: number]: string }>({});
 
   const questions: Question[] = [
     { id: 1, text: 'Qual área de estudo você mais tem experiência prévia ou conhecimento?', 
@@ -47,12 +49,9 @@ const InitialQuestionario: React.FC = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>, questionId: number) => {
     const { value } = e.target;
 
-    setUserData((prevData) => ({
-      ...prevData,
-      respostas: [
-        ...prevData.respostas,
-        { pergunta_id: questionId, resposta_do_usuario: value }
-      ]
+    setRespostasPorPergunta((prevState) => ({
+      ...prevState,
+      [questionId]: value
     }));
   };
 
@@ -60,13 +59,25 @@ const InitialQuestionario: React.FC = () => {
     e.preventDefault();
 
     const isAnyQuestionNotAnswered = questions.some(
-      (question) => !userData.respostas.find((r) => r.pergunta_id === question.id)
+      (question) => !respostasPorPergunta.hasOwnProperty(question.id)
     );
 
     if (isAnyQuestionNotAnswered) {
       alert('Por favor, responda todas as perguntas antes de enviar o formulário.');
     } else {
       try {
+        const respostas = Object.entries(respostasPorPergunta).map(([pergunta_id, resposta_do_usuario]) => ({
+          pergunta_id: parseInt(pergunta_id),
+          resposta_do_usuario
+        }));
+  
+        const userData = {
+          respostas,
+          userData: {
+            email: location.state.userData.email
+          }
+        };
+  
         const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/questionnaire-responses`, {
           method: 'POST',
           headers: {
@@ -74,18 +85,19 @@ const InitialQuestionario: React.FC = () => {
           },
           body: JSON.stringify(userData),
         });
-
+  
         if (!response.ok) {
           throw new Error(`Erro na solicitação: ${response.status} - ${response.statusText}`);
         }
-
+  
         navigate('/');
-
+  
       } catch (error) {
         console.error('Erro ao registrar respostas', error);
       }
     }
   };
+  
 
   return (
     <div className='container-initial-questionario'>
@@ -102,7 +114,7 @@ const InitialQuestionario: React.FC = () => {
                   key={option}
                   questionId={question.id}
                   option={option}
-                  checked={userData.respostas.some((r) => r.pergunta_id === question.id && r.resposta_do_usuario === option)}
+                  checked={respostasPorPergunta[question.id] === option}
                   onChange={(e) => handleChange(e, question.id)}
                 />
               ))}
