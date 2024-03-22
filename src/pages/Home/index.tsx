@@ -36,6 +36,11 @@ const Home: React.FC = () => {
     fetchData();
   }, [user]);
 
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
   return (
     <div className='container-home'>
