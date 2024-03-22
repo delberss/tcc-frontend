@@ -112,12 +112,20 @@
 .tipoEstudo{
   border: none;
   background-color: transparent;
-  cursor: pointer;
   margin: 0;
   padding: 0;
   font-size: 1.4rem;
   font-weight: bold;
   padding: 10px;
+}
+
+.sobreOEstudo{
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
 }
 
 .tipoEstudo:hover{

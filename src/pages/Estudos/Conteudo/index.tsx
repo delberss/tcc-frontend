@@ -5,6 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../../AuthContext';
 import { FaCheck } from 'react-icons/fa';
 import { FiArrowLeft } from 'react-icons/fi';
+import { FaQuestionCircle } from 'react-icons/fa';
+import { } from 'react-icons/fa';
 import { getButtonStyleByType, getButtonStyle } from '../../../../color-estudos';
 
 
@@ -179,8 +181,9 @@ const Conteudo: React.FC = () => {
 
   return (
     <div className={`container-estudos-generico`}>
-      <button className='tipoEstudo' onClick={() => setMostrarAssuntos(!mostrarAssuntos)}>
-        {tipo.toUpperCase()}
+      <span className='tipoEstudo' >{tipo.toUpperCase()}</span>
+      <button className='sobreOEstudo' onClick={() => setMostrarAssuntos(!mostrarAssuntos)} title="O que é?">
+        <FaQuestionCircle className="custom-icon" />
       </button>
 
 
