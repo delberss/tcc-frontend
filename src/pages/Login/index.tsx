@@ -13,16 +13,16 @@ interface FormData {
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login, user } = useAuth();  // Certifique-se de obter o usuário do contexto Auth
+  const { login, user } = useAuth(); 
 
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
   });
 
-  const [preferenciaEstudo, setPreferenciaEstudo] = useState<string | null>(null);
-
   const [formError, setFormError] = useState<string | null>(null);
+
+  const [userType, setUserType] = useState<string>("estudante");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,7 +36,7 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      setFormError('Por favor, preencha todos os campos.');
+      setFormError('Por favor, preencha todos os campos');
       return;
     }
 
@@ -48,28 +48,27 @@ const Login: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, userType }), // Adicionando userType ao corpo da requisição
       });
 
       if (response.status === 200) {
         const { user, token } = await response.json();
         login(user, token);
 
-        // Decide para onde navegar com base na preferência de estudo
-        if (user.preferenciaEstudo === null) {
-          // Se preferenciaEstudo é nula, redirecione para '/form-register'
+        if (userType.toLocaleLowerCase() === 'estudante' && user.preferenciaEstudo === null ) {
           navigate('/form-register', { state: { userData: formData } });
         } else {
-          // Se preferenciaEstudo não é nula, redirecione para '/'
           navigate('/');
         }
       } else {
-        // Trate erros de login, se necessário
         const data = await response.json();
 
         if (data.message && data.message.includes('A senha inserida está incorreta.')) {
           setFormError('A senha inserida está incorreta.');
-        } else if (data.message && data.message.includes('E-mail não cadastrado.')) {
+        } else if(data.message && data.message.includes('Email não existe para esse login')){
+          setFormError('Email não existe para esse login');
+        } 
+        else if (data.message && data.message.includes('E-mail não cadastrado.')) {
           setFormError('E-mail não cadastrado. Faça o registro.');
         } else {
           console.error('Erro ao enviar o formulário:', response.statusText);
@@ -81,6 +80,13 @@ const Login: React.FC = () => {
       setFormError('Erro ao enviar o formulário. Por favor, tente novamente.');
     }
   };
+
+  const toggleUserType = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); 
+    setUserType(userType === "estudante" ? "admin" : "estudante");
+  };
+  
+  
 
   return (
     <div className='container-login'>
@@ -110,6 +116,11 @@ const Login: React.FC = () => {
         <ErrorMessage message={formError} />
 
         <SubmitButton label="Logar" />
+
+        <button className={`toggle-button ${userType === "estudante" ? "" : "admin"}`} onClick={toggleUserType}>
+          <span className="text">{userType === "admin" ? "Administrador" : userType}</span>
+          <div className="slider"></div>
+        </button>
 
         <div className='register-from-login'>
           <span>

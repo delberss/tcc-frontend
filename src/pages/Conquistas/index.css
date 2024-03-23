@@ -103,5 +103,7 @@
   }
 
   .legenda{
-    width: 150px;
+    padding: 20px;
+    margin: auto 10px;
+    width: 250px;
   }

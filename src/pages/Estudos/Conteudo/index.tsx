@@ -8,42 +8,11 @@ import { FiArrowLeft } from 'react-icons/fi';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { } from 'react-icons/fa';
 import { getButtonStyleByType, getButtonStyle } from '../../../../color-estudos';
-
-
-const estudos = {
-  BACKEND: {
-    description: "O Backend é a parte da aplicação que lida com a lógica e a manipulação dos dados. Responsável pelo processamento do lado do servidor, gerencia as operações que ocorrem nos bastidores da aplicação.",
-    link: "https://roadmap.sh/backend"
-  },
-
-  FRONTEND: {
-    description: "O Frontend é a interface visível para os usuários. Trata da apresentação e interação direta com o usuário em um aplicativo ou site. Envolve tecnologias como HTML, CSS e JavaScript para criar uma experiência visual atraente e intuitiva.",
-    link: "https://roadmap.sh/frontend"
-  },
-
-  DATABASE: {
-    description: "Database (Banco de Dados) refere-se à organização e armazenamento de dados de forma eficiente. Envolve a criação, consulta e manipulação de bancos de dados para garantir o acesso rápido e seguro às informações.",
-    link: "https://roadmap.sh/postgresql-dba"
-  },
-
-  "DEVOPS E AUTOMAÇÃO DE INFRAESTRUTURA": {
-    description: "DevOps é uma cultura e conjunto de práticas que integram o desenvolvimento de software com as operações de TI. Visa melhorar a colaboração e eficiência, automatizando processos de construção, teste e implantação.",
-    link: "https://roadmap.sh/devops"
-  },
-
-  MOBILE: {
-    description: "Desenvolvimento Mobile concentra-se na criação de aplicativos para dispositivos móveis, como smartphones e tablets. Utiliza frameworks como React Native ou Flutter para garantir uma experiência consistente em diversas plataformas.",
-    link: "https://roadmap.sh/android"
-  },
-
-  "UX e Design": {
-    description: "UX (User Experience) e Design estão relacionados à criação de interfaces centradas no usuário. Envolve o design de interações e a experiência do usuário, garantindo que os produtos digitais sejam intuitivos, acessíveis e visualmente atraentes.",
-    link: "https://roadmap.sh/ux-design"
-  }
-};
+import { AiOutlinePlus } from 'react-icons/ai';
 
 
 const Conteudo: React.FC = () => {
+
   const { tipo = 'default' } = useParams<{ tipo?: string }>();
   const [conteudos, setConteudos] = useState<any[]>([]);
   const [conteudoSelecionado, setConteudoSelecionado] = useState<number | null>(null);
@@ -52,9 +21,17 @@ const Conteudo: React.FC = () => {
   const [quantidadeAcertos, setQuantidadeAcertos] = useState<Record<number, number>>({});
   const [quantidadePerguntas, setQuantidadePerguntas] = useState<Record<number, number>>({});
 
-  const tipoUppercase = tipo.toUpperCase() as keyof typeof estudos;
 
-  const estudo = estudos[tipoUppercase];
+  const [novoConteudoNome, setNovoConteudoNome] = useState<string>('');
+  const [novoConteudoDescricao, setNovoConteudoDescricao] = useState<string>('');
+  const [novoConteudoPontos, setNovoConteudoPontos] = useState<number>(0);
+  const [novoConteudoMateriais, setNovoConteudoMateriais] = useState<string>('');
+  const [mostrarCampoConteudo, setMostrarCampoConteudo] = useState<boolean>(false);
+
+  const [estudoId, setEstudoId] = useState<number>(0);
+  const [estudo, setEstudo] = useState<any>({});
+
+
 
 
   const navigate = useNavigate();
@@ -80,6 +57,7 @@ const Conteudo: React.FC = () => {
     const fetchConteudos = async () => {
       try {
         const idResponse = await fetchData(`${import.meta.env.REACT_APP_API_URL}/id/${tipo}`);
+        setEstudoId(idResponse)
         const estudosResponse = await fetchData(`${import.meta.env.REACT_APP_API_URL}/conteudos/${idResponse}`);
 
         setConteudos(estudosResponse);
@@ -89,6 +67,22 @@ const Conteudo: React.FC = () => {
     };
 
     fetchConteudos();
+  }, [tipo]);
+
+  useEffect(() => {
+    const fetchEstudo = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/estudos/${tipo}`);
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setEstudo(data[0]);
+      } catch (error) {
+        console.error(`Erro ao buscar estudo ${tipo}:`, error);
+      }
+    };
+    fetchEstudo();
   }, [tipo]);
 
   useEffect(() => {
@@ -178,6 +172,56 @@ const Conteudo: React.FC = () => {
     });
   };
 
+  const handleNovoConteudo = () => {
+    setMostrarCampoConteudo(!mostrarCampoConteudo);
+  };
+
+  const handleSalvarNovoConteudo = async () => {
+    try {
+      if (!novoConteudoNome || !novoConteudoDescricao || !novoConteudoPontos || !novoConteudoMateriais) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return;
+      }
+
+      const materiaisArray = novoConteudoMateriais.split(",").map(material => material.trim().replace(/^'|'$/g, ''));
+      const materiaisJSON = JSON.stringify(materiaisArray);
+
+      const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/adicionarConteudo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          titulo: novoConteudoNome,
+          descricao: novoConteudoDescricao,
+          estudo_id: estudoId,
+          pontos: novoConteudoPontos,
+          materiais: materiaisJSON
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Erro ao adicionar novo conteúdo.");
+      }
+
+      setNovoConteudoNome('');
+      setNovoConteudoDescricao('');
+      setNovoConteudoPontos(0);
+      setNovoConteudoMateriais('');
+
+      setConteudos([...conteudos, data]);
+
+      alert("Novo conteúdo adicionado com sucesso!");
+      setMostrarCampoConteudo(!mostrarCampoConteudo)
+    } catch (error) {
+      console.error("Erro ao adicionar novo conteúdo:", error);
+      alert("Erro ao adicionar novo conteúdo. Por favor, tente novamente mais tarde.");
+    }
+  };
+
+
 
   return (
     <div className={`container-estudos-generico`}>
@@ -185,7 +229,47 @@ const Conteudo: React.FC = () => {
       <button className='sobreOEstudo' onClick={() => setMostrarAssuntos(!mostrarAssuntos)} title="O que é?">
         <FaQuestionCircle className="custom-icon" />
       </button>
+      <div>
+        {user?.tipo_usuario === 'admin' && (
+          <>
+            <span>Adicionar novo conteúdo</span>
+            <button className="button-adicionar-conteudo" onClick={handleNovoConteudo}>
+              <AiOutlinePlus className="icon" />
+            </button>
+          </>
 
+        )}
+      </div>
+      {mostrarCampoConteudo && (
+        <div className="novo-conteudo-container">
+          <input
+            type="text"
+            placeholder="Digite o nome do novo conteúdo"
+            value={novoConteudoNome}
+            onChange={(e) => setNovoConteudoNome(e.target.value)}
+          />
+          <textarea
+            placeholder="Digite a descrição do conteúdo"
+            value={novoConteudoDescricao}
+            onChange={(e) => setNovoConteudoDescricao(e.target.value)}
+            style={{ width: '95%', padding: '10px', marginBottom: '10px', resize: 'none' }}
+          />
+          <input
+            type="number"
+            placeholder="Pontos"
+            value={novoConteudoPontos}
+            onChange={(e) => setNovoConteudoPontos(parseInt(e.target.value))}
+          />
+
+          <input
+            type="text"
+            placeholder="Materiais"
+            value={novoConteudoMateriais}
+            onChange={(e) => setNovoConteudoMateriais(e.target.value)}
+          />
+          <button onClick={handleSalvarNovoConteudo}>Salvar</button>
+        </div>
+      )}
 
       {mostrarAssuntos ? (
         <ul className='conteudos-list'>
@@ -224,7 +308,7 @@ const Conteudo: React.FC = () => {
         </ul>
       ) : (
         <div className='infosEstudo'>
-          <p className='estudoDescription'>{estudo.description}</p>
+          <p className='estudoDescription'>{estudo.descricao}</p>
           <a className='estudoRoadMap' href={estudo.link} target='_blank'>
             Roadmap: {estudo.link}
           </a>

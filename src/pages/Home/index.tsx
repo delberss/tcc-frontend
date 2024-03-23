@@ -37,7 +37,10 @@ const Home: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    if (!user) {
+    if(user?.tipo_usuario !== 'estudante'){
+      navigate('/estudos');
+    }
+    else if(!user){
       navigate('/login');
     }
   }, [user, navigate]);
@@ -52,7 +55,7 @@ const Home: React.FC = () => {
             <div className='container-estudos'>
               <button
                 key={preferenciaEstudo?.id}
-                className={`button-${preferenciaEstudo?.nome.toLowerCase()}`}
+                className={`button-${preferenciaEstudo?.nome.toLowerCase()} button-estudos`}
                 style={getButtonStyle(preferenciaEstudo?.nome)}
                 onClick={() => navigate(`/estudos/${encodeURIComponent(preferenciaEstudo?.nome.toLowerCase())}`)}
               >

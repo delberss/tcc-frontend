@@ -3,7 +3,8 @@ export interface User {
     id: string;
     profileImageUrl: string;
     preferenciaEstudo: number;
-    email: string; // Add the email property here
+    email: string; 
     pontuacaoGeral: number;
+    tipo_usuario: string;
   }
   

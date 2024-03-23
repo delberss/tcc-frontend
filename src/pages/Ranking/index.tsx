@@ -7,6 +7,7 @@ interface User {
     name: string;
     email: string;
     pontuacao_geral: number;
+    tipo_usuario: string;
 }
 
 const Ranking: React.FC = () => {
@@ -26,13 +27,16 @@ const Ranking: React.FC = () => {
                             'Authorization': `Bearer ${token}`,
                         },
                     });
-    
+
+                    
                     if (!response.ok) {
                         throw new Error('Failed to fetch users');
                     }
     
                     const data: User[] = await response.json();
-                    const sortedUsers = data.sort((a, b) => b.pontuacao_geral - a.pontuacao_geral);
+
+                    const filteredUsers = data.filter(u => u.tipo_usuario === 'estudante');
+                    const sortedUsers = filteredUsers.sort((a, b) => b.pontuacao_geral - a.pontuacao_geral);
                     setUsers(sortedUsers);
     
                     const currentUserIndex = sortedUsers.findIndex((u) => user && u.email === user?.email);
@@ -45,6 +49,7 @@ const Ranking: React.FC = () => {
             fetchUsers();
         }
     }, [user]);
+    
 
     const medals = [
         <span key="gold" className="gold-medal icon-medal">🥇</span>,
@@ -77,8 +82,8 @@ const Ranking: React.FC = () => {
                             <td className={index < 3 ? 'top-users' : ''}>{user.pontuacao_geral}</td>
                         </tr>
                     ))}
-                    {currentUserPosition && currentUserPosition > 20 && (
-                        // Mostra a posição do usuário atual se estiver além dos 20 primeiros
+                    {
+                    user?.tipo_usuario === 'estudante' && currentUserPosition && currentUserPosition > 20 && (
                         <>
                             <tr className={`table-row ellipsis-row`}>
                                 <td colSpan={3}><span className='ellipsis'>...</span></td>

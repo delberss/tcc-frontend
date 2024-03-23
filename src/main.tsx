@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import Estudos from './pages/Estudos';
@@ -8,7 +8,7 @@ import Login from './pages/Login';
 import Sobre from './pages/Sobre';
 import Register from './pages/Register';
 import InitialQuestionario from './pages/InitialQuestionario';
-import { AuthProvider } from './AuthContext';
+import { AuthProvider, useAuth } from './AuthContext';
 import Ranking from './pages/Ranking';
 import EstudosGenerico from './pages/Estudos/Conteudo';
 import Questionario from './pages/Estudos/Conteudo/Questionario';
@@ -19,6 +19,15 @@ const rootElement = document.getElementById('root') ?? document.createElement('d
 
 const root = createRoot(rootElement);
 
+const ProtectedConquistas = () => {
+  const { user } = useAuth();
+
+  if (!user || user.tipo_usuario.toLowerCase() !== 'estudante') {
+    return <Navigate to="/estudos" />;
+  }
+  return <Conquistas />;
+};
+
 root.render(
   <React.StrictMode>
     <AuthProvider>
@@ -27,7 +36,7 @@ root.render(
           <Route path="/" element={<App />}>
             <Route path="/" element={<Home />} />
             <Route path="/sobre" element={<Sobre />} />
-            <Route path="/conquistas" element={<Conquistas />} />
+            <Route path="/conquistas" element={<ProtectedConquistas  />} />
             <Route path="/estudos" element={<Estudos />} />
             <Route path="/estudos/:tipo" element={<EstudosGenerico />} />
             <Route

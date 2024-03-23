@@ -51,6 +51,7 @@ const Register: React.FC = () => {
       });
 
       if (response.status === 201) {
+        alert('Registro realizado com sucesso!')
         navigate('/login');
       } else {
         const data = await response.json();

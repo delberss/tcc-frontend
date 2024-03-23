@@ -145,6 +145,7 @@
   margin: 20px auto;
 }
 
+
 .button-ativar:hover {
   background-color: #218838; /* Cor de fundo do botão ao passar o mouse */
 }
@@ -154,6 +155,7 @@
 .instrucoes-estudo,
 .materiais-estudo{
   width: 100%;
+  margin: 10px;
 }
 
 .instrucoes-estudo ul {
@@ -179,10 +181,70 @@
 }
 
 .titulo-estudo{
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
+  text-transform: capitalize;
 }
 
 .subtitulos-estudo-questionario{
   font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.divisao-instrucao-material{
+  display: flex;
+}
+
+.novo-questionario-container{
+  width: 30%;
+  min-width: 300px;
+}
+
+.novo-questionario-container input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+}
+
+.novo-questionario-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.novo-questionario-container textarea{
+  border: none;
+}
+
+.novo-questionario-container button:hover {
+  background-color: #0056b3;
+}
+
+
+
+.iniciar-questionario-perguntas{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.qtd-perguntas{
+  margin-left: 10px;
+}
+
+.quantidades-questionario{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background-color: #ffffffc4;
+  border-radius: 50%;
+  margin-right: 10px;
+  color: #000;
 }

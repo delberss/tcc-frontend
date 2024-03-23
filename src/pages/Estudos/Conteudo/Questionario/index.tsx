@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import './index.css';
 import { useAuth } from '../../../../AuthContext';
+import { AiOutlinePlus } from 'react-icons/ai';
 
 interface Pergunta {
   id: number;
@@ -15,7 +16,7 @@ interface Pergunta {
 
 
 const Questionario: React.FC = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   let conteudoId = location.state.conteudoId;
@@ -28,6 +29,18 @@ const Questionario: React.FC = () => {
   const [perguntaAtual, setPerguntaAtual] = useState(0);
   const [tempoRestante, setTempoRestante] = useState(90);
   const [questionarioAtivado, setQuestionarioAtivado] = useState(false);
+
+  const [mostrarCampoQuestionario, setMostrarCampoQuestionario] = useState<boolean>(false);
+
+  const [novaPergunta, setNovaPergunta] = useState<string>('');
+  const [letraA, setLetraA] = useState<string>('');
+  const [letraB, setLetraB] = useState<string>('');
+  const [letraC, setLetraC] = useState<string>('');
+  const [letraD, setLetraD] = useState<string>('');
+  const [respostaCorreta, setRespostaCorreta] = useState<string>('');
+
+
+
 
   const ativarQuestionario = () => {
     setQuestionarioAtivado(true);
@@ -130,7 +143,7 @@ const Questionario: React.FC = () => {
   };
 
   const enviarRespostas = async () => {
-    if (Object.keys(respostas).length >= 4) {
+    if (Object.keys(respostas).length >= 0) {
       try {
         setRespostasEnviadas(true);
         const respostasArray = Object.entries(respostas).map(([pergunta_id, resposta_do_usuario]) => ({
@@ -158,27 +171,137 @@ const Questionario: React.FC = () => {
     }
   };
 
+  const handleNovoQuestionario = () => {
+    setMostrarCampoQuestionario(!mostrarCampoQuestionario);
+  };
+
+  const handleSalvarNovoQuestionario = async () => {
+    if (
+      novaPergunta.trim() === '' ||
+      letraA.trim() === '' ||
+      letraB.trim() === '' ||
+      letraC.trim() === '' ||
+      letraD.trim() === '' ||
+      respostaCorreta.trim() === ''
+    ) {
+      alert('Por favor, preencha todos os campos antes de salvar.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/add/pergunta`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          conteudo_id: conteudoId,
+          pergunta: novaPergunta,
+          opcao_a: letraA,
+          opcao_b: letraB,
+          opcao_c: letraC,
+          opcao_d: letraD,
+          resposta_correta: respostaCorreta.toUpperCase(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMostrarCampoQuestionario(!mostrarCampoQuestionario);
+        // Reload da página
+        window.location.reload();
+      } else {
+        console.error('Erro ao adicionar pergunta:', data.message);
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar pergunta:', error);
+    }
+  };
+
+
+
+
   return (
     <div className='questionario'>
       {!questionarioAtivado ? (
         <div className='ativar-questionario'>
           <span className='titulo-estudo'>{titulo}</span>
-          <button className='button-ativar' onClick={ativarQuestionario}>
-            Iniciar Questionário
-          </button>
-          <div className='instrucoes-estudo'>
-            <span className='subtitulos-estudo-questionario'>Aqui estão algumas instruções antes de iniciar o questionário:</span>
-            <ul>
-              <li>Inicie o questionário quando estiver pronto.</li>
-              <li>Leia cada pergunta cuidadosamente antes de responder.</li>
-              <li>Você terá 90 segundos para responder cada pergunta.</li>
-            </ul>
+          <div className='iniciar-questionario-perguntas'>
+            <button className='button-ativar' onClick={ativarQuestionario}>
+              Iniciar Questionário
+            </button>
+
+            <div className='quantidades-questionario qtd-perguntas'>
+              <span>{perguntas.length || 0}</span>
+            </div>
           </div>
+
+
+          <div>
+            {user?.tipo_usuario === 'admin' && (
+              <>
+                <span>Adicionar nova pergunta</span>
+                <button className="button-adicionar-conteudo" onClick={handleNovoQuestionario}>
+                  <AiOutlinePlus className="icon" />
+                </button>
+              </>
+
+            )}
+          </div>
+
+          {mostrarCampoQuestionario && (
+            <div className="novo-questionario-container">
+              <input
+                type="text"
+                placeholder="Digite a pergunta"
+                value={novaPergunta}
+                onChange={(e) => setNovaPergunta(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Letra A"
+                value={letraA}
+                onChange={(e) => setLetraA(e.target.value)}
+              />
+
+              <input
+                type="text"
+                placeholder="Letra B"
+                value={letraB}
+                onChange={(e) => setLetraB(e.target.value)}
+              />
+
+              <input
+                type="text"
+                placeholder="Letra C"
+                value={letraC}
+                onChange={(e) => setLetraC(e.target.value)}
+              />
+
+              <input
+                type="text"
+                placeholder="Letra D"
+                value={letraD}
+                onChange={(e) => setLetraD(e.target.value)}
+              />
+
+              <input
+                type="text"
+                placeholder="Letra da resposta correta"
+                value={respostaCorreta}
+                onChange={(e) => setRespostaCorreta(e.target.value)}
+              />
+              <button onClick={handleSalvarNovoQuestionario}>Salvar</button>
+            </div>
+          )}
+
 
           {
             materiais && materiais.length > 0 && materiais[0].materiais ? (
               <div className='materiais-estudo'>
-                <span className='subtitulos-estudo-questionario'>Materiais indicados para estudo:</span>
+                <span className='subtitulos-estudo-questionario'>Materiais indicados para estudo</span>
                 <ul>
                   {materiais[0].materiais.map((link, linkIndex) => (
                     <li key={linkIndex}>
@@ -191,12 +314,19 @@ const Questionario: React.FC = () => {
               </div>
             ) : (
               <div className='materiais-estudo'>
-                <span className='subtitulos-estudo-questionario'>Não possui material</span>
+                <span className='subtitulos-estudo-questionario'>Ainda não possui material</span>
               </div>
             )
           }
 
-
+          <div className='instrucoes-estudo'>
+            <span className='subtitulos-estudo-questionario'>Instruções antes de iniciar o questionário</span>
+            <ul>
+              <li>Inicie o questionário quando estiver pronto.</li>
+              <li>Leia cada pergunta cuidadosamente antes de responder.</li>
+              <li>Você terá 90 segundos para responder cada pergunta.</li>
+            </ul>
+          </div>
         </div>
       ) : perguntas.length > 0 ? (
         <>
