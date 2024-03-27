@@ -278,7 +278,7 @@ const Conteudo: React.FC = () => {
               onClick={!conclusoes[conteudo.id] ? () => abrirQuestionario(conteudo.id, conteudo.titulo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
-              className={`conteudo-item ${conclusoes[conteudo.id] ? 'concluido' : ''} ${!conclusoes[conteudo.id] ? 'cursor-pointer' : 'non-clickable'
+              className={`conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ? 'concluido' : ''} ${!conclusoes[conteudo.id] ? 'cursor-pointer' : 'non-clickable'
                 }`}
             >
               <div className='conteudo-detalhes'>
