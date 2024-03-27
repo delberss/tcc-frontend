@@ -290,7 +290,7 @@ const Conteudo: React.FC = () => {
                     {conteudo.descricao}
                   </div>
 
-                  {conclusoes[conteudo.id](
+                  {conclusoes[conteudo.id] ? (
                     <div className={`icone-conclusao no-cursor`}>
                       <FaCheck />
                     </div>
