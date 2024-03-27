@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../AuthContext'; // Importe o contexto de autenticação
 import './index.css';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
     id: number;
@@ -10,12 +11,20 @@ interface User {
     tipo_usuario: string;
 }
 
+
+
 const Ranking: React.FC = () => {
     const { token, user } = useAuth();
     const [users, setUsers] = useState<User[]>([]);
     const [currentUserPosition, setCurrentUserPosition] = useState<number | null>(null);
     const visibleUsers = users.slice(0, 20);
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        if (!user) {
+          navigate('/login'); 
+        }
+      }, [user, navigate]);
 
     useEffect(() => {
         if(token !== null){
@@ -57,7 +66,7 @@ const Ranking: React.FC = () => {
         <span key="bronze" className="bronze-medal icon-medal">🥉</span>,
     ];
 
-    return (
+    return user ? (
         <div className="table-container">
             <h2 className="ranking">Melhores classificados</h2>
             <table>
@@ -98,7 +107,7 @@ const Ranking: React.FC = () => {
                 </tbody>
             </table>
         </div>
-    );
+    ) : <></>;
 };
 
 export default Ranking;
