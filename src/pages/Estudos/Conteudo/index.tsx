@@ -275,7 +275,7 @@ const Conteudo: React.FC = () => {
         <ul className='conteudos-list'>
           {conteudos.map((conteudo, index) => (
             <li
-              onClick={!conclusoes[conteudo.id] ? () => abrirQuestionario(conteudo.id, conteudo.titulo) : undefined}
+              onClick={!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
               className={`conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ? 'concluido' : ''} ${!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'
