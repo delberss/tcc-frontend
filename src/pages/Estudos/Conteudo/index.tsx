@@ -278,7 +278,7 @@ const Conteudo: React.FC = () => {
               onClick={!conclusoes[conteudo.id] ? () => abrirQuestionario(conteudo.id, conteudo.titulo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
-              className={`conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ? 'concluido' : ''} ${!conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ? 'cursor-pointer' : 'non-clickable'
+              className={`conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ? 'concluido' : ''} ${!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'
                 }`}
             >
               <div className='conteudo-detalhes'>
@@ -290,7 +290,7 @@ const Conteudo: React.FC = () => {
                     {conteudo.descricao}
                   </div>
 
-                  {conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ? (
+                  {conclusoes[conteudo.id](
                     <div className={`icone-conclusao no-cursor`}>
                       <FaCheck />
                     </div>
