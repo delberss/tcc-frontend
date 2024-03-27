@@ -18,3 +18,11 @@
 .item:hover {
   color: #2a7591;
 }
+
+
+/* Estilos para telas menores que 576px (tamanho típico de dispositivos móveis em orientação retrato) */
+@media screen and (max-width: 576px) {
+  .menu-header,.menu-list {
+    flex-direction: column;
+  }
+}

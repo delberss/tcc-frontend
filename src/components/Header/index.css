@@ -28,3 +28,16 @@ header a:hover {
   background-color: #555;
   color: #fff; 
 }
+
+@media screen and (max-width: 768px) {
+  header {
+    justify-content: center;
+  }
+}
+
+/* Estilos para telas menores que 576px (tamanho típico de dispositivos móveis em orientação retrato) */
+@media screen and (max-width: 576px) {
+  header {
+    justify-content: center;
+  }
+}
