@@ -37,6 +37,12 @@ const Conteudo: React.FC = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
 
+  useEffect(() => {
+    if (!user) {
+      navigate('/login'); 
+    }
+  }, [user, navigate]);
+
 
   const fetchData = async (url: string) => {
     try {
@@ -223,7 +229,7 @@ const Conteudo: React.FC = () => {
 
 
 
-  return (
+  return user ? (
     <div className={`container-estudos-generico`}>
       <span className='tipoEstudo' >{tipo.toUpperCase()}</span>
       <button className='sobreOEstudo' onClick={() => setMostrarAssuntos(!mostrarAssuntos)} title="O que é?">
