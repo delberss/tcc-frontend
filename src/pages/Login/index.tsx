@@ -58,7 +58,7 @@ const Login: React.FC = () => {
         if (userType.toLocaleLowerCase() === 'estudante' && user.preferenciaEstudo === null ) {
           navigate('/form-register', { state: { userData: formData } });
         } else {
-          navigate('/');
+          navigate('/conquistas');
         }
       } else {
         const data = await response.json();

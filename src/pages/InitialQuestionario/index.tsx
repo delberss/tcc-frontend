@@ -90,7 +90,7 @@ const InitialQuestionario: React.FC = () => {
           throw new Error(`Erro na solicitação: ${response.status} - ${response.statusText}`);
         }
   
-        navigate('/');
+        navigate('/conquistas');
   
       } catch (error) {
         console.error('Erro ao registrar respostas', error);

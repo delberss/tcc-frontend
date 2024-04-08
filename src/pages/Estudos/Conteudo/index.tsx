@@ -9,6 +9,13 @@ import { FaQuestionCircle } from 'react-icons/fa';
 import { } from 'react-icons/fa';
 import { getButtonStyleByType, getButtonStyle } from '../../../../color-estudos';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { FaLock } from 'react-icons/fa';
+
+interface Conteudo {
+  id: number;
+  titulo: string;
+  descricao: string;
+}
 
 
 const Conteudo: React.FC = () => {
@@ -31,15 +38,12 @@ const Conteudo: React.FC = () => {
   const [estudoId, setEstudoId] = useState<number>(0);
   const [estudo, setEstudo] = useState<any>({});
 
-
-
-
   const navigate = useNavigate();
   const { user, token } = useAuth();
 
   useEffect(() => {
     if (!user) {
-      navigate('/login'); 
+      navigate('/login');
     }
   }, [user, navigate]);
 
@@ -227,6 +231,25 @@ const Conteudo: React.FC = () => {
     }
   };
 
+  const renderizaPerguntasAcertos = (conteudo: Conteudo, index: number) => {
+    const liElement = document.querySelector(`.item-${index}`);
+
+    if (liElement) {
+        const isNonClickable = liElement.classList.contains('non-clickable');
+        
+        return !isNonClickable ? (
+            <div className='quantidades no-cursor'>
+                <span>{quantidadeAcertos?.[conteudo.id] || 0}</span>
+                <span>/</span>
+                <span>{quantidadePerguntas?.[conteudo.id] || 0}</span>
+            </div>
+        ) : (
+          <FaLock />
+        );
+    }
+}
+
+
 
 
   return user ? (
@@ -284,8 +307,9 @@ const Conteudo: React.FC = () => {
               onClick={!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
-              className={`conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ? 'concluido' : ''} ${!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'
-                }`}
+              className={`item-${index} conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ?
+                'concluido' : ''} ${conclusoes[conteudo.id - 1] || index == 0 ||
+                  user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'}`}
             >
               <div className='conteudo-detalhes'>
                 <div className='conteudo-info'>
@@ -301,11 +325,7 @@ const Conteudo: React.FC = () => {
                       <FaCheck />
                     </div>
                   ) : (
-                    <div className='quantidades no-cursor'>
-                      <span>{quantidadeAcertos?.[conteudo.id] || 0}</span>
-                      <span>/</span>
-                      <span>{quantidadePerguntas?.[conteudo.id] || 0}</span>
-                    </div>
+                    renderizaPerguntasAcertos(conteudo, index)
                   )}
                 </div>
               </div>
