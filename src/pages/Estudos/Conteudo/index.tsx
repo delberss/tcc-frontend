@@ -43,9 +43,12 @@ const Conteudo: React.FC = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate('/login');
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) {
+            navigate('/login');
+        }
     }
-  }, [user, navigate]);
+}, [user, navigate]);
 
 
   const fetchData = async (url: string) => {

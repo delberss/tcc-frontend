@@ -37,36 +37,20 @@ const Home: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    if(user?.tipo_usuario !== 'estudante'){
-      navigate('/estudos');
+    if (!user) {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) {
+            navigate('/login');
+        }
+        else{
+          navigate('/conquistas')
+        }
     }
-    else if(!user){
-      navigate('/login');
-    }
-  }, [user, navigate]);
+}, [user, navigate]);
 
   return (
     <div className='container-home'>
       <Outlet />
-      {user ? (
-        <>
-          <h2>Estudo indicado</h2>
-          {preferenciaEstudo && (
-            <div className='container-estudos'>
-              <button
-                key={preferenciaEstudo?.id}
-                className={`button-${preferenciaEstudo?.nome.toLowerCase()} button-estudos`}
-                style={getButtonStyle(preferenciaEstudo?.nome)}
-                onClick={() => navigate(`/estudos/${encodeURIComponent(preferenciaEstudo?.nome.toLowerCase())}`)}
-              >
-                {preferenciaEstudo?.nome}
-              </button>
-            </div>
-          )}
-        </>
-      ) : (
-        <></>
-      )}
     </div>
   );
   

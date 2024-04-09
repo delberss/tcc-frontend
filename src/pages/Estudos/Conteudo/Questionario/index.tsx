@@ -46,6 +46,14 @@ const Questionario: React.FC = () => {
     setQuestionarioAtivado(true);
   };
 
+  useEffect(() => {
+    if (!user) {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) {
+            navigate('/login');
+        }
+    }
+}, [user, navigate]);
 
   useEffect(() => {
 

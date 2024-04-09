@@ -97,7 +97,6 @@ const Conquistas: React.FC = () => {
       };
       fetchData();
     }
-    
   }, [user]);
 
   return (

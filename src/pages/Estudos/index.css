@@ -105,3 +105,24 @@
 .novo-estudo-container button:hover {
   background-color: #0056b3;
 }
+
+
+.estudos-title{
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.exibirSelecionado{
+  background-color: rgb(40, 82, 94);
+}
+
+.todos-indicados{
+  margin: 0;
+  padding: 0;
+}
+
+.todos-indicados button {
+  margin: 8px;
+}

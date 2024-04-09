@@ -30,7 +30,7 @@ const Header: React.FC = () => {
   };
 
   const handleLogoClick = () => {
-    navigate('/');
+    navigate('/conquistas');
   };
 
 

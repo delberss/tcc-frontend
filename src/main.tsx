@@ -21,8 +21,9 @@ const root = createRoot(rootElement);
 
 const ProtectedConquistas = () => {
   const { user } = useAuth();
+  const storedUser = localStorage.getItem('user');
 
-  if (!user || user.tipo_usuario.toLowerCase() !== 'estudante') {
+  if (!user && !storedUser || user?.tipo_usuario === 'admin') {
     return <Navigate to="/estudos" />;
   }
   return <Conquistas />;

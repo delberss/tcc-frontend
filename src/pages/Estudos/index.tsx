@@ -5,6 +5,11 @@ import { getButtonStyle } from '../../../color-estudos';
 import { AiOutlinePlus } from 'react-icons/ai'; // Importando o ícone de adição do React Icons
 import { useAuth } from '../../AuthContext';
 
+interface PreferenciaEstudo {
+  id: number;
+  nome: string;
+}
+
 const Estudos: React.FC = () => {
   const { user } = useAuth();
 
@@ -17,6 +22,30 @@ const Estudos: React.FC = () => {
   const [mostrarCampoNovoEstudo, setMostrarCampoNovoEstudo] = useState<boolean>(false); // Estado para controlar a exibição do campo de novo estudo
 
   const [informacoesEstudo, setInformacoesEstudo] = useState<string[]>([]);
+  const [exibirTodosEstudos, setExibirTodosEstudos] = useState(false);
+  const [preferenciaEstudo, setPreferenciaEstudo] = useState<PreferenciaEstudo | null>(null);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          // Fetch preferenciaEstudo do usuário
+          const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/user-preference-study/${user?.id}`);
+          const dataUsuario = await responseUsuario.json();
+  
+          if (dataUsuario.success) {
+            // Atualiza o estado com os dados obtidos
+            setPreferenciaEstudo(dataUsuario.preferenciaEstudo);
+          } else {
+            console.error('Erro ao obter preferenciaEstudo:', dataUsuario.message);
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+        }
+      };
+  
+      fetchData();
+    }, [user]);
+
   useEffect(() => {
     const fetchTiposDeEstudo = async () => {
       try {
@@ -46,14 +75,14 @@ const Estudos: React.FC = () => {
       alert('Por favor, preencha todos os campos antes de salvar.');
       return;
     }
-   
+
     try {
       const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/adicionarEstudo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           nome: novoEstudoNome,
           descricao: novoEstudoDescricao,
           link: novoEstudoLink
@@ -89,7 +118,11 @@ const Estudos: React.FC = () => {
   return (
     <>
       <div className='title-add-estudo'>
-        <h2 className='estudos-title'>Estudos</h2>
+        <div className='todos-indicados'>
+          <button className={`estudos-title ${exibirTodosEstudos ? 'exibirSelecionado' : ''}`} onClick={() => setExibirTodosEstudos(true)}>Todos estudos</button>
+          <button className={`estudos-title ${!exibirTodosEstudos ? 'exibirSelecionado' : ''}`} onClick={() => setExibirTodosEstudos(false)}>Estudos Indicados</button>
+        </div>
+
         {user?.tipo_usuario === 'admin' && (
           <button className="button-adicionar" onClick={handleNovoEstudo}>
             <AiOutlinePlus className="icon" />
@@ -124,19 +157,34 @@ const Estudos: React.FC = () => {
           <button onClick={handleSalvarNovoEstudo}>Salvar</button>
         </div>
       )}
+      {exibirTodosEstudos ? (
+        <div className='container-estudos'>
+          {tiposDeEstudo.map((estudo, index) => (
+            <button
+              key={index}
+              className={`button-${estudo.toLowerCase()} button-estudos`}
+              style={getButtonStyle(estudo)}
+              onClick={() => navigate(`/estudos/${encodeURIComponent(estudo.toLowerCase())}`)}
+            >
+              {estudo}
+            </button>
+          ))}
+        </div>
+      ) : (
+        preferenciaEstudo && (
+          <div className='container-estudos'>
+            <button
+              key={preferenciaEstudo?.id}
+              className={`button-${preferenciaEstudo?.nome.toLowerCase()} button-estudos`}
+              style={getButtonStyle(preferenciaEstudo?.nome)}
+              onClick={() => navigate(`/estudos/${encodeURIComponent(preferenciaEstudo?.nome.toLowerCase())}`)}
+            >
+              {preferenciaEstudo?.nome}
+            </button>
+          </div>
+        )
+      )}
 
-      <div className='container-estudos'>
-        {tiposDeEstudo.map((estudo, index) => (
-          <button
-            key={index}
-            className={`button-${estudo.toLowerCase()} button-estudos`}
-            style={getButtonStyle(estudo)}
-            onClick={() => navigate(`/estudos/${encodeURIComponent(estudo.toLowerCase())}`)}
-          >
-            {estudo}
-          </button>
-        ))}
-      </div>
     </>
   );
 };
