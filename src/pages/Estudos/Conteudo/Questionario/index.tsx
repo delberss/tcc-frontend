@@ -15,6 +15,11 @@ interface Pergunta {
   opcao_d: string;
 }
 
+interface PerguntaErrada {
+  id: number;
+  pergunta: string;
+}
+
 
 const Questionario: React.FC = () => {
   const { token, user } = useAuth();
@@ -39,7 +44,7 @@ const Questionario: React.FC = () => {
   const [letraC, setLetraC] = useState<string>('');
   const [letraD, setLetraD] = useState<string>('');
   const [respostaCorreta, setRespostaCorreta] = useState<string>('');
-
+  const [perguntasErradas, setPerguntasErradas] = useState<PerguntaErrada[]>([]);
 
 
 
@@ -90,6 +95,24 @@ const Questionario: React.FC = () => {
       console.error('Erro ao buscar perguntas:', error);
     }
   };
+
+  useEffect(() => {
+    const fetchPerguntasErradas = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/perguntas-erradas/${user?.id}/${conteudoId}`);
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setPerguntasErradas(data.perguntas_erradas);
+      } catch (error) {
+        console.error('Erro ao buscar perguntas erradas:', error);
+      }
+    };
+
+    fetchPerguntasErradas();
+  }, [conteudoId]);
 
 
   useEffect(() => {
@@ -308,7 +331,7 @@ const Questionario: React.FC = () => {
 
 
           {
-            materiais && materiais.length > 0 && materiais[0].materiais ? (
+            materiais && materiais.length > 0 && materiais[0].materiais && (
               <div className='materiais-estudo'>
                 <span className='subtitulos-estudo-questionario'>Materiais indicados para estudo</span>
                 <ul className='list-materiais'>
@@ -321,21 +344,31 @@ const Questionario: React.FC = () => {
                   ))}
                 </ul>
               </div>
-            ) : (
-              <div className='materiais-estudo'>
-                <span className='subtitulos-estudo-questionario'>Ainda não possui material</span>
-              </div>
             )
           }
 
-          <div className='instrucoes-estudo'>
-            <span className='subtitulos-estudo-questionario'>Instruções antes de iniciar o questionário</span>
-            <ul>
-              <li>Inicie o questionário quando estiver pronto.</li>
-              <li>Leia cada pergunta cuidadosamente antes de responder.</li>
-              <li>Você terá 90 segundos para responder cada pergunta.</li>
-            </ul>
+          <div className='feedback-e-instrucoes'>
+            <div className='feeback-perguntas'>
+              <span className='subtitulos-estudo-questionario'>Estude mais sobre</span>
+              <ul>
+                {perguntasErradas.map((pergunta) => (
+                  <li key={pergunta?.id}>{pergunta?.pergunta}</li>
+                ))}
+              </ul>
+            </div>
+
+
+            <div className='instrucoes-estudo'>
+              <span className='subtitulos-estudo-questionario'>Instruções antes de iniciar o questionário</span>
+              <ul>
+                <li>Inicie o questionário quando estiver pronto.</li>
+                <li>Leia cada pergunta cuidadosamente antes de responder.</li>
+                <li>Você terá 90 segundos para responder cada pergunta.</li>
+              </ul>
+            </div>
           </div>
+
+
         </div>
       ) : perguntas.length > 0 ? (
         <>

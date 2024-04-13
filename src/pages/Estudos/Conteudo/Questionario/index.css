@@ -153,11 +153,16 @@
 /* Adicione isso ao seu arquivo de estilo CSS ou ao seu componente se estiver usando estilos em linha */
 .instrucoes-estudo,
 .materiais-estudo{
-  width: 100%;
   margin: 10px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+
+.instrucoes-estudo,
+.feeback-perguntas{
+  width: 90%;
 }
 
 .instrucoes-estudo ul {
@@ -269,4 +274,16 @@
 }
 .icone-material:hover{
   color: white;
+}
+
+.feedback-e-instrucoes{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+
+
+.feedback-e-instrucoes ul{
+  padding: 0;
 }
