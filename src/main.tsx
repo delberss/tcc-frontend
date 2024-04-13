@@ -23,7 +23,9 @@ const ProtectedConquistas = () => {
   const { user } = useAuth();
   const storedUser = localStorage.getItem('user');
 
-  if (!user && !storedUser || user?.tipo_usuario === 'admin') {
+  if (!user && !storedUser){
+    return <Navigate to="/login" />;
+  } else if (user?.tipo_usuario === 'admin') {
     return <Navigate to="/estudos" />;
   }
   return <Conquistas />;

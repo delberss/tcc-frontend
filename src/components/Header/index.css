@@ -41,3 +41,24 @@ header a:hover {
     justify-content: center;
   }
 }
+
+.star-icon{
+  cursor: pointer;
+}
+.star-container {
+  display: inline-block;
+  position: relative;
+  color: gold;
+  font-size: 3.2rem;
+  margin-right: 24px;
+}
+
+.star-text {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  font-weight: bold;
+  font-size: 1.4rem;
+}

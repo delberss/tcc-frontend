@@ -22,29 +22,34 @@ const Estudos: React.FC = () => {
   const [mostrarCampoNovoEstudo, setMostrarCampoNovoEstudo] = useState<boolean>(false); // Estado para controlar a exibição do campo de novo estudo
 
   const [informacoesEstudo, setInformacoesEstudo] = useState<string[]>([]);
-  const [exibirTodosEstudos, setExibirTodosEstudos] = useState(false);
-  const [preferenciaEstudo, setPreferenciaEstudo] = useState<PreferenciaEstudo | null>(null);
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          // Fetch preferenciaEstudo do usuário
-          const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/user-preference-study/${user?.id}`);
-          const dataUsuario = await responseUsuario.json();
-  
-          if (dataUsuario.success) {
-            // Atualiza o estado com os dados obtidos
-            setPreferenciaEstudo(dataUsuario.preferenciaEstudo);
-          } else {
-            console.error('Erro ao obter preferenciaEstudo:', dataUsuario.message);
-          }
-        } catch (error) {
-          console.error('Erro:', error);
+  const [exibirTodosEstudos, setExibirTodosEstudos] = useState(user?.tipo_usuario === 'admin' ? true : false);
+  const [preferenciaEstudo, setPreferenciaEstudo] = useState<PreferenciaEstudo[] | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch preferenciaEstudo do usuário
+        const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/user-preference-study/${user?.id}`);
+        const dataUsuario = await responseUsuario.json();
+
+        if (dataUsuario.success) {
+          // Atualiza o estado com os dados obtidos
+          setPreferenciaEstudo(dataUsuario.preferenciaEstudos);
+        } else {
+          console.error('Erro ao obter preferenciaEstudo:', dataUsuario.message);
         }
-      };
-  
-      fetchData();
-    }, [user]);
+      } catch (error) {
+        console.error('Erro:', error);
+      }
+    };
+
+    fetchData();
+  }, [user]);
+
+  useEffect(() => {
+    console.log('preferencia')
+    console.log(preferenciaEstudo)
+  }, [preferenciaEstudo])
 
   useEffect(() => {
     const fetchTiposDeEstudo = async () => {
@@ -120,7 +125,10 @@ const Estudos: React.FC = () => {
       <div className='title-add-estudo'>
         <div className='todos-indicados'>
           <button className={`estudos-title ${exibirTodosEstudos ? 'exibirSelecionado' : ''}`} onClick={() => setExibirTodosEstudos(true)}>Todos estudos</button>
-          <button className={`estudos-title ${!exibirTodosEstudos ? 'exibirSelecionado' : ''}`} onClick={() => setExibirTodosEstudos(false)}>Estudos Indicados</button>
+          {
+            user?.tipo_usuario !== 'admin' &&
+            <button className={`estudos-title ${!exibirTodosEstudos ? 'exibirSelecionado' : ''}`} onClick={() => setExibirTodosEstudos(false)}>Estudos Indicados</button>
+          }
         </div>
 
         {user?.tipo_usuario === 'admin' && (
@@ -171,19 +179,23 @@ const Estudos: React.FC = () => {
           ))}
         </div>
       ) : (
-        preferenciaEstudo && (
+        preferenciaEstudo ? (
           <div className='container-estudos'>
-            <button
-              key={preferenciaEstudo?.id}
-              className={`button-${preferenciaEstudo?.nome.toLowerCase()} button-estudos`}
-              style={getButtonStyle(preferenciaEstudo?.nome)}
-              onClick={() => navigate(`/estudos/${encodeURIComponent(preferenciaEstudo?.nome.toLowerCase())}`)}
-            >
-              {preferenciaEstudo?.nome}
-            </button>
+            {preferenciaEstudo.map((estudo, index) => (
+              <button
+                className={`button-${estudo.nome.toLowerCase()} button-estudos`}
+                style={getButtonStyle(estudo.nome)}
+                onClick={() => navigate(`/estudos/${encodeURIComponent(estudo.nome.toLowerCase())}`)}
+                key={index} // Adicione a chave aqui
+              >
+                {estudo.nome}
+              </button>
+            ))}
           </div>
-        )
+        ) : null // Adicione um retorno nulo se preferenciaEstudo for falso ou vazio
       )}
+
+
 
     </>
   );

@@ -10,6 +10,11 @@ import { } from 'react-icons/fa';
 import { getButtonStyleByType, getButtonStyle } from '../../../../color-estudos';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { FaLock } from 'react-icons/fa';
+import { IoRocket } from "react-icons/io5";
+
+interface RocketLinkProps {
+  href: string;
+}
 
 interface Conteudo {
   id: number;
@@ -43,12 +48,12 @@ const Conteudo: React.FC = () => {
 
   useEffect(() => {
     if (!user) {
-        const storedUser = localStorage.getItem('user');
-        if (!storedUser) {
-            navigate('/login');
-        }
+      const storedUser = localStorage.getItem('user');
+      if (!storedUser) {
+        navigate('/login');
+      }
     }
-}, [user, navigate]);
+  }, [user, navigate]);
 
 
   const fetchData = async (url: string) => {
@@ -238,22 +243,32 @@ const Conteudo: React.FC = () => {
     const liElement = document.querySelector(`.item-${index}`);
 
     if (liElement) {
-        const isNonClickable = liElement.classList.contains('non-clickable');
-        
-        return !isNonClickable ? (
-            <div className='quantidades no-cursor'>
-                <span>{quantidadeAcertos?.[conteudo.id] || 0}</span>
-                <span>/</span>
-                <span>{quantidadePerguntas?.[conteudo.id] || 0}</span>
-            </div>
-        ) : (
-          <FaLock />
-        );
+      const isNonClickable = liElement.classList.contains('non-clickable');
+
+      return !isNonClickable ? (
+        <div className='quantidades no-cursor'>
+          <span>{quantidadeAcertos?.[conteudo.id] || 0}</span>
+          <span>/</span>
+          <span>{quantidadePerguntas?.[conteudo.id] || 0}</span>
+        </div>
+      ) : (
+        <FaLock />
+      );
     }
-}
+  }
 
 
-
+  
+  
+  const RocketLink: React.FC<RocketLinkProps> = ({ href }) => {
+    const handleClick = () => {
+      window.open(href, '_blank');
+    };
+  
+    return (
+      <IoRocket className='rocket-link' onClick={handleClick} />
+    );
+  };
 
   return user ? (
     <div className={`container-estudos-generico`}>
@@ -338,8 +353,9 @@ const Conteudo: React.FC = () => {
       ) : (
         <div className='infosEstudo'>
           <p className='estudoDescription'>{estudo.descricao}</p>
+          <RocketLink href={estudo.link} />
           <a className='estudoRoadMap' href={estudo.link} target='_blank'>
-            Roadmap: {estudo.link}
+            Roadmap
           </a>
         </div>
       )}

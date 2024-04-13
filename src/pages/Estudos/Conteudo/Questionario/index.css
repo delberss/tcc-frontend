@@ -154,7 +154,10 @@
 .instrucoes-estudo,
 .materiais-estudo{
   width: 100%;
-  margin: 10px;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .instrucoes-estudo ul {
@@ -242,8 +245,28 @@
   justify-content: center;
   width: 30px;
   height: 30px;
-  background-color: #ffffffc4;
+  background-color: #28a745;
   border-radius: 50%;
   margin-right: 10px;
-  color: #000;
+  color: white;
+}
+
+.list-materiais{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+
+.li-materiais{
+  list-style: none;
+  margin: 0 12px
+}
+
+.icone-material{
+  font-size: 1.8rem;
+  transition: font-size 0.9s ease; 
+}
+.icone-material:hover{
+  color: white;
 }

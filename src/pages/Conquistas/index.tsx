@@ -12,6 +12,7 @@ import imgConquista6 from '../../assets/6.png'
 import imgConquista7 from '../../assets/7.png'
 import imgConquista8 from '../../assets/8.png'
 import imgConquista9 from '../../assets/9.png'
+import { FaStar } from 'react-icons/fa';
 
 
 
@@ -30,10 +31,11 @@ const Conquistas: React.FC = () => {
     return conquistas.length > 0 ? (
       <ul>
         {conquistas.map((conquista, index) => (
-          <li key={index} className={isConquistaConcluida(conquista) ? "conquista-concluida" : ""}>
+          <li key={index} className={`conquista-item ${isConquistaConcluida(conquista) ? "conquista-concluida" : ""}`} title={conquista.descricao}
+          >
             {/* Mapeando a conquista para a imagem correspondente */}
             <img className='imgConquista' src={getImagemConquista(conquista.nome_conquista)} alt="" />
-            <strong>{conquista.nome_conquista}</strong> {conquista.descricao}
+            <strong>{conquista.nome_conquista}</strong>
           </li>
         ))}
       </ul>
@@ -65,27 +67,27 @@ const Conquistas: React.FC = () => {
         return imgConquista9;
 
       default:
-        return ''; 
+        return '';
     }
   };
   useEffect(() => {
-    if(user !== null){
+    if (user !== null) {
       const fetchData = async () => {
         try {
           // Fetch conquistas do usuário
           const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/conquistas-usuario/${user?.id}`);
           const dataUsuario = await responseUsuario.json();
-  
+
           if (responseUsuario.ok) {
             setConquistasUsuario(dataUsuario.conquistasUsuario);
           } else {
             console.error('Erro na requisição de conquistas do usuário:', dataUsuario.message);
           }
-  
+
           // Fetch todas as conquistas
           const responseTodas = await fetch(`${import.meta.env.REACT_APP_API_URL}/conquistas`);
           const dataTodas = await responseTodas.json();
-  
+
           if (responseTodas.ok) {
             setTodasConquistas(dataTodas.conquistas);
           } else {
@@ -106,7 +108,7 @@ const Conquistas: React.FC = () => {
 
       <div className='legenda-conquistas'>
         <div className="legenda">
-          <p>Legenda:</p>
+          <p>Legenda</p>
           <div className="conquista-legenda">
             <div className="quadrado-conquista conquista-concluida"></div>
             <strong>Conquista Concluída</strong>
@@ -114,6 +116,14 @@ const Conquistas: React.FC = () => {
           <div className="conquista-legenda">
             <div className="quadrado-conquista"></div>
             <strong>Conquista Pendente</strong>
+          </div>
+          <div className="star-container" title="Dias seguidos de estudos">
+            
+            <div  className="conquista-legenda">
+              <FaStar className="star-icon-conquistas" />
+              <strong className='text-star-conquista'>Dias seguidos logado</strong>
+            </div>
+            
           </div>
         </div>
 

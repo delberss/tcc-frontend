@@ -13,3 +13,25 @@
   line-height: 1.5; 
   font-size: 1.1rem;
 }
+
+
+.lista-sobre-pontuacoes{
+  list-style: none;
+}
+
+.sobre-o-projeto,
+.sobre-pontuacoes
+{
+  max-width: 600px;
+  margin: auto;
+  text-align: start;
+}
+
+.sobre-o-projeto h2{
+  text-align: center;
+}
+
+.sobre-pontuacoes li{
+  list-style: inside;
+  text-align: start;
+}

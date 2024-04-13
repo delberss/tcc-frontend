@@ -5,7 +5,7 @@ import Alternativa from '../../components/Alternativas'; // Importando o compone
 import './index.css';
 
 interface FormData {
-  respostas: { pergunta_id: number; resposta_do_usuario: string }[];
+  respostas: { pergunta_id: number; resposta_do_usuario: string[] }[];
   userData: { email: string };
 }
 
@@ -34,26 +34,51 @@ const InitialQuestionario: React.FC = () => {
       }));
     }
   }, [location.state]);
-  
-  const [respostasPorPergunta, setRespostasPorPergunta] = useState<{ [key: number]: string }>({});
+
+  const [respostasPorPergunta, setRespostasPorPergunta] = useState<{ [key: number]: string[] }>({});
 
   const questions: Question[] = [
-    { id: 1, text: 'Qual área de estudo você mais tem experiência prévia ou conhecimento?', 
-    opcoes: ['Backend', 'Frontend', 'Database', 'DevOps e Automação de Infraestrutura', 'Mobile', 'UX e Design', 'N/A'] },
-    { id: 2, text: 'Qual dessas áreas de estudo você está mais interessado em explorar e aprofundar?', 
-    opcoes: ['Backend', 'Frontend', 'Database', 'DevOps e Automação de Infraestrutura', 'Mobile', 'UX e Design', 'N/A'] },
-    { id: 3, text: 'Como você considera seu nível como desenvolvedor?', 
-    opcoes: ['Iniciante', 'Intermediário', 'Avançado'] },
+    {
+      id: 1,
+      text: 'Qual linguagem de programação você tem mais experiência prévia ou conhecimento?',
+      opcoes: ['JavaScript', 'Python', 'Java', 'C#', 'Ruby', 'PHP', 'C++', 'Swift', 'N/A']
+    },
+    {
+      id: 2,
+      text: 'Qual dessas linguagens de programação você está mais interessado em explorar e aprofundar?',
+      opcoes: ['JavaScript', 'Python', 'Java', 'C#', 'Ruby', 'PHP', 'C++', 'Swift', 'N/A']
+    },
+    {
+      id: 3,
+      text: 'Como você considera seu nível de habilidade em programação?',
+      opcoes: ['Iniciante', 'Intermediário', 'Avançado']
+    },
   ];
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>, questionId: number) => {
-    const { value } = e.target;
-
-    setRespostasPorPergunta((prevState) => ({
-      ...prevState,
-      [questionId]: value
-    }));
+    const { value, checked } = e.target;
+  
+    setRespostasPorPergunta((prevState) => {
+      if (questions[questionId - 1].opcoes.length === 1) {
+        // Se a pergunta tiver apenas uma opção, atualize diretamente
+        return {
+          ...prevState,
+          [questionId]: checked ? [value] : []
+        };
+      } else {
+        // Se a pergunta tiver múltiplas opções, atualize conforme necessário
+        const newSelectedOptions = checked
+          ? [...(prevState[questionId] || []), value]
+          : (prevState[questionId] || []).filter((option) => option !== value);
+  
+        return {
+          ...prevState,
+          [questionId]: newSelectedOptions
+        };
+      }
+    });
   };
+  
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,14 +95,16 @@ const InitialQuestionario: React.FC = () => {
           pergunta_id: parseInt(pergunta_id),
           resposta_do_usuario
         }));
-  
+
+        console.log(respostas)
+
         const userData = {
           respostas,
           userData: {
             email: location.state.userData.email
           }
         };
-  
+
         const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/questionnaire-responses`, {
           method: 'POST',
           headers: {
@@ -85,19 +112,19 @@ const InitialQuestionario: React.FC = () => {
           },
           body: JSON.stringify(userData),
         });
-  
+
         if (!response.ok) {
           throw new Error(`Erro na solicitação: ${response.status} - ${response.statusText}`);
         }
-  
+
         navigate('/conquistas');
-  
+
       } catch (error) {
         console.error('Erro ao registrar respostas', error);
       }
     }
   };
-  
+
 
   return (
     <div className='container-initial-questionario'>
@@ -109,15 +136,31 @@ const InitialQuestionario: React.FC = () => {
             <label>{`${question.id}. ${question.text}`}</label>
 
             <div className="radio-options">
-              {question.opcoes.map((option) => (
-                <Alternativa
-                  key={option}
-                  questionId={question.id}
-                  option={option}
-                  checked={respostasPorPergunta[question.id] === option}
-                  onChange={(e) => handleChange(e, question.id)}
-                />
-              ))}
+              {/* Verifica se é a terceira pergunta */}
+              {question.id === 3 ? (
+                // Se for a terceira pergunta, usa input do tipo radio
+                question.opcoes.map((option) => (
+                  <Alternativa
+                    key={option}
+                    questionId={question.id}
+                    option={option}
+                    checked={respostasPorPergunta[question.id]?.includes(option)}
+                    onChange={(e) => handleChange(e, question.id)}
+                  />
+
+                ))
+              ) : (
+                // Se não for a terceira pergunta, usa input do tipo checkbox
+                question.opcoes.map((option) => (
+                  <Alternativa
+                    key={option}
+                    questionId={question.id}
+                    option={option}
+                    checked={respostasPorPergunta[question.id]?.includes(option)}
+                    onChange={(e) => handleChange(e, question.id)}
+                  />
+                ))
+              )}
             </div>
           </div>
         ))}
@@ -125,6 +168,9 @@ const InitialQuestionario: React.FC = () => {
       </form>
     </div>
   );
+
+
+
 };
 
 export default InitialQuestionario;

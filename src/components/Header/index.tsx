@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,12 +7,14 @@ import UploadModal from '../UploadModal';
 import NavBar from '../NavBar';
 import UserSection from '../UserSection';
 import logo from '../../../src/assets/iconeoficial.png'
+import { FaStar } from 'react-icons/fa';
 
 
 const Header: React.FC = () => {
   const { isAuthenticated, logout, user, token = null, updateProfileImage } = useAuth();
   const primeiroNome = user?.name.split(' ')[0];
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [diasSeguidos, setDiasSeguidos] = useState(0);
 
   const navigate = useNavigate();
 
@@ -32,6 +34,26 @@ const Header: React.FC = () => {
   const handleLogoClick = () => {
     navigate('/conquistas');
   };
+
+  useEffect(() => {
+    if (user !== null) {
+      const fetchData = async () => {
+        try {
+          const responseDiasSeguidos = await fetch(`${import.meta.env.REACT_APP_API_URL}/user/${user.id}/days`);
+          const dataDiasSeguidos = await responseDiasSeguidos.json();
+
+          if (responseDiasSeguidos.ok) {
+            setDiasSeguidos(dataDiasSeguidos.diasSeguidos);
+          } else {
+            console.error('Erro na requisição de dias seguidos do usuário:', dataDiasSeguidos.message);
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [user]);
 
 
   const handleImageUpload = async (file: File) => {
@@ -73,6 +95,10 @@ const Header: React.FC = () => {
       </div>
 
       <div className='user-section'>
+        <div className="star-container" title="Dias seguidos de estudos">
+          <FaStar className="star-icon"/>
+          <span className="star-text">{diasSeguidos}</span>
+        </div>
         <UserSection
           isAuthenticated={isAuthenticated}
           user={user}
@@ -81,6 +107,9 @@ const Header: React.FC = () => {
           handleLogout={handleLogout}
         />
       </div>
+
+
+
 
       <UploadModal
         isModalOpen={isModalOpen}

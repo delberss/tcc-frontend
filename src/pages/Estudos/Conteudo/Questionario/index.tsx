@@ -4,6 +4,7 @@ import { FiArrowLeft } from 'react-icons/fi';
 import './index.css';
 import { useAuth } from '../../../../AuthContext';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { IoBookOutline } from "react-icons/io5";
 
 interface Pergunta {
   id: number;
@@ -48,12 +49,12 @@ const Questionario: React.FC = () => {
 
   useEffect(() => {
     if (!user) {
-        const storedUser = localStorage.getItem('user');
-        if (!storedUser) {
-            navigate('/login');
-        }
+      const storedUser = localStorage.getItem('user');
+      if (!storedUser) {
+        navigate('/login');
+      }
     }
-}, [user, navigate]);
+  }, [user, navigate]);
 
   useEffect(() => {
 
@@ -310,11 +311,11 @@ const Questionario: React.FC = () => {
             materiais && materiais.length > 0 && materiais[0].materiais ? (
               <div className='materiais-estudo'>
                 <span className='subtitulos-estudo-questionario'>Materiais indicados para estudo</span>
-                <ul>
+                <ul className='list-materiais'>
                   {materiais[0].materiais.map((link, linkIndex) => (
-                    <li key={linkIndex}>
+                    <li className='li-materiais' key={linkIndex}>
                       <a href={link} target="_blank" rel="noopener noreferrer">
-                        {link}
+                        <IoBookOutline className='icone-material' />
                       </a>
                     </li>
                   ))}

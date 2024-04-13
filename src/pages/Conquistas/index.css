@@ -29,8 +29,8 @@
   }
   
   .container-conquistas li {
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    background-color: #5252523f;
+    border-radius: 50%;
     margin: 10px;
     padding: 15px;
     max-width: 300px;
@@ -39,7 +39,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 200px !important;
   }
+  
   
   .container-conquistas li strong {
     display: block;
@@ -48,8 +50,8 @@
   }
   
   .conquista-concluida {
-    background-color: #8eff8e; /* Cor de fundo verde para indicar conquistas concluídas */
-    color: #000;
+    background-color: #8eff8e !important; /* Cor de fundo verde para indicar conquistas concluídas */
+    color: #0d240f;
   }
   
   /* Adicione ao seu arquivo CSS */
@@ -67,11 +69,11 @@
   }
   
   .container-conquistas .quadrado-conquista {
-    width: 20px;
-    height: 20px;
+    height: 30px;
+    width: 30px;
     margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    background-color: #5252523f;
+    border-radius: 50%;
   }
 
  
@@ -106,4 +108,14 @@
     padding: 20px;
     margin: auto 10px;
     width: 250px;
+  }
+
+  .star-icon-conquistas{
+    height: 30px !important;
+    width: 30px !important;
+  }
+
+  .text-star-conquista{
+    margin-left: 8px;
+    color: white;
   }
