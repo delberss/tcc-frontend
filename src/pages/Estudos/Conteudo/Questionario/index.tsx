@@ -348,14 +348,18 @@ const Questionario: React.FC = () => {
           }
 
           <div className='feedback-e-instrucoes'>
-            <div className='feeback-perguntas'>
-              <span className='subtitulos-estudo-questionario'>Estude mais sobre</span>
-              <ul>
-                {perguntasErradas.map((pergunta) => (
-                  <li key={pergunta?.id}>{pergunta?.pergunta}</li>
-                ))}
-              </ul>
-            </div>
+            {
+              perguntasErradas.length > 0 ? (
+                <div className='feeback-perguntas'>
+                  <span className='subtitulos-estudo-questionario'>Estude mais sobre</span>
+                  <ul>
+                    {perguntasErradas.map((pergunta) => (
+                      <li key={pergunta?.id}>{pergunta?.pergunta}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null
+            }
 
 
             <div className='instrucoes-estudo'>
