@@ -330,7 +330,7 @@
   margin: 12px auto 0;
 }
 
-button:hover {
+.modal-content button:hover {
   background-color: #0056b3;
 }
 
