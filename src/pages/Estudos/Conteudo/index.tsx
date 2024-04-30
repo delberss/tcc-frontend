@@ -37,6 +37,8 @@ const Conteudo: React.FC = () => {
   const [novoConteudoNome, setNovoConteudoNome] = useState<string>('');
   const [novoConteudoDescricao, setNovoConteudoDescricao] = useState<string>('');
   const [novoConteudoPontos, setNovoConteudoPontos] = useState<number>(0);
+  const [linkVideo, setLinkVideo] = useState<string>('');
+  const [tempoMaximoQuestionario, setTempoMaximoQuestionario] = useState<number>(0);
   const [novoConteudoMateriais, setNovoConteudoMateriais] = useState<string>('');
   const [mostrarCampoConteudo, setMostrarCampoConteudo] = useState<boolean>(false);
 
@@ -180,12 +182,13 @@ const Conteudo: React.FC = () => {
     fetchConclusoes();
   }, [conteudos, token]);
 
-  const abrirQuestionario = (conteudoId: number, titulo: string) => {
+  const abrirQuestionario = (conteudoId: number, titulo: string, tempomaximo: number) => {
     setConteudoSelecionado(conteudoId);
     navigate(`/estudos/${tipo}/${conteudoId}`, {
       state: {
         conteudoId: conteudoId,
         titulo: titulo,
+        tempomaximo: tempomaximo,
       }
     });
   };
@@ -196,7 +199,7 @@ const Conteudo: React.FC = () => {
 
   const handleSalvarNovoConteudo = async () => {
     try {
-      if (!novoConteudoNome || !novoConteudoDescricao || !novoConteudoPontos || !novoConteudoMateriais) {
+      if (!novoConteudoNome || !novoConteudoDescricao || !novoConteudoPontos || !tempoMaximoQuestionario || !novoConteudoMateriais) {
         alert("Por favor, preencha todos os campos obrigatórios.");
         return;
       }
@@ -214,7 +217,9 @@ const Conteudo: React.FC = () => {
           descricao: novoConteudoDescricao,
           estudo_id: estudoId,
           pontos: novoConteudoPontos,
-          materiais: materiaisJSON
+          tempomaximo: tempoMaximoQuestionario,
+          materiais: materiaisJSON,
+          linkVideo: linkVideo,
         }),
       });
 
@@ -227,7 +232,10 @@ const Conteudo: React.FC = () => {
       setNovoConteudoNome('');
       setNovoConteudoDescricao('');
       setNovoConteudoPontos(0);
+      setTempoMaximoQuestionario(0);
       setNovoConteudoMateriais('');
+      setLinkVideo('');
+
 
       setConteudos([...conteudos, data]);
 
@@ -258,13 +266,13 @@ const Conteudo: React.FC = () => {
   }
 
 
-  
-  
+
+
   const RocketLink: React.FC<RocketLinkProps> = ({ href }) => {
     const handleClick = () => {
       window.open(href, '_blank');
     };
-  
+
     return (
       <IoRocket className='rocket-link' onClick={handleClick} />
     );
@@ -301,7 +309,16 @@ const Conteudo: React.FC = () => {
             onChange={(e) => setNovoConteudoDescricao(e.target.value)}
             style={{ width: '95%', padding: '10px', marginBottom: '10px', resize: 'none' }}
           />
+
           <input
+            type="text"
+            placeholder="Link do vídeo"
+            value={linkVideo}
+            onChange={(e) => setLinkVideo(e.target.value)}
+          />
+
+          <input
+            title='Pontos'
             type="number"
             placeholder="Pontos"
             value={novoConteudoPontos}
@@ -314,6 +331,15 @@ const Conteudo: React.FC = () => {
             value={novoConteudoMateriais}
             onChange={(e) => setNovoConteudoMateriais(e.target.value)}
           />
+
+          <input
+            title='Tempo máximo para responder'
+            type="number"
+            placeholder="Tempo máximo"
+            value={tempoMaximoQuestionario}
+            onChange={(e) => setTempoMaximoQuestionario(parseInt(e.target.value))}
+          />
+
           <button onClick={handleSalvarNovoConteudo}>Salvar</button>
         </div>
       )}
@@ -322,7 +348,7 @@ const Conteudo: React.FC = () => {
         <ul className='conteudos-list'>
           {conteudos.map((conteudo, index) => (
             <li
-              onClick={!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo) : undefined}
+              onClick={!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo, conteudo.tempomaximo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
               className={`item-${index} conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ?

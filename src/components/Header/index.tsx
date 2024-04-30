@@ -111,11 +111,11 @@ const Header: React.FC = () => {
 
 
 
-      <UploadModal
+      {/* <UploadModal
         isModalOpen={isModalOpen}
         closeModal={closeModal}
         handleImageUpload={handleImageUpload}
-      />
+      /> */}
     </header>
   );
 };

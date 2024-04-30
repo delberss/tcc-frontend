@@ -124,10 +124,10 @@ const Estudos: React.FC = () => {
     <>
       <div className='title-add-estudo'>
         <div className='todos-indicados'>
-          <button className={`estudos-title ${exibirTodosEstudos ? 'exibirSelecionado' : ''}`} onClick={() => setExibirTodosEstudos(true)}>Todos estudos</button>
+          <button className={`estudos-title ${exibirTodosEstudos ? 'exibirSelecionado' : 'naoSelecionado'}`} onClick={() => setExibirTodosEstudos(true)}>Todos estudos</button>
           {
             user?.tipo_usuario !== 'admin' &&
-            <button className={`estudos-title ${!exibirTodosEstudos ? 'exibirSelecionado' : ''}`} onClick={() => setExibirTodosEstudos(false)}>Estudos Indicados</button>
+            <button className={`estudos-title ${!exibirTodosEstudos ? 'exibirSelecionado' : 'naoSelecionado'}`} onClick={() => setExibirTodosEstudos(false)}>Estudos Indicados</button>
           }
         </div>
 
