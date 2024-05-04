@@ -35,3 +35,10 @@
   list-style: inside;
   text-align: start;
 }
+
+.sobre-o-projeto span {
+  color: rgb(7, 62, 77);
+  font-size: 1.7rem;
+  text-shadow: 0 0 2px #000000;
+  font-weight: 800; /* ou font-weight: bolder; */
+}

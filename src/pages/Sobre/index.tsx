@@ -9,7 +9,7 @@ const About: React.FC = () => {
     <div className='container-about'>
       <Outlet />
       <div className='sobre-o-projeto'>
-        <h2>Sobre o Projeto</h2>
+        <h2>Sobre o <span>CompTech Gaming</span></h2>
         <p>Este é um projeto para ajudar alunos de computação a
           seguir um caminho de estudos.
           O objetivo é motivar e auxiliar os estudantes dessa área, dessa maneira é utilizado a gamificação
