@@ -7,6 +7,12 @@ import { IoBookOutline } from "react-icons/io5";
 import { MdFeedback } from "react-icons/md";
 import { FiArrowLeft } from 'react-icons/fi';
 import YouTubePlayer from '../../../../components/YouTubePlayer';
+import ModalConfirmacao from '../../../../components/ModalConfirmacao';
+import { FaQuestionCircle, FaTrash } from 'react-icons/fa';
+import ModalEditarPergunta from '../../../../components/ModalPerguntas';
+import ModalFinalizacaoQuestionario from '../../../../components/ModalFinalizacaoQuestionario';
+import { converterParaSegundos } from '../../../../funcoes/converterParaSegundos';
+
 
 interface Pergunta {
   id: number;
@@ -15,6 +21,7 @@ interface Pergunta {
   opcao_b: string;
   opcao_c: string;
   opcao_d: string;
+  resposta_correta: string; 
   minutagempergunta: number;
 }
 
@@ -23,50 +30,65 @@ interface PerguntaErrada {
   pergunta: string;
 }
 
-interface ModalProps {
-  onClose: () => void;
-  qtdAcertos: number;
-}
+
 
 
 const Questionario: React.FC = () => {
   const { token, user } = useAuth();
-  const videoRef = useRef<HTMLDivElement>(null); // Inicializando com null
+  const videoRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   let conteudoId = location.state.conteudoId;
   let titulo = location.state.titulo;
+  let descricao = location.state.descricao;
+  let pontos = location.state.pontos;
+
   let tempomaximo = location.state.tempomaximo;
 
 
   const [respostasEnviadas, setRespostasEnviadas] = useState(false);
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
-  const [materiais, setMateriais] = useState<{ materiais: string[] }[]>([]);
-  const [videoConteudo, setVideoConteudo] = useState<string>(""); // Define o estado inicial como uma string vazia
+  const [materiais, setMateriais] = useState<string[]>([]);
+  const [videoConteudo, setVideoConteudo] = useState<string>(""); 
   const [linkVideo, setLinkVideo] = useState<string>('');
   const [editarLinkVideo, setEditarLinkVideo] = useState<boolean>(false);
+  const [mostrarDescricaoConteudo, setMostrarDescricaoConteudo] = useState(false);
+
 
 
 
   const [respostas, setRespostas] = useState<{ [key: number]: string }>({});
   const [perguntaAtual, setPerguntaAtual] = useState(0);
-  const [tempoRestante, setTempoRestante] = useState(90);
+  const [tempoRestante, setTempoRestante] = useState(videoConteudo ? 30 : 90);
   const [questionarioAtivado, setQuestionarioAtivado] = useState(false);
 
-  const [editingPerguntaId, setEditingPerguntaId] = useState(null);
+  const [editingPerguntaId, setEditingPerguntaId] = useState<number | null>(null);
   const [novaMinutagem, setNovaMinutagem] = useState('');
-  const [perguntaId, setPerguntaId] = useState(null);
+  const [perguntaId, setPerguntaId] = useState<number | null>(null);
+
+  const [perguntaSelecionada, setPerguntaSelecionada] = useState<Pergunta>({
+    id: 0,
+    pergunta: '',
+    opcao_a: '',
+    opcao_b: '',
+    opcao_c: '',
+    opcao_d: '',
+    resposta_correta: '',
+    minutagempergunta: 0
+  });
+
 
 
 
   const [mostrarCampoQuestionario, setMostrarCampoQuestionario] = useState<boolean>(false);
+  const [mostrarCampoEditarPerguntas, setMostrarCampoEditarPerguntas] = useState<boolean>(false);
 
   const [novaPergunta, setNovaPergunta] = useState<string>('');
   const [letraA, setLetraA] = useState<string>('');
   const [letraB, setLetraB] = useState<string>('');
   const [letraC, setLetraC] = useState<string>('');
   const [letraD, setLetraD] = useState<string>('');
-  const [minutagemPergunta, setMinutagemPergunta] = useState<number>(0);
+  const [minutagemPergunta, setMinutagemPergunta] = useState<string>('');
   const [respostaCorreta, setRespostaCorreta] = useState<string>('');
   const [perguntasErradas, setPerguntasErradas] = useState<PerguntaErrada[]>([]);
   const [conjuntoMinutagemPergunta, setConjuntoMinutagemPergunta] = useState([]);
@@ -76,12 +98,13 @@ const Questionario: React.FC = () => {
   const [videoPausado, setVideoPausado] = useState(false);
   const [momentoVideo, setMomentoVideo] = useState(0);
 
+  const [showModalComponente, setShowModalComponente] = useState(false);
+  const [showModalComponentePergunta, setShowModalComponentePergunta] = useState(false);
 
 
   const ativarQuestionario = () => {
-    setQuestionarioAtivado(true);
+    setShowModalComponente(true); 
   };
-
 
   const handleEditarLinkVideo = () => {
     setEditarLinkVideo(!editarLinkVideo);
@@ -105,11 +128,7 @@ const Questionario: React.FC = () => {
         }
 
         const data = await response.json();
-
-        // Ordenar as perguntas pelo ID antes de definir o estado
-        data.sort((a, b) => a.id - b.id);
-
-        console.log(data);
+        data.sort((a: Pergunta, b: Pergunta) => a.id - b.id);
         setPerguntas(data);
 
         const minutagemPerguntaArray = data.map((pergunta: Pergunta) => pergunta.minutagempergunta);
@@ -119,15 +138,11 @@ const Questionario: React.FC = () => {
       }
     };
 
-
     fetchMateriais()
     fetchPerguntas();
 
   }, [conteudoId]);
 
-  useEffect(() => {
-    console.log(conjuntoMinutagemPergunta)
-  }, [conjuntoMinutagemPergunta])
 
   const fetchMateriais = async () => {
     try {
@@ -137,7 +152,6 @@ const Questionario: React.FC = () => {
       }
 
       const data = await response.json();
-      console.log(data)
 
       if (data.hasOwnProperty('materiais') && data.hasOwnProperty('videoconteudo')) {
         setMateriais(data.materiais);
@@ -149,8 +163,6 @@ const Questionario: React.FC = () => {
       console.error('Erro ao buscar perguntas:', error);
     }
   };
-
-
 
   useEffect(() => {
     const fetchPerguntasErradas = async () => {
@@ -177,7 +189,8 @@ const Questionario: React.FC = () => {
 
       const updateTimer = () => {
         const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-        const remainingTime = Math.max(90 - elapsedTime, 0);
+        const remainingTime = Math.max(videoConteudo ? 30 - elapsedTime : 90 - elapsedTime, 0);
+
         setTempoRestante(remainingTime);
       };
 
@@ -201,7 +214,11 @@ const Questionario: React.FC = () => {
 
       if (perguntaAtual < perguntas.length - 1) {
         setPerguntaAtual((prevPergunta) => prevPergunta + 1);
-        setTempoRestante(90);
+        if (videoConteudo) {
+          setTempoRestante(30);
+        } else {
+          setTempoRestante(90);
+        }
         setVideoPausado(false);
       } else {
         enviarRespostas();
@@ -217,7 +234,11 @@ const Questionario: React.FC = () => {
   };
 
   const handleAvancar = () => {
-    setTempoRestante(90);
+    if (videoConteudo) {
+      setTempoRestante(30);
+    } else {
+      setTempoRestante(90);
+    }
 
     if (!respostas[perguntas[perguntaAtual].id]) {
       alert('Por favor, selecione uma resposta antes de avançar.');
@@ -232,38 +253,10 @@ const Questionario: React.FC = () => {
     }
   };
 
-
-  const Modal: React.FC<ModalProps> = ({ onClose, qtdAcertos }) => {
-    const handleModalClose = () => {
-      onClose();
-      navigate(-1);
-    };
-
-    let mensagem = "";
-    if (qtdAcertos === perguntas.length) {
-      mensagem = "Parabéns! Você acertou todas as questões e ganhou pontos!";
-    } else if (qtdAcertos === perguntas.length - 1) {
-      mensagem = "Muito bem! Você passou perto de gabaritar.";
-    } else {
-      mensagem = "Revise os materiais novamente.";
-    }
-
-    return (
-      <div className="modal">
-        <div className="modal-content">
-          <h2>Você acertou {qtdAcertos} de {perguntas.length} questões</h2>
-          <p>{mensagem}</p>
-          <button onClick={handleModalClose}>Sair</button>
-        </div>
-      </div>
-    );
-  };
-
-
   const enviarRespostas = async () => {
     if (Object.keys(respostas).length >= 0) {
       try {
-        setTempoCongelado(true); // Congela o tempo
+        setTempoCongelado(true);
         setRespostasEnviadas(true);
         const respostasArray = Object.entries(respostas).map(([pergunta_id, resposta_do_usuario]) => ({
           pergunta_id: parseInt(pergunta_id, 10),
@@ -282,7 +275,7 @@ const Questionario: React.FC = () => {
         if (!response.ok) {
           throw new Error(`Erro na requisição: ${response.statusText}`);
         }
-        const data = await response.json(); // Extrai os dados da resposta da API
+        const data = await response.json();
         setQtdAcertos(data.respostasCorretas)
         setShowModal(true);
       } catch (error) {
@@ -295,20 +288,23 @@ const Questionario: React.FC = () => {
     setMostrarCampoQuestionario(!mostrarCampoQuestionario);
   };
 
+  const handleEditarPerguntas = (pergunta: Pergunta) => {
+    setPerguntaSelecionada(pergunta);
+    setMostrarCampoEditarPerguntas(true);
+  }
+
+
   const handleSalvarNovoQuestionario = async () => {
     if (
-      novaPergunta.trim() === '' ||
-      letraA.trim() === '' ||
-      letraB.trim() === '' ||
-      letraC.trim() === '' ||
-      letraD.trim() === '' ||
-      respostaCorreta.trim() === ''
+      novaPergunta.trim() === '' || letraA.trim() === '' || letraB.trim() === '' || letraC.trim() === '' || letraD.trim() === '' || respostaCorreta.trim() === ''
     ) {
       alert('Por favor, preencha todos os campos antes de salvar.');
       return;
     }
 
     try {
+      const minutagem = converterParaSegundos(String(minutagemPergunta));
+
       const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/add/pergunta`, {
         method: 'POST',
         headers: {
@@ -322,7 +318,7 @@ const Questionario: React.FC = () => {
           opcao_b: letraB,
           opcao_c: letraC,
           opcao_d: letraD,
-          minutagemPergunta: minutagemPergunta,
+          minutagemPergunta: minutagem,
           resposta_correta: respostaCorreta.toUpperCase(),
         }),
       });
@@ -331,7 +327,6 @@ const Questionario: React.FC = () => {
 
       if (response.ok) {
         setMostrarCampoQuestionario(!mostrarCampoQuestionario);
-        // Reload da página
         window.location.reload();
       } else {
         console.error('Erro ao adicionar pergunta:', data.message);
@@ -341,43 +336,11 @@ const Questionario: React.FC = () => {
     }
   };
 
-  const handlePerguntaClick = (id) => {
-    setEditingPerguntaId(id);
-    setPerguntaId(id); // Define o ID da pergunta que está sendo editada
-  };
 
 
-  const converterParaSegundos = (minutagem) => {
-    // Verificar se a entrada possui o formato "m:ss"
-    const temDoisPontos = minutagem.includes(':');
-  
-    if (temDoisPontos) {
-      // Separar a string em minutos e segundos
-      const partes = minutagem.split(':');
-  
-      // Converter as partes para números inteiros
-      const minutos = parseInt(partes[0], 10);
-      const segundos = parseInt(partes[1], 10);
-  
-      // Calcular o total de segundos
-      const totalSegundos = minutos * 60 + segundos;
-  
-      return totalSegundos;
-    } else {
-      // Se não houver dois pontos, assumir que a entrada é apenas o número de segundos
-      return parseInt(minutagem, 10);
-    }
-  };
-  
-
-
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNovaMinutagem(event.target.value);
   };
-
-  useEffect(() => {
-    console.log(perguntas)
-  }, [perguntas])
 
   const handleSalvarNovaMinutagem = async () => {
     if (perguntaId === null || novaMinutagem.trim() === '') {
@@ -385,7 +348,6 @@ const Questionario: React.FC = () => {
       return;
     }
 
-    // Converter a nova minutagem para segundos totais
     const novaMinutagemSegundos = converterParaSegundos(novaMinutagem);
 
     try {
@@ -396,14 +358,13 @@ const Questionario: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          minutagemPergunta: novaMinutagemSegundos, // Enviar a nova minutagem em segundos
+          minutagemPergunta: novaMinutagemSegundos, 
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Atualizar a minutagem da pergunta no estado local
         setPerguntas((perguntas) => {
           return perguntas.map((pergunta) => {
             if (pergunta.id === perguntaId) {
@@ -413,12 +374,10 @@ const Questionario: React.FC = () => {
           });
         });
 
-        // Ordenar as perguntas pelo índice original
         setPerguntas((perguntas) => {
           return perguntas.slice().sort((a, b) => a.id - b.id);
         });
 
-        // Sai do modo de edição
         setEditingPerguntaId(null);
       } else {
         console.error('Erro ao editar minutagem da pergunta:', data.message);
@@ -431,7 +390,7 @@ const Questionario: React.FC = () => {
   const handleSalvarEditLinkVideo = async () => {
     try {
       const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/conteudos/${conteudoId}/video`, {
-        method: 'PUT', // Alterado para PUT
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -446,7 +405,7 @@ const Questionario: React.FC = () => {
       if (response.ok) {
         alert('Link do vídeo atualizado com sucesso:');
         setEditarLinkVideo(false);
-        window.location.reload(); // Recarregar a página
+        window.location.reload();
 
       } else {
         console.error('Erro ao atualizar link do vídeo:', data.message);
@@ -456,28 +415,89 @@ const Questionario: React.FC = () => {
     }
   };
 
+  const ativarModal = () => {
+    setShowModalComponentePergunta(true);
+  };
 
+  const handleDeletePergunta = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/pergunta/${perguntaSelecionada.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      const data = await response.json();
 
+      if (response.ok) {
+        setShowModalComponentePergunta(false);
+      } else {
+        console.error('Erro ao excluir pergunta:', data.message);
+      }
+    } catch (error) {
+      console.error('Erro ao excluir pergunta:', error);
+    }
+  };
 
-
-
+  const renderizarPerguntas = () => {
+    return (
+      <>
+        <h3>Editar perguntas</h3>
+        {perguntas.map((pergunta, index) => (
+          <div key={pergunta.id} className="pergunta-item">
+            {editingPerguntaId === pergunta.id ? (
+              <div className="edit-container">
+                <input
+                  type="text"
+                  value={novaMinutagem}
+                  onChange={handleInputChange}
+                  className="edit-input"
+                  placeholder={`Tempo para pergunta: ${pergunta.pergunta}`}
+                />
+                <button onClick={handleSalvarNovaMinutagem} className="edit-button">Salvar</button>
+              </div>
+            ) : (
+              <div className="pergunta-content">
+                <span className="pergunta-text">{index + 1}. {pergunta.pergunta}</span>
+                <AiOutlineEdit onClick={() => handleEditarPerguntas(pergunta)} className="edit-icon" />
+                <FaTrash onClick={() => { ativarModal(); setPerguntaSelecionada(pergunta); }} className="edit-icon" />
+              </div>
+            )}
+          </div>
+        ))}
+      </>
+    );
+  };
+  
   return (
     <div className='questionario'>
+      {showModalComponente && (
+        <ModalConfirmacao
+          onClose={() => setShowModalComponente(false)}
+          mensagem={"Tem certeza que deseja iniciar o questionário?"}
+          setQuestionarioAtivado={setQuestionarioAtivado}
+        />
+      )}
       {showModal &&
-        <Modal onClose={() => setShowModal(false)} qtdAcertos={qtdAcertos} />}
+        <ModalFinalizacaoQuestionario onClose={() => setShowModal(false)} qtdAcertos={qtdAcertos} qtdPerguntas={perguntas.length} pontos={pontos} />}
       {!questionarioAtivado ? (
         <div className='ativar-questionario'>
-          <span className='titulo-estudo'>{titulo}</span>
+          <div>
+            <span className='titulo-estudo'>{titulo}</span>
+            <button className='descricaoConteudo' onClick={() => setMostrarDescricaoConteudo(!mostrarDescricaoConteudo)} title="Descrição">
+
+              <FaQuestionCircle className="custom-icon" />
+            </button>
+          </div>
+
           <div className='iniciar-questionario-perguntas'>
 
             <button className='button-ativar' onClick={ativarQuestionario}>
               {videoConteudo ? 'Iniciar questionário com vídeo' : 'Iniciar Questionário'}
             </button>
 
-
-
-            <div className='quantidades-questionario qtd-perguntas'>
+            <div className='quantidades-questionario qtd-perguntas' title='Quantidade de perguntas'>
               <span>{perguntas.length || 0}</span>
             </div>
           </div>
@@ -485,12 +505,21 @@ const Questionario: React.FC = () => {
           <div>
             {user?.tipo_usuario === 'admin' && (
               <>
-                <span>Editar vídeo</span>
-                <button className="button-adicionar-conteudo" onClick={handleEditarLinkVideo}>
-                  <AiOutlineEdit className="icon" />
-                </button>
-              </>
+                {!videoConteudo && (
+                  <>
+                    <span>Adicionar vídeo</span>
+                    <button className="button-adicionar-conteudo" onClick={handleEditarLinkVideo}>
+                      <AiOutlineEdit className="icon" />
+                    </button>
+                  </>
+                )}
 
+                <span>Adicionar nova pergunta</span>
+                <button className="button-adicionar-conteudo" onClick={handleNovoQuestionario}>
+                  <AiOutlinePlus className="icon" />
+                </button>
+                
+              </>
             )}
           </div>
 
@@ -507,21 +536,6 @@ const Questionario: React.FC = () => {
             </div>
 
           )}
-
-          <div>
-            {user?.tipo_usuario === 'admin' && (
-              <>
-                <span>Adicionar nova pergunta</span>
-                <button className="button-adicionar-conteudo" onClick={handleNovoQuestionario}>
-                  <AiOutlinePlus className="icon" />
-                </button>
-              </>
-
-            )}
-          </div>
-
-
-         
 
           {mostrarCampoQuestionario && (
             <div className="novo-questionario-container">
@@ -568,23 +582,22 @@ const Questionario: React.FC = () => {
 
               <input
                 title='Tempo em que a pergunta irá aparecer (segundos)'
-                type="number"
+                type="text"
                 placeholder="Tempo para pergunta aparecer"
                 value={minutagemPergunta}
-                onChange={(e) => setMinutagemPergunta(parseInt(e.target.value))}
+                onChange={(e) => setMinutagemPergunta(e.target.value)}
               />
 
               <button onClick={handleSalvarNovoQuestionario}>Salvar</button>
             </div>
           )}
 
-
           {
-            materiais && materiais.length > 0 && materiais[0].materiais && (
+            !mostrarDescricaoConteudo && materiais && materiais?.length > 0 && (
               <div className='materiais-estudo'>
-                <span className='subtitulos-estudo-questionario'>Materiais indicados para estudo</span>
+                <h2>Materiais para estudo</h2>
                 <ul className='list-materiais'>
-                  {materiais[0].materiais.map((link, linkIndex) => (
+                  {materiais?.map((link, linkIndex) => (
                     <li className='li-materiais' key={linkIndex}>
                       <a href={link} target="_blank" rel="noopener noreferrer">
                         <IoBookOutline className='icone-material' />
@@ -596,36 +609,50 @@ const Questionario: React.FC = () => {
             )
           }
 
-          <div className='feedback-e-instrucoes'>
-            {
-              perguntasErradas.length > 0 ? (
-                <div className='feeback-perguntas'>
-                  <span className='subtitulos-estudo-questionario'>Estude mais sobre</span>
-                  <MdFeedback className='icon-feedback' title='Feedback' />
-                  <ul>
-                    {perguntasErradas.map((pergunta) => (
-                      <li key={pergunta?.id}>{pergunta?.pergunta}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null
-            }
+          {
+            !mostrarDescricaoConteudo &&
+            <div className='feedback-e-instrucoes'>
+              {
+                perguntasErradas.length > 0 ? (
+                  <div className='feeback-perguntas'>
+                    <h2>Feedback</h2>
+                    <span className='text-span'>Estude mais sobre</span>
+                    <MdFeedback className='icon-feedback' title='Feedback baseado na última tentativa' />
+                    <ul>
+                      {perguntasErradas.map((pergunta) => (
+                        <li key={pergunta?.id}>{pergunta?.pergunta}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null
+              }
 
+              <div className='instrucoes-estudo'>
+                <h2>Instruções antes de iniciar o questionário</h2>
+                <ul>
+                  <li>Inicie o questionário quando estiver pronto.</li>
+                  {
+                    videoConteudo && <li>Um vídeo será inicializado e ao longo do tempo terá questões para responder.</li>
+                  }
+                  <li>Leia cada pergunta cuidadosamente antes de responder.</li>
+                  {videoConteudo ? (
+                    <li>Você terá 30 segundos para responder cada pergunta.</li>
+                  ) : (
+                    <li>Você terá 90 segundos para responder cada pergunta.</li>
+                  )}
 
-            <div className='instrucoes-estudo'>
-              <span className='subtitulos-estudo-questionario'>Instruções antes de iniciar o questionário</span>
-              <ul>
-                <li>Inicie o questionário quando estiver pronto.</li>
-                {
-                  videoConteudo && <li>Um vídeo será inicializado e ao longo do tempo terá questões para responder.</li>
-                }
-                <li>Leia cada pergunta cuidadosamente antes de responder.</li>
-                <li>Você terá 90 segundos para responder cada pergunta.</li>
-              </ul>
+                </ul>
+              </div>
             </div>
-          </div>
+          }
 
-
+          {
+            mostrarDescricaoConteudo && (
+              <div className='descricaoConteudo'>
+                <p className='estudoDescription'>{descricao}</p>
+              </div>
+            )
+          }
         </div>
       ) : perguntas.length > 0 ? (
         <>
@@ -640,29 +667,36 @@ const Questionario: React.FC = () => {
 
                 {user?.tipo_usuario === 'admin' && (
                   <div className="perguntas-container">
-                    <h3>Alterar minutagem das perguntas</h3>
-                    {perguntas.map((pergunta, index) => (
-                      <div key={pergunta.id} className="pergunta-item">
-                        {editingPerguntaId === pergunta.id ? (
-                          <div className="edit-container">
-                            <input
-                              type="text"
-                              value={novaMinutagem}
-                              onChange={handleInputChange}
-                              className="edit-input"
-                              placeholder={`Tempo para pergunta: ${pergunta.pergunta}`}
-                            />
-                            <button onClick={handleSalvarNovaMinutagem} className="edit-button">Salvar</button>
-                          </div>
-                        ) : (
-                          <div className="pergunta-content">
-                            <span className="pergunta-text">{index + 1}. {pergunta.pergunta}</span>
-                            <span className="minutagem-text">{pergunta.minutagempergunta} segs</span>
-                            <AiOutlineEdit onClick={() => handlePerguntaClick(pergunta.id)} className="edit-icon" />
-                          </div>
+                    {user?.tipo_usuario === 'admin' &&
+                      <>
+                        {videoConteudo && (
+                          <>
+                            <div className='edit-link-icon'>
+                              <h3>Editar vídeo</h3>
+                              <button className="button-adicionar-conteudo" onClick={handleEditarLinkVideo}>
+                                <AiOutlineEdit className="icon" />
+                              </button>
+                            </div>
+
+                            {editarLinkVideo && (
+                              <div className="novo-questionario-container">
+                                <input
+                                  type="text"
+                                  placeholder="Link do vídeo"
+                                  value={linkVideo}
+                                  onChange={(e) => setLinkVideo(e.target.value)}
+                                />
+                                <button onClick={handleSalvarEditLinkVideo}>Salvar</button>
+                              </div>
+                            )}
+                          </>
                         )}
-                      </div>
-                    ))}
+                      </>
+                    }
+
+                    {renderizarPerguntas()}
+
+
                   </div>)}
 
               </div>
@@ -733,6 +767,8 @@ const Questionario: React.FC = () => {
 
 
                   </form>
+
+                  {user?.tipo_usuario === 'admin' && renderizarPerguntas()}
                 </>
               )
           }
@@ -745,6 +781,20 @@ const Questionario: React.FC = () => {
           </button>
           <h2 className='questinario-title'>Questionário não disponível</h2>
         </div>
+      )}
+
+      {
+        mostrarCampoEditarPerguntas && (
+          <ModalEditarPergunta onClose={() => setMostrarCampoEditarPerguntas(false)} pergunta={perguntaSelecionada} />
+        )
+      }
+
+      {showModalComponentePergunta && (
+        <ModalConfirmacao
+          onClose={() => setShowModalComponentePergunta(false)}
+          mensagem={"Tem certeza que deseja excluir a pergunta?"}
+          onConfirm={handleDeletePergunta}
+        />
       )}
     </div>
   );

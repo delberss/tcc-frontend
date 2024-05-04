@@ -1,0 +1,55 @@
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ajuste o z-index para um valor maior do que o do ModalEditarPergunta */
+  width: 100%;
+  height: 100%;
+}
+
+.modal-componente-content {
+  background: #e1e0e0; 
+  padding: 20px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.modal-componente-buttons {
+  display: flex;
+}
+
+.modal-componente-buttons button {
+  margin: 4px; 
+}
+
+.modal-componente-buttons button:hover {
+  background-color: #0462c5;
+}
+
+.modal-componente-content p {
+  margin-bottom: 10px;
+}
+
+.modal-componente-content .custom-file-input,
+.modal-componente-content button {
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  padding: 8px 16px;
+  margin-bottom: 10px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-componente-content .custom-file-input input {
+  display: none;
+}

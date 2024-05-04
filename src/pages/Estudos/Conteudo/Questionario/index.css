@@ -149,31 +149,6 @@
   background-color: #218838; /* Cor de fundo do botão ao passar o mouse */
 }
 
-
-/* Adicione isso ao seu arquivo de estilo CSS ou ao seu componente se estiver usando estilos em linha */
-.instrucoes-estudo,
-.materiais-estudo{
-  margin: 10px auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-
-.instrucoes-estudo,
-.feeback-perguntas{
-  width: 90%;
-}
-
-.instrucoes-estudo ul {
-  list-style-type: disc; /* Utiliza uma bolinha como marcador */
-  padding-left: 20px; /* Ajusta o espaço entre a bolinha e o texto */
-}
-
-.instrucoes-estudo li {
-  margin-bottom: 10px; /* Ajusta o espaçamento entre os itens da lista */
-}
-
 .materiais-estudo ul{
   list-style-type: disc; /* Utiliza uma bolinha como marcador */
   padding-left: 20px; /* Ajusta o espaço entre a bolinha e o texto */
@@ -193,10 +168,15 @@
   text-transform: capitalize;
 }
 
-.subtitulos-estudo-questionario{
-  font-weight: bold;
-  font-size: 1.2rem;
+.descricaoConteudo{
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  margin-left: 4px;
+  padding: 0;
+  font-size: 1rem;
 }
+
 
 .divisao-instrucao-material{
   display: flex;
@@ -276,22 +256,52 @@
   color: white;
 }
 
+
+/*================= FEEDBACK E INSTRUÇÕES ==========*/
+
 .feedback-e-instrucoes{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
+  justify-content: space-between;
+  align-items: start;
+  margin: 0 auto;
+  width: 70vw;
+
+}
+
+.feeback-perguntas ul,
+.instrucoes-estudo ul {
+  list-style-type: disc; 
+}
+
+.instrucoes-estudo li {
+  margin-bottom: 10px; 
 }
 
 
-.feedback-e-instrucoes ul{
-  padding: 0;
+.feeback-perguntas{
+  width: 50%;
+  padding: 16px;
+}
+
+
+.text-span{
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .icon-feedback{
   margin-left: 4px;
   font-size: 1.4rem;
 }
+
+
+.instrucoes-estudo{
+  width: 50%;
+  padding: 16px;
+  margin: auto;
+}
+
+/* ======================== */
 
 .modal {
   position: fixed;
@@ -416,4 +426,15 @@ teste de colocar o video
 
 .edit-icon {
   cursor: pointer;
+  font-size: 1.4rem;
+  border-radius: 5px;
+  border: 1px solid 0056b3;
+  background-color: rgb(21, 54, 63);
+  padding: 4px;
+  margin: 4px;
+}
+
+.edit-link-icon{
+  display: flex;
+  align-items: center;
 }
