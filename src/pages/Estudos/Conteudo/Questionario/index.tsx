@@ -21,7 +21,7 @@ interface Pergunta {
   opcao_b: string;
   opcao_c: string;
   opcao_d: string;
-  resposta_correta: string; 
+  resposta_correta: string;
   minutagempergunta: number;
 }
 
@@ -49,7 +49,7 @@ const Questionario: React.FC = () => {
   const [respostasEnviadas, setRespostasEnviadas] = useState(false);
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
   const [materiais, setMateriais] = useState<string[]>([]);
-  const [videoConteudo, setVideoConteudo] = useState<string>(""); 
+  const [videoConteudo, setVideoConteudo] = useState<string>("");
   const [linkVideo, setLinkVideo] = useState<string>('');
   const [editarLinkVideo, setEditarLinkVideo] = useState<boolean>(false);
   const [mostrarDescricaoConteudo, setMostrarDescricaoConteudo] = useState(false);
@@ -103,7 +103,7 @@ const Questionario: React.FC = () => {
 
 
   const ativarQuestionario = () => {
-    setShowModalComponente(true); 
+    setShowModalComponente(true);
   };
 
   const handleEditarLinkVideo = () => {
@@ -128,7 +128,7 @@ const Questionario: React.FC = () => {
         }
 
         const data = await response.json();
-        data.sort((a: Pergunta, b: Pergunta) => a.id - b.id);
+        data.sort((a: Pergunta, b: Pergunta) => a.minutagempergunta - b.minutagempergunta);
         setPerguntas(data);
 
         const minutagemPerguntaArray = data.map((pergunta: Pergunta) => pergunta.minutagempergunta);
@@ -142,6 +142,12 @@ const Questionario: React.FC = () => {
     fetchPerguntas();
 
   }, [conteudoId]);
+  
+
+  useEffect(() => {
+    console.log('PERGUNTAS')
+    console.log(perguntas)
+  },[perguntas])
 
 
   const fetchMateriais = async () => {
@@ -302,6 +308,12 @@ const Questionario: React.FC = () => {
       return;
     }
 
+    const respostaCorretaUpperCase = respostaCorreta.toUpperCase();
+    if (!['A', 'B', 'C', 'D'].includes(respostaCorretaUpperCase)) {
+      alert('A resposta correta deve ser uma das letras A, B, C ou D.');
+      return;
+    }
+
     try {
       const minutagem = converterParaSegundos(String(minutagemPergunta));
 
@@ -358,7 +370,7 @@ const Questionario: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          minutagemPergunta: novaMinutagemSegundos, 
+          minutagemPergunta: novaMinutagemSegundos,
         }),
       });
 
@@ -469,7 +481,7 @@ const Questionario: React.FC = () => {
       </>
     );
   };
-  
+
   return (
     <div className='questionario'>
       {showModalComponente && (
@@ -518,7 +530,7 @@ const Questionario: React.FC = () => {
                 <button className="button-adicionar-conteudo" onClick={handleNovoQuestionario}>
                   <AiOutlinePlus className="icon" />
                 </button>
-                
+
               </>
             )}
           </div>
@@ -583,7 +595,7 @@ const Questionario: React.FC = () => {
               <input
                 title='Tempo em que a pergunta irá aparecer (segundos)'
                 type="text"
-                placeholder="Tempo para pergunta aparecer"
+                placeholder="Tempo para aparecer. Ex: 0:30 ou 30 (segs)"
                 value={minutagemPergunta}
                 onChange={(e) => setMinutagemPergunta(e.target.value)}
               />

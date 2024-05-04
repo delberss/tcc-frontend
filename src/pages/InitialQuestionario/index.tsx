@@ -6,7 +6,7 @@ import './index.css';
 
 interface FormData {
   respostas: { pergunta_id: number; resposta_do_usuario: string[] }[];
-  userData: { email: string };
+  userData: { email: string, username: string };
 }
 
 interface Question {
@@ -22,7 +22,8 @@ const InitialQuestionario: React.FC = () => {
   const [userData, setUserData] = useState<FormData>({
     respostas: [],
     userData: {
-      email: ''
+      email: '',
+      username: '',
     }
   });
 
@@ -101,7 +102,8 @@ const InitialQuestionario: React.FC = () => {
         const userData = {
           respostas,
           userData: {
-            email: location.state.userData.email
+            email: location.state.userData.email,
+            username: location.state.userData.username
           }
         };
 

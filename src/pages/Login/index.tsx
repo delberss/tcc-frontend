@@ -7,22 +7,22 @@ import SubmitButton from '../../components/SubmitButton';
 import './index.css';
 
 interface FormData {
-  email: string;
+  emailOrUsername: string;
   password: string;
 }
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login, user } = useAuth(); 
+  const { login, user } = useAuth();
 
   const [formData, setFormData] = useState<FormData>({
-    email: '',
+    emailOrUsername: '',
     password: '',
   });
 
   const [formError, setFormError] = useState<string | null>(null);
 
-  const [userType, setUserType] = useState<string>("estudante");
+  const [userType, setUserType] = useState<string>('estudante');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,7 +35,7 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password) {
+    if (!formData.emailOrUsername || !formData.password) {
       setFormError('Por favor, preencha todos os campos');
       return;
     }
@@ -53,22 +53,34 @@ const Login: React.FC = () => {
 
       if (response.status === 200) {
         const { user, token } = await response.json();
+        console.log(user)
+
         login(user, token);
 
-        if (userType.toLocaleLowerCase() === 'estudante' && user.preferenciaEstudo === null ) {
-          navigate('/form-register', { state: { userData: formData } });
+        const nextPageState = {
+          userData: {
+            ...formData,
+            ...(formData.emailOrUsername.includes('@')
+              ? { email: formData.emailOrUsername } // Se contiver '@', atribui como email
+              : { username: formData.emailOrUsername } // Se não contiver '@', atribui como username
+            )
+          },
+        };
+        
+
+        if (userType.toLocaleLowerCase() === 'estudante' && user.preferenciaEstudo === null) {
+          navigate('/form-register', { state: nextPageState });
         } else {
-          navigate('/conquistas');
+          navigate('/conquistas', { state: nextPageState });
         }
       } else {
         const data = await response.json();
 
         if (data.message && data.message.includes('A senha inserida está incorreta.')) {
           setFormError('A senha inserida está incorreta.');
-        } else if(data.message && data.message.includes('Email não existe para esse login')){
+        } else if (data.message && data.message.includes('Email não existe para esse login')) {
           setFormError('Email não existe para esse login');
-        } 
-        else if (data.message && data.message.includes('E-mail não cadastrado.')) {
+        } else if (data.message && data.message.includes('E-mail não cadastrado.')) {
           setFormError('E-mail não cadastrado. Faça o registro.');
         } else {
           console.error('Erro ao enviar o formulário:', response.statusText);
@@ -82,11 +94,9 @@ const Login: React.FC = () => {
   };
 
   const toggleUserType = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); 
-    setUserType(userType === "estudante" ? "admin" : "estudante");
+    e.preventDefault();
+    setUserType(userType === 'estudante' ? 'admin' : 'estudante');
   };
-  
-  
 
   return (
     <div className='container-login'>
@@ -94,32 +104,32 @@ const Login: React.FC = () => {
 
       <form className='form-login' onSubmit={handleSubmit}>
         <FormField
-          label="Email"
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Digite seu email"
-          value={formData.email}
+          label='Email ou Usuário'
+          type='text'
+          name='emailOrUsername'
+          id='emailOrUsername'
+          placeholder='Digite seu email ou usuário'
+          value={formData.emailOrUsername}
           onChange={handleChange}
         />
 
         <FormField
-          label="Senha"
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Digite sua senha"
+          label='Senha'
+          type='password'
+          name='password'
+          id='password'
+          placeholder='Digite sua senha'
           value={formData.password}
           onChange={handleChange}
         />
 
         <ErrorMessage message={formError} />
 
-        <SubmitButton label="Logar" />
+        <SubmitButton label='Logar' />
 
-        <button className={`toggle-button ${userType === "estudante" ? "" : "admin"}`} onClick={toggleUserType}>
-          <span className="text">{userType === "admin" ? "Administrador" : userType}</span>
-          <div className="slider"></div>
+        <button className={`toggle-button ${userType === 'estudante' ? '' : 'admin'}`} onClick={toggleUserType}>
+          <span className='text'>{userType === 'admin' ? 'Administrador' : userType}</span>
+          <div className='slider'></div>
         </button>
 
         <div className='register-from-login'>
