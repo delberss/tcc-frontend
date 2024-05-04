@@ -43,9 +43,6 @@ const Questionario: React.FC = () => {
   let descricao = location.state.descricao;
   let pontos = location.state.pontos;
 
-  let tempomaximo = location.state.tempomaximo;
-
-
   const [respostasEnviadas, setRespostasEnviadas] = useState(false);
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
   const [materiais, setMateriais] = useState<string[]>([]);
@@ -144,12 +141,6 @@ const Questionario: React.FC = () => {
   }, [conteudoId]);
   
 
-  useEffect(() => {
-    console.log('PERGUNTAS')
-    console.log(perguntas)
-  },[perguntas])
-
-
   const fetchMateriais = async () => {
     try {
       const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/materiais/${conteudoId}`);
@@ -206,7 +197,7 @@ const Questionario: React.FC = () => {
         clearInterval(intervalId);
       };
     }
-  }, [tempoCongelado, questionarioAtivado, perguntaAtual, videoPausado]);
+  }, [tempoCongelado, questionarioAtivado, videoPausado]);
 
 
   useEffect(() => {
@@ -226,11 +217,19 @@ const Questionario: React.FC = () => {
           setTempoRestante(90);
         }
         setVideoPausado(false);
-      } else {
-        enviarRespostas();
       }
     }
   }, [tempoRestante, respostas, perguntas, perguntaAtual]);
+
+  // SÓ VAI CHAMAR A API DE RESPOSTAS DEPOIS QUE TODAS PERGUNTAS TIVEREM UMA RESPOSTA (MESMO QUE VAZIO)
+  useEffect(() => {
+    const todasRespondidas = perguntas.every(pergunta => respostas[pergunta.id] !== undefined);
+  
+    if (tempoRestante === 0 && !respostasEnviadas && todasRespondidas) {
+      enviarRespostas();
+    }
+  }, [respostas]);
+  
 
   const handleRespostaChange = (respostaSelecionada: string) => {
     setRespostas((prevRespostas) => ({
