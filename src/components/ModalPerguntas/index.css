@@ -13,46 +13,58 @@
 }
 
 .modal-editar-pergunta-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
+    background-color: #cdd3e2;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Adiciona sombra */
     max-width: 90%;
     width: 600px;
     max-height: 90%;
     overflow-y: auto;
-    color: black;
+    color: #333333;
 }
 
 .modal-editar-pergunta-content h2 {
     margin-top: 0;
+    margin-bottom: 20px; /* Adiciona espaço abaixo do título */
+    font-size: 24px; /* Tamanho de fonte maior */
 }
 
 .modal-editar-pergunta-content input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border-radius: 4px;
+    width: calc(100% - 20px); /* Adiciona um espaço de 20px para o padding */
+    padding: 15px 10px; /* Mais espaço vertical */
+    margin-bottom: 20px;
+    border: 1px solid #cccccc; /* Adiciona borda */
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: rgb(40, 39, 39);
+}
+
+.modal-editar-pergunta-content input:focus {
+    outline: none; /* Remove o contorno ao focar */
+    border-color: #007bff; /* Muda a cor da borda ao focar */
 }
 
 .modal-editar-pergunta-buttons {
-    margin-top: 20px;
+    margin-top: 30px;
     text-align: right;
 }
 
 .modal-editar-pergunta-buttons button {
-    margin-left: 10px;
-    padding: 8px 16px;
+    padding: 12px 24px; /* Mais espaçamento interno */
+    margin: 4px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: #007bff;
-    color: #fff;
+    color: #ffffff;
+    font-size: 16px;
     cursor: pointer;
+    transition: background-color 0.3s ease; /* Adiciona transição suave */
 }
 
 .modal-editar-pergunta-buttons button:hover {
     background-color: #0056b3;
 }
-
 
 .pergunta-header {
     display: flex;
@@ -60,10 +72,8 @@
     align-items: center;
 }
 
-.delete-icon {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: red;
+.pergunta-item h2,
+.pergunta-item h3{
+    margin: 0;
+    text-transform: uppercase;
 }
-

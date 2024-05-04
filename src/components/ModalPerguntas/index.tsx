@@ -41,7 +41,7 @@ const ModalEditarPergunta: React.FC<ModalProps> = ({ onClose, pergunta, onSave }
 
         try {
             const minutagem = converterParaSegundos(String(editedPergunta.minutagempergunta));
-            
+
             const requestBody: any = {
                 pergunta: editedPergunta.pergunta,
                 opcao_a: editedPergunta.opcao_a,
@@ -80,13 +80,13 @@ const ModalEditarPergunta: React.FC<ModalProps> = ({ onClose, pergunta, onSave }
 
     return (
         <>
-           
+
 
             <div className="modal-editar-pergunta">
                 <div className="modal-editar-pergunta-content">
                     <div key={pergunta.id} className="pergunta-item">
                         <div className="pergunta-header">
-                            <h2>Pergunta:</h2>
+                            <h2>Pergunta</h2>
                         </div>
                         <input
                             type="text"
@@ -94,48 +94,67 @@ const ModalEditarPergunta: React.FC<ModalProps> = ({ onClose, pergunta, onSave }
                             onChange={(e) => handleChange(e, 'pergunta')}
                             placeholder="Pergunta"
                         />
-                        <h3>Alternativa A:</h3>
-                        <input
-                            type="text"
-                            value={editedPergunta.opcao_a}
-                            onChange={(e) => handleChange(e, 'opcao_a')}
-                            placeholder="Alternativa A"
-                        />
-                        <h3>Alternativa B:</h3>
-                        <input
-                            type="text"
-                            value={editedPergunta.opcao_b}
-                            onChange={(e) => handleChange(e, 'opcao_b')}
-                            placeholder="Alternativa B"
-                        />
-                        <h3>Alternativa C:</h3>
-                        <input
-                            type="text"
-                            value={editedPergunta.opcao_c}
-                            onChange={(e) => handleChange(e, 'opcao_c')}
-                            placeholder="Alternativa C"
-                        />
-                        <h3>Alternativa D:</h3>
-                        <input
-                            type="text"
-                            value={editedPergunta.opcao_d}
-                            onChange={(e) => handleChange(e, 'opcao_d')}
-                            placeholder="Alternativa D"
-                        />
-                        <h3>Resposta Correta:</h3>
-                        <input
-                            type="text"
-                            value={editedPergunta.resposta_correta || ''}
-                            onChange={(e) => handleChange(e, 'resposta_correta')}
-                            placeholder="Resposta Correta (A, B, C ou D)"
-                        />
-                        <h3>Minutagem:</h3>
-                        <input
-                            type="text"
-                            value={editedPergunta.minutagempergunta}
-                            onChange={(e) => handleChange(e, 'minutagempergunta')}
-                            placeholder="Minutagem"
-                        />
+
+                        <div className='h3-input'>
+                            <h3>A)</h3>
+                            <input
+                                type="text"
+                                value={editedPergunta.opcao_a}
+                                onChange={(e) => handleChange(e, 'opcao_a')}
+                                placeholder="Alternativa A"
+                            />
+                        </div>
+
+                        <div className='h3-input'>
+                            <h3>B)</h3>
+                            <input
+                                type="text"
+                                value={editedPergunta.opcao_b}
+                                onChange={(e) => handleChange(e, 'opcao_b')}
+                                placeholder="Alternativa B"
+                            />
+                        </div>
+
+                        <div className='h3-input'>
+                            <h3>C)</h3>
+                            <input
+                                type="text"
+                                value={editedPergunta.opcao_c}
+                                onChange={(e) => handleChange(e, 'opcao_c')}
+                                placeholder="Alternativa C"
+                            />
+                        </div>
+
+                        <div className='h3-input'>
+                            <h3>D)</h3>
+                            <input
+                                type="text"
+                                value={editedPergunta.opcao_d}
+                                onChange={(e) => handleChange(e, 'opcao_d')}
+                                placeholder="Alternativa D"
+                            />
+                        </div>
+
+                        <div className='h3-input'>
+                            <h3>Resposta Correta</h3>
+                            <input
+                                type="text"
+                                value={editedPergunta.resposta_correta || ''}
+                                onChange={(e) => handleChange(e, 'resposta_correta')}
+                                placeholder="Resposta Correta (A, B, C ou D)"
+                            />
+                        </div>
+
+                        <div className='h3-input'>
+                            <h3>Minutagem</h3>
+                            <input
+                                type="text"
+                                value={editedPergunta.minutagempergunta}
+                                onChange={(e) => handleChange(e, 'minutagempergunta')}
+                                placeholder="Minutagem"
+                            />
+                        </div>
+
                     </div>
                     <div className="modal-editar-pergunta-buttons">
                         <button onClick={handleSalvarPerguntaEditada}>Salvar</button>
