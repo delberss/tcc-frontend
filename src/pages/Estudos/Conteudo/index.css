@@ -108,6 +108,7 @@
   margin: 20px auto;
   padding: 0 20px;
   text-align: center;
+  font-size: 1.2rem;
 }
 
 .estudoDescription::first-letter {
@@ -145,9 +146,7 @@
   justify-content: center;
 }
 
-.estudoRoadMap{
-  color: #3698d4;
-}
+
 
 
 .button-adicionar-conteudo {
@@ -202,4 +201,23 @@
 
 .novo-conteudo-container button:hover {
   background-color: #0056b3;
+}
+
+
+.rocket-link{
+  font-size: 4rem;
+  color: white;
+  cursor: pointer;
+  transition: font-size 0.9s ease; /* Transição suave de tamanho da fonte */
+}
+
+.rocket-link:hover {
+  color: rgb(72, 111, 121);
+  font-size: 4.5rem; /* Tamanho maior no hover */
+}
+
+
+.estudoRoadMap{
+  color: rgb(72, 111, 121);
+  cursor: pointer;
 }

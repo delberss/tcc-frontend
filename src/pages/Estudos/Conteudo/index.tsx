@@ -10,6 +10,11 @@ import { } from 'react-icons/fa';
 import { getButtonStyleByType, getButtonStyle } from '../../../../color-estudos';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { FaLock } from 'react-icons/fa';
+import { IoRocket } from "react-icons/io5";
+
+interface RocketLinkProps {
+  href: string;
+}
 
 interface Conteudo {
   id: number;
@@ -32,6 +37,7 @@ const Conteudo: React.FC = () => {
   const [novoConteudoNome, setNovoConteudoNome] = useState<string>('');
   const [novoConteudoDescricao, setNovoConteudoDescricao] = useState<string>('');
   const [novoConteudoPontos, setNovoConteudoPontos] = useState<number>(0);
+  const [linkVideo, setLinkVideo] = useState<string>('');
   const [novoConteudoMateriais, setNovoConteudoMateriais] = useState<string>('');
   const [mostrarCampoConteudo, setMostrarCampoConteudo] = useState<boolean>(false);
 
@@ -43,12 +49,12 @@ const Conteudo: React.FC = () => {
 
   useEffect(() => {
     if (!user) {
-        const storedUser = localStorage.getItem('user');
-        if (!storedUser) {
-            navigate('/login');
-        }
+      const storedUser = localStorage.getItem('user');
+      if (!storedUser) {
+        navigate('/login');
+      }
     }
-}, [user, navigate]);
+  }, [user, navigate]);
 
 
   const fetchData = async (url: string) => {
@@ -175,12 +181,15 @@ const Conteudo: React.FC = () => {
     fetchConclusoes();
   }, [conteudos, token]);
 
-  const abrirQuestionario = (conteudoId: number, titulo: string) => {
+  const abrirQuestionario = (conteudoId: number, titulo: string, descricao: string,pontos: number, tempomaximo: number) => {
     setConteudoSelecionado(conteudoId);
     navigate(`/estudos/${tipo}/${conteudoId}`, {
       state: {
         conteudoId: conteudoId,
         titulo: titulo,
+        descricao: descricao,
+        pontos: pontos,
+        tempomaximo: tempomaximo,
       }
     });
   };
@@ -209,7 +218,8 @@ const Conteudo: React.FC = () => {
           descricao: novoConteudoDescricao,
           estudo_id: estudoId,
           pontos: novoConteudoPontos,
-          materiais: materiaisJSON
+          materiais: materiaisJSON,
+          linkVideo: linkVideo,
         }),
       });
 
@@ -223,6 +233,8 @@ const Conteudo: React.FC = () => {
       setNovoConteudoDescricao('');
       setNovoConteudoPontos(0);
       setNovoConteudoMateriais('');
+      setLinkVideo('');
+
 
       setConteudos([...conteudos, data]);
 
@@ -238,22 +250,32 @@ const Conteudo: React.FC = () => {
     const liElement = document.querySelector(`.item-${index}`);
 
     if (liElement) {
-        const isNonClickable = liElement.classList.contains('non-clickable');
-        
-        return !isNonClickable ? (
-            <div className='quantidades no-cursor'>
-                <span>{quantidadeAcertos?.[conteudo.id] || 0}</span>
-                <span>/</span>
-                <span>{quantidadePerguntas?.[conteudo.id] || 0}</span>
-            </div>
-        ) : (
-          <FaLock />
-        );
+      const isNonClickable = liElement.classList.contains('non-clickable');
+
+      return !isNonClickable ? (
+        <div className='quantidades no-cursor'>
+          <span>{quantidadeAcertos?.[conteudo.id] || 0}</span>
+          <span>/</span>
+          <span>{quantidadePerguntas?.[conteudo.id] || 0}</span>
+        </div>
+      ) : (
+        <FaLock />
+      );
     }
-}
+  }
 
 
 
+
+  const RocketLink: React.FC<RocketLinkProps> = ({ href }) => {
+    const handleClick = () => {
+      window.open(href, '_blank');
+    };
+
+    return (
+      <IoRocket className='rocket-link' onClick={handleClick} />
+    );
+  };
 
   return user ? (
     <div className={`container-estudos-generico`}>
@@ -286,7 +308,16 @@ const Conteudo: React.FC = () => {
             onChange={(e) => setNovoConteudoDescricao(e.target.value)}
             style={{ width: '95%', padding: '10px', marginBottom: '10px', resize: 'none' }}
           />
+
           <input
+            type="text"
+            placeholder="Link do vídeo"
+            value={linkVideo}
+            onChange={(e) => setLinkVideo(e.target.value)}
+          />
+
+          <input
+            title='Pontos'
             type="number"
             placeholder="Pontos"
             value={novoConteudoPontos}
@@ -299,6 +330,7 @@ const Conteudo: React.FC = () => {
             value={novoConteudoMateriais}
             onChange={(e) => setNovoConteudoMateriais(e.target.value)}
           />
+
           <button onClick={handleSalvarNovoConteudo}>Salvar</button>
         </div>
       )}
@@ -307,7 +339,7 @@ const Conteudo: React.FC = () => {
         <ul className='conteudos-list'>
           {conteudos.map((conteudo, index) => (
             <li
-              onClick={!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo) : undefined}
+              onClick={!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo, conteudo.descricao, conteudo.pontos, conteudo.tempomaximo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
               className={`item-${index} conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ?
@@ -338,8 +370,9 @@ const Conteudo: React.FC = () => {
       ) : (
         <div className='infosEstudo'>
           <p className='estudoDescription'>{estudo.descricao}</p>
+          <RocketLink href={estudo.link} />
           <a className='estudoRoadMap' href={estudo.link} target='_blank'>
-            Roadmap: {estudo.link}
+            Roadmap
           </a>
         </div>
       )}

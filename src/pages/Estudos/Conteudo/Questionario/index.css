@@ -149,23 +149,6 @@
   background-color: #218838; /* Cor de fundo do botão ao passar o mouse */
 }
 
-
-/* Adicione isso ao seu arquivo de estilo CSS ou ao seu componente se estiver usando estilos em linha */
-.instrucoes-estudo,
-.materiais-estudo{
-  width: 100%;
-  margin: 10px;
-}
-
-.instrucoes-estudo ul {
-  list-style-type: disc; /* Utiliza uma bolinha como marcador */
-  padding-left: 20px; /* Ajusta o espaço entre a bolinha e o texto */
-}
-
-.instrucoes-estudo li {
-  margin-bottom: 10px; /* Ajusta o espaçamento entre os itens da lista */
-}
-
 .materiais-estudo ul{
   list-style-type: disc; /* Utiliza uma bolinha como marcador */
   padding-left: 20px; /* Ajusta o espaço entre a bolinha e o texto */
@@ -185,10 +168,15 @@
   text-transform: capitalize;
 }
 
-.subtitulos-estudo-questionario{
-  font-weight: bold;
-  font-size: 1.2rem;
+.descricaoConteudo{
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  margin-left: 4px;
+  padding: 0;
+  font-size: 1rem;
 }
+
 
 .divisao-instrucao-material{
   display: flex;
@@ -242,8 +230,211 @@
   justify-content: center;
   width: 30px;
   height: 30px;
-  background-color: #ffffffc4;
+  background-color: #28a745;
   border-radius: 50%;
   margin-right: 10px;
-  color: #000;
+  color: white;
+}
+
+.list-materiais{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+
+.li-materiais{
+  list-style: none;
+  margin: 0 12px
+}
+
+.icone-material{
+  font-size: 1.8rem;
+  transition: font-size 0.9s ease; 
+}
+.icone-material:hover{
+  color: white;
+}
+
+
+/*================= FEEDBACK E INSTRUÇÕES ==========*/
+
+.feedback-e-instrucoes{
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin: 0 auto;
+  width: 70vw;
+
+}
+
+.feeback-perguntas ul,
+.instrucoes-estudo ul {
+  list-style-type: disc; 
+}
+
+.instrucoes-estudo li {
+  margin-bottom: 10px; 
+}
+
+
+.feeback-perguntas{
+  width: 50%;
+  padding: 16px;
+}
+
+
+.text-span{
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.icon-feedback{
+  margin-left: 4px;
+  font-size: 1.4rem;
+}
+
+
+.instrucoes-estudo{
+  width: 50%;
+  padding: 16px;
+  margin: auto;
+}
+
+/* ======================== */
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.modal-content h2{
+  margin-top: 0px;
+}
+
+.modal-content button {
+  padding: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 50%;
+  margin: 12px auto 0;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+
+/* 
+teste de colocar o video
+*/
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+}
+
+.video-container {
+  width: 70%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+}
+
+.questionario-off {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.button-voltar {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+
+.perguntas-container {
+  display: flex;
+  flex-direction: column;
+  width: 20%; /* Ajuste conforme necessário */
+  margin-right: 12px; /* Espaçamento entre o vídeo e as perguntas */
+}
+
+.pergunta-item {
+  margin-bottom: 10px; /* Espaçamento entre as perguntas */
+}
+
+.edit-container {
+  display: flex;
+  align-items: center;
+}
+
+.edit-input {
+  flex: 1;
+  margin-right: 10px; /* Espaçamento entre o campo de entrada e o botão */
+}
+
+.edit-button {
+  background-color: #007bff; /* Cor do botão */
+  color: #fff; /* Cor do texto do botão */
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.pergunta-content {
+  display: flex;
+  align-items: center;
+}
+
+.pergunta-text {
+  flex: 1;
+}
+
+.minutagem-text {
+  margin-right: 10px; /* Espaçamento entre a pergunta e a minutagem */
+}
+
+.edit-icon {
+  cursor: pointer;
+  font-size: 1.4rem;
+  border-radius: 5px;
+  border: 1px solid 0056b3;
+  background-color: rgb(21, 54, 63);
+  padding: 4px;
+  margin: 4px;
+}
+
+.edit-link-icon{
+  display: flex;
+  align-items: center;
 }

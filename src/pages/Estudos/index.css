@@ -28,6 +28,10 @@
 
   }
 
+  .preferencias-estudos{
+    display: flex;
+  }
+
   .estudos-title{
     text-align: center;
     margin-top: 20px;
@@ -114,15 +118,26 @@
   font-size: 1.2rem;
 }
 
-.exibirSelecionado{
-  background-color: rgb(40, 82, 94);
-}
 
 .todos-indicados{
+  display: flex;
   margin: 0;
   padding: 0;
 }
 
 .todos-indicados button {
   margin: 8px;
+  width: 150px;
+  font-weight: 700;
+  background-color: rgb(34, 64, 78);
+
+  transition: background-color 0.8s ease, color 0.8s ease;
+}
+
+.todos-indicados button:hover{
+  background-color: #012f60;
+}
+
+.exibirSelecionado{
+  background-color: #0056b3 !important;
 }
