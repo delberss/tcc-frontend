@@ -97,8 +97,6 @@ const InitialQuestionario: React.FC = () => {
           resposta_do_usuario
         }));
 
-        console.log(respostas)
-
         const userData = {
           respostas,
           userData: {
