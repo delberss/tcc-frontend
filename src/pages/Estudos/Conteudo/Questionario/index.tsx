@@ -201,7 +201,7 @@ const Questionario: React.FC = () => {
 
 
   useEffect(() => {
-    if (!respostasEnviadas && tempoRestante === 0) {
+    if (questionarioAtivado && !respostasEnviadas && tempoRestante === 0) {
       if (!respostas[perguntas[perguntaAtual].id]) {
         setRespostas((prevRespostas) => ({
           ...prevRespostas,
@@ -224,11 +224,12 @@ const Questionario: React.FC = () => {
   // SÓ VAI CHAMAR A API DE RESPOSTAS DEPOIS QUE TODAS PERGUNTAS TIVEREM UMA RESPOSTA (MESMO QUE VAZIO)
   useEffect(() => {
     const todasRespondidas = perguntas.every(pergunta => respostas[pergunta.id] !== undefined);
-  
-    if (tempoRestante === 0 && !respostasEnviadas && todasRespondidas) {
+    
+    if (questionarioAtivado && tempoRestante === 0 && !respostasEnviadas && todasRespondidas) {
       enviarRespostas();
     }
-  }, [respostas]);
+  }, [respostas, tempoRestante, respostasEnviadas, perguntas]);
+  
   
 
   const handleRespostaChange = (respostaSelecionada: string) => {
