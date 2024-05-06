@@ -8,15 +8,22 @@ import { useAuth } from '../../AuthContext';
 interface PreferenciaEstudo {
   id: number;
   nome: string;
+  linguagens: string[]; // Defina a propriedade 'linguagens' como um array de strings
 }
+
 
 const Estudos: React.FC = () => {
   const { user } = useAuth();
 
   const navigate = useNavigate();
   const [tiposDeEstudo, setTiposDeEstudo] = useState<string[]>([]);
+  const [estudos, setEstudos] = useState([]);
+
   const [novoEstudoNome, setNovoEstudoNome] = useState<string>(''); // Estado para armazenar o nome do novo estudo
   const [novoEstudoDescricao, setNovoEstudoDescricao] = useState<string>(''); // Estado para armazenar o nome do novo estudo
+  
+  const [novoEstudoLinguagens, setNovoEstudoLinguagens] = useState<string>(''); // Estado para armazenar o nome do novo estudo
+
   const [novoEstudoLink, setNovoEstudoLink] = useState<string>(''); // Estado para armazenar o nome do novo estudo
 
   const [mostrarCampoNovoEstudo, setMostrarCampoNovoEstudo] = useState<boolean>(false); // Estado para controlar a exibição do campo de novo estudo
@@ -24,6 +31,9 @@ const Estudos: React.FC = () => {
   const [informacoesEstudo, setInformacoesEstudo] = useState<string[]>([]);
   const [exibirTodosEstudos, setExibirTodosEstudos] = useState(user?.tipo_usuario === 'admin' ? true : false);
   const [preferenciaEstudo, setPreferenciaEstudo] = useState<PreferenciaEstudo[] | null>(null);
+
+  const [termoBusca, setTermoBusca] = useState<string>('');
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,7 +61,9 @@ const Estudos: React.FC = () => {
       try {
         const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/estudos`);
         const data = await response.json();
+        const estudosData = data.map(({ id, nome, linguagens }: { id: number, nome: string, linguagens: string[] }) => ({ id, nome, linguagens }));
 
+        setEstudos(estudosData);
         const tipos = data.map((estudo: any) => estudo.nome);
         setTiposDeEstudo(tipos);
       } catch (error) {
@@ -70,11 +82,15 @@ const Estudos: React.FC = () => {
     if (
       novoEstudoNome.trim() === '' ||
       novoEstudoDescricao.trim() === '' ||
+      novoEstudoLinguagens.trim() === '' ||
       novoEstudoLink.trim() === '' // Remova a vírgula extra aqui
     ) {
       alert('Por favor, preencha todos os campos antes de salvar.');
       return;
     }
+
+    const linguagensArray = novoEstudoLinguagens.split(",").map(linguagem => linguagem.trim()); // Convertendo a string de linguagens em um array
+
 
     try {
       const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/adicionarEstudo`, {
@@ -85,12 +101,14 @@ const Estudos: React.FC = () => {
         body: JSON.stringify({
           nome: novoEstudoNome,
           descricao: novoEstudoDescricao,
+          linguagens: linguagensArray,
           link: novoEstudoLink
         }),
       });
 
       if (response.ok) {
         setTiposDeEstudo([...tiposDeEstudo, novoEstudoNome]);
+        window.location.reload();
       } else {
         if (response.status === 400) {
           alert('Este estudo já existe');
@@ -113,6 +131,11 @@ const Estudos: React.FC = () => {
       handleSalvarNovoEstudo();
     }
   };
+
+  const handleBuscaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTermoBusca(event.target.value);
+  };
+
 
 
   return (
@@ -153,6 +176,14 @@ const Estudos: React.FC = () => {
 
           <input
             type="text"
+            placeholder="Digite as linguagens. Ex: Python, Java"
+            value={novoEstudoLinguagens}
+            onChange={(e) => setNovoEstudoLinguagens(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+
+          <input
+            type="text"
             placeholder="Digite o link de roadmap"
             value={novoEstudoLink}
             onChange={(e) => setNovoEstudoLink(e.target.value)}
@@ -161,33 +192,52 @@ const Estudos: React.FC = () => {
           <button onClick={handleSalvarNovoEstudo}>Salvar</button>
         </div>
       )}
+
+      <div className='termoBuscaEstudo'>
+        <input
+          type="text"
+          placeholder="Buscar por linguagem"
+          value={termoBusca}
+          onChange={handleBuscaChange}
+        />
+      </div>
+
+
       {exibirTodosEstudos ? (
         <div className='container-estudos'>
-          {tiposDeEstudo.map((estudo, index) => (
-            <button
-              key={index}
-              className={`button-${estudo.toLowerCase()} button-estudos`}
-              style={getButtonStyle(estudo)}
-              onClick={() => navigate(`/estudos/${encodeURIComponent(estudo.toLowerCase())}`)}
-            >
-              {estudo}
-            </button>
-          ))}
-        </div>
-      ) : (
-        preferenciaEstudo ? (
-          <div className='container-estudos'>
-            {preferenciaEstudo.map((estudo, index) => (
+          {estudos && estudos.length > 0 && estudos
+            .filter((estudo: any) => termoBusca === '' || (estudo.linguagens && estudo.linguagens.some((linguagem: string) => linguagem.toLowerCase().includes(termoBusca.toLowerCase()))))
+            .map((estudo: any, index: number) => (
               <button
+                key={index}
                 className={`button-${estudo.nome.toLowerCase()} button-estudos`}
                 style={getButtonStyle(estudo.nome)}
                 onClick={() => navigate(`/estudos/${encodeURIComponent(estudo.nome.toLowerCase())}`)}
-                key={index} // Adicione a chave aqui
               >
                 {estudo.nome}
               </button>
             ))}
+        </div>
+
+
+
+      ) : (
+        preferenciaEstudo ? (
+          <div className='container-estudos'>
+            {preferenciaEstudo
+              .filter(estudo => termoBusca === '' || estudo.linguagens.some(linguagem => linguagem.toLowerCase().includes(termoBusca.toLowerCase())))
+              .map((estudo, index) => (
+                <button
+                  className={`button-${estudo.nome.toLowerCase()} button-estudos`}
+                  style={getButtonStyle(estudo.nome)}
+                  onClick={() => navigate(`/estudos/${encodeURIComponent(estudo.nome.toLowerCase())}`)}
+                  key={index}
+                >
+                  {estudo.nome}
+                </button>
+              ))}
           </div>
+
         ) : null // Adicione um retorno nulo se preferenciaEstudo for falso ou vazio
       )}
 

@@ -87,7 +87,7 @@
   justify-content: center;
   margin: 0 auto;
   width: 16%;
-  min-width: 200px;
+  min-width: 316px;
 }
 
 .novo-estudo-container input {
@@ -140,4 +140,17 @@
 
 .exibirSelecionado{
   background-color: #0056b3 !important;
+}
+
+.termoBuscaEstudo{
+  width: 316px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  margin: 8px auto;
+}
+
+.termoBuscaEstudo input:focus {
+  outline: none;
 }
