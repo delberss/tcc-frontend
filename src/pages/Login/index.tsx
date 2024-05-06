@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../AuthContext';
 import FormField from '../../components/FormFieldProps';
 import ErrorMessage from '../../components/ErrorMessage';
@@ -13,12 +13,17 @@ interface FormData {
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login, user } = useAuth();
+  const { login } = useAuth();
+  const location = useLocation();
+
+  const emailRegister = location?.state?.emailRegister;
+
 
   const [formData, setFormData] = useState<FormData>({
-    emailOrUsername: '',
+    emailOrUsername: emailRegister ? emailRegister : '',
     password: '',
   });
+  
 
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -53,7 +58,6 @@ const Login: React.FC = () => {
 
       if (response.status === 200) {
         const { user, token } = await response.json();
-        console.log(user)
 
         login(user, token);
 

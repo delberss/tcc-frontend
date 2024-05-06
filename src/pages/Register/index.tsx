@@ -13,7 +13,6 @@ interface FormData {
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -52,7 +51,11 @@ const Register: React.FC = () => {
 
       if (response.status === 201) {
         alert('Registro realizado com sucesso!')
-        navigate('/login');
+        navigate('/login', {
+          state: {
+            emailRegister: formData.email
+          }
+        });
       } else {
         const data = await response.json();
 
