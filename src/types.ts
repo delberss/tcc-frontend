@@ -7,5 +7,7 @@ export interface User {
     username: string;
     pontuacaoGeral: number;
     tipo_usuario: string;
+    dias_seguidos: number;
+    conclusoes: number;
   }
   

@@ -2,6 +2,7 @@
     text-align: center;
 }
 
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -30,6 +31,7 @@ td span{
 
 th {
     background-color: rgb(19, 92, 113);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: white;
 }
 
@@ -43,7 +45,7 @@ th {
 
 
 .icon-medal{
-    font-size: 2rem;
+    font-size: 2.4rem;
 }
 
 .top-users {
@@ -69,4 +71,9 @@ th {
 
   .current-user-row{
     background-color: rgb(7, 62, 77);
+  }
+
+
+  .position-cell{
+    width: 40%;
   }

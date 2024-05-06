@@ -9,6 +9,7 @@ interface User {
     email: string;
     pontuacao_geral: number;
     tipo_usuario: string;
+    conclusoes: number;
 }
 
 
@@ -47,8 +48,16 @@ const Ranking: React.FC = () => {
     
                     const data: User[] = await response.json();
 
+                    console.log(response)
+
                     const filteredUsers = data.filter(u => u.tipo_usuario === 'estudante');
-                    const sortedUsers = filteredUsers.sort((a, b) => b.pontuacao_geral - a.pontuacao_geral);
+
+                    const sortedUsers = filteredUsers.sort((a, b) => {
+                        if (b.pontuacao_geral !== a.pontuacao_geral) {
+                            return b.pontuacao_geral - a.pontuacao_geral;
+                        }
+                        return b.conclusoes - a.conclusoes;
+                    });
                     setUsers(sortedUsers);
     
                     const currentUserIndex = sortedUsers.findIndex((u) => user && u.email === user?.email);
@@ -61,6 +70,10 @@ const Ranking: React.FC = () => {
             fetchUsers();
         }
     }, [user]);
+    
+    useEffect(() => {
+        console.log(users)
+    },[users])
     
 
     const medals = [
@@ -78,12 +91,13 @@ const Ranking: React.FC = () => {
                         <th>Posição</th>
                         <th>Nome</th>
                         <th>Pontuação</th>
+                        <th title='Quantidade de conquistas na plataforma'>Conquistas</th> {/* Nova coluna */}
                     </tr>
                 </thead>
                 <tbody>
                     {visibleUsers.map((user, index) => (
                         <tr key={index} className={`table-row ${index === (currentUserPosition ?? 0) - 1 ? 'current-user-row' : ''} ${index < 3 ? 'highlighted-row' : ''}`}>
-                        <td>
+                            <td className={`position-cell ${index < 3 ? 'top-users' : ''}`}>
                                 {index < 3 ? (
                                     <span className="medal-icon">{medals[index]}</span>
                                 ) : (
@@ -92,18 +106,20 @@ const Ranking: React.FC = () => {
                             </td>
                             <td className={index < 3 ? 'top-users' : ''}>{user.name}</td>
                             <td className={index < 3 ? 'top-users' : ''}>{user.pontuacao_geral}</td>
+                            <td>{user.conclusoes}</td> {/* Nova coluna */}
                         </tr>
                     ))}
                     {
                     user?.tipo_usuario === 'estudante' && currentUserPosition && currentUserPosition > 20 && (
                         <>
                             <tr className={`table-row ellipsis-row`}>
-                                <td colSpan={3}><span className='ellipsis'>...</span></td>
+                                <td colSpan={4}><span className='ellipsis'>...</span></td> {/* Atualize o colspan para 4 */}
                             </tr>
                             <tr className={`table-row current-user-row`}>
                                 <td><span className='posicao'>{currentUserPosition}</span></td>
                                 <td>{user?.name}</td>
                                 <td>{user?.pontuacaoGeral}</td>
+                                <td>{user?.conclusoes}</td> {/* Nova coluna */}
                             </tr>
                         </>
                     )}
@@ -111,6 +127,7 @@ const Ranking: React.FC = () => {
             </table>
         </div>
     ) : <></>;
+    
 };
 
 export default Ranking;
