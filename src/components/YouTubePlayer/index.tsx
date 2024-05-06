@@ -32,8 +32,6 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoConteudo, conjuntoMi
   useEffect(() => {
     if (!playerRef.current) return;
 
-    console.log(conjuntoMinutagemPergunta);
-
     const videoId = getVideoIdFromUrl(videoConteudo);
 
     if (!videoId) {

@@ -47,11 +47,6 @@ const Estudos: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    console.log('preferencia')
-    console.log(preferenciaEstudo)
-  }, [preferenciaEstudo])
-
-  useEffect(() => {
     const fetchTiposDeEstudo = async () => {
       try {
         const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/estudos`);
