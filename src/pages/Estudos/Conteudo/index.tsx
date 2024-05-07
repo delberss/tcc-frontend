@@ -345,6 +345,8 @@ const Conteudo: React.FC = () => {
               className={`item-${index} conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ?
                 'concluido' : ''} ${conclusoes[conteudo.id - 1] || index == 0 ||
                   user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'}`}
+                  title={conclusoes[conteudo.id - 1] || index == 0 || user?.tipo_usuario === 'admin' ? '' : 'Conteúdo bloqueado'}
+
             >
               <div className='conteudo-detalhes'>
                 <div className='conteudo-info'>

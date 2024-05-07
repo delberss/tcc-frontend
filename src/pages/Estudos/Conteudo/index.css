@@ -84,7 +84,6 @@
   }
 
   .non-clickable {
-    pointer-events: none;
     cursor: default;
     background-color: #383535 !important;
   }
