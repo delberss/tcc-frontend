@@ -176,7 +176,7 @@ const Estudos: React.FC = () => {
 
           <input
             type="text"
-            placeholder="Digite as linguagens. Ex: Python, Java"
+            placeholder="Digite as linguagens/ferramentas. Ex: Python, Java"
             value={novoEstudoLinguagens}
             onChange={(e) => setNovoEstudoLinguagens(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -196,7 +196,7 @@ const Estudos: React.FC = () => {
       <div className='termoBuscaEstudo'>
         <input
           type="text"
-          placeholder="Buscar por linguagem"
+          placeholder="Buscar por linguagem/ferramenta"
           value={termoBusca}
           onChange={handleBuscaChange}
         />
