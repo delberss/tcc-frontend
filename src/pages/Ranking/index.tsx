@@ -9,7 +9,7 @@ interface User {
     email: string;
     pontuacao_geral: number;
     tipo_usuario: string;
-    conclusoes: number;
+    conquistas: number;
 }
 
 
@@ -48,19 +48,11 @@ const Ranking: React.FC = () => {
     
                     const data: User[] = await response.json();
 
-                    console.log(response)
-
                     const filteredUsers = data.filter(u => u.tipo_usuario === 'estudante');
-
-                    const sortedUsers = filteredUsers.sort((a, b) => {
-                        if (b.pontuacao_geral !== a.pontuacao_geral) {
-                            return b.pontuacao_geral - a.pontuacao_geral;
-                        }
-                        return b.conclusoes - a.conclusoes;
-                    });
-                    setUsers(sortedUsers);
+                      setUsers(filteredUsers);
+                      
     
-                    const currentUserIndex = sortedUsers.findIndex((u) => user && u.email === user?.email);
+                    const currentUserIndex = filteredUsers.findIndex((u) => user && u.email === user?.email);
                     setCurrentUserPosition(currentUserIndex + 1); // Adicione 1 porque as posições começam em 1
                 } catch (error) {
                     console.error('Error fetching users:', error);
@@ -70,10 +62,6 @@ const Ranking: React.FC = () => {
             fetchUsers();
         }
     }, [user]);
-    
-    useEffect(() => {
-        console.log(users)
-    },[users])
     
 
     const medals = [
@@ -106,7 +94,7 @@ const Ranking: React.FC = () => {
                             </td>
                             <td className={index < 3 ? 'top-users' : ''}>{user.name}</td>
                             <td className={index < 3 ? 'top-users' : ''}>{user.pontuacao_geral}</td>
-                            <td>{user.conclusoes}</td> {/* Nova coluna */}
+                            <td>{user.conquistas}</td>
                         </tr>
                     ))}
                     {
@@ -119,7 +107,7 @@ const Ranking: React.FC = () => {
                                 <td><span className='posicao'>{currentUserPosition}</span></td>
                                 <td>{user?.name}</td>
                                 <td>{user?.pontuacaoGeral}</td>
-                                <td>{user?.conclusoes}</td> {/* Nova coluna */}
+                                <td>{user?.conquistas}</td> {/* Nova coluna */}
                             </tr>
                         </>
                     )}

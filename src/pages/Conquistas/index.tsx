@@ -12,6 +12,8 @@ import imgConquista6 from '../../assets/6.png'
 import imgConquista7 from '../../assets/7.png'
 import imgConquista8 from '../../assets/8.png'
 import imgConquista9 from '../../assets/9.png'
+import medalha from '../../assets/medalha.png'
+
 import { FaStar } from 'react-icons/fa';
 
 
@@ -65,6 +67,8 @@ const Conquistas: React.FC = () => {
         return imgConquista8;
       case 'Estudo UX e Design':
         return imgConquista9;
+      case 'Medalha':
+        return medalha;
 
       default:
         return '';
@@ -77,7 +81,6 @@ const Conquistas: React.FC = () => {
           // Fetch conquistas do usuário
           const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/conquistas-usuario/${user?.id}`);
           const dataUsuario = await responseUsuario.json();
-
           if (responseUsuario.ok) {
             setConquistasUsuario(dataUsuario.conquistasUsuario);
           } else {

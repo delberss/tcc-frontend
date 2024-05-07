@@ -8,6 +8,6 @@ export interface User {
     pontuacaoGeral: number;
     tipo_usuario: string;
     dias_seguidos: number;
-    conclusoes: number;
+    conquistas: number;
   }
   
