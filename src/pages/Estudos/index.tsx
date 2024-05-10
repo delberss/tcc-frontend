@@ -34,6 +34,16 @@ const Estudos: React.FC = () => {
 
   const [termoBusca, setTermoBusca] = useState<string>('');
 
+  useEffect(() => {
+    if (!user) {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) {
+            navigate('/login');
+        }
+    }
+}, [user, navigate]);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
