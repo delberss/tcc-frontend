@@ -30,6 +30,31 @@ const About: React.FC = () => {
           </li>
         </ul>
       </div>
+
+      <div className='instrucao-uso'>
+        <h2>Instrução de uso - Visão estudante</h2>
+        <iframe 
+          width="560" 
+          height="315" 
+          src="https://www.youtube.com/embed/8XMZvC0HwPA" 
+          title="Instrução de uso - Visão estudante"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowFullScreen
+        ></iframe>
+      </div>
+
+      <div className='instrucao-uso'>
+        <h2>Instrução de uso - Visão professor</h2>
+        <iframe 
+          width="560" 
+          height="315" 
+          src="https://www.youtube.com/embed/3wp1t5FR2eg" 
+          title="Instrução de uso - Visão professor"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowFullScreen
+        ></iframe>
+      </div>
+
     </div>
   );
 };
