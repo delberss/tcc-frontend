@@ -40,7 +40,7 @@ const Home: React.FC = () => {
     if (!user) {
         const storedUser = localStorage.getItem('user');
         if (!storedUser) {
-            navigate('/login');
+            navigate('/sobre');
         }
         else{
           navigate('/conquistas')
