@@ -363,7 +363,7 @@ const Conteudo: React.FC = () => {
               className={`item-${index} conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ?
                 'concluido' : ''} ${conteudoDesbloqueado(conteudo.id) || index == 0 ||
                   user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'}`}
-              title={conteudoDesbloqueado(conteudo.id) || index == 0 || user?.tipo_usuario === 'admin' ? '' : 'Conteúdo bloqueado'}
+              title={conteudoDesbloqueado(conteudo.id) || index == 0 || user?.tipo_usuario === 'admin' ? '' : 'Conteúdo bloqueado. Acerte pelo menos 75% do conteúdo anterior.'}
 
             >
               <div className='conteudo-detalhes'>
