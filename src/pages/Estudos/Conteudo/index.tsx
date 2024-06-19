@@ -277,6 +277,24 @@ const Conteudo: React.FC = () => {
     );
   };
 
+  const conteudoDesbloqueado = (idConteudo: any, index?: number) => {
+    if(conclusoes[idConteudo]){
+      return false;
+    }
+    if(index === 0 || conclusoes[idConteudo-1]){
+      return true;
+    }
+    
+    let qtdPerguntas = quantidadePerguntas?.[idConteudo-1];
+    let qtdAcertos = quantidadeAcertos?.[idConteudo-1];
+
+    if(qtdAcertos === undefined || qtdAcertos === 0 || qtdPerguntas === undefined){
+      return false;
+    }
+
+    return qtdAcertos >= (qtdPerguntas * 0.75);
+  }
+
   return user ? (
     <div className={`container-estudos-generico`}>
       <span className='tipoEstudo' >{tipo.toUpperCase()}</span>
@@ -339,13 +357,13 @@ const Conteudo: React.FC = () => {
         <ul className='conteudos-list'>
           {conteudos.map((conteudo, index) => (
             <li
-              onClick={!conclusoes[conteudo.id] || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo, conteudo.descricao, conteudo.pontos, conteudo.tempomaximo) : undefined}
+              onClick={conteudoDesbloqueado(conteudo.id, index) || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo, conteudo.descricao, conteudo.pontos, conteudo.tempomaximo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
               className={`item-${index} conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ?
-                'concluido' : ''} ${conclusoes[conteudo.id - 1] || index == 0 ||
+                'concluido' : ''} ${conteudoDesbloqueado(conteudo.id) || index == 0 ||
                   user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'}`}
-                  title={conclusoes[conteudo.id - 1] || index == 0 || user?.tipo_usuario === 'admin' ? '' : 'Conteúdo bloqueado'}
+              title={conteudoDesbloqueado(conteudo.id) || index == 0 || user?.tipo_usuario === 'admin' ? '' : 'Conteúdo bloqueado'}
 
             >
               <div className='conteudo-detalhes'>
