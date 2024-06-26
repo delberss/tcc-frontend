@@ -48,7 +48,11 @@ const Questionario: React.FC = () => {
   const [materiais, setMateriais] = useState<string[]>([]);
   const [videoConteudo, setVideoConteudo] = useState<string>("");
   const [linkVideo, setLinkVideo] = useState<string>('');
+  const [linksMateriais, setLinksMateriais] = useState<string>('');
+
   const [editarLinkVideo, setEditarLinkVideo] = useState<boolean>(false);
+  const [adicionarMateriais, setAdicionarMateriais] = useState<boolean>(false);
+
   const [mostrarDescricaoConteudo, setMostrarDescricaoConteudo] = useState(false);
 
 
@@ -106,6 +110,11 @@ const Questionario: React.FC = () => {
   const handleEditarLinkVideo = () => {
     setEditarLinkVideo(!editarLinkVideo);
   };
+
+  const handleAdicionarMateriais = () => {
+    setAdicionarMateriais(!adicionarMateriais);
+  };
+
   useEffect(() => {
     if (!user) {
       const storedUser = localStorage.getItem('user');
@@ -139,7 +148,7 @@ const Questionario: React.FC = () => {
     fetchPerguntas();
 
   }, [conteudoId]);
-  
+
 
   const fetchMateriais = async () => {
     try {
@@ -224,13 +233,13 @@ const Questionario: React.FC = () => {
   // SÓ VAI CHAMAR A API DE RESPOSTAS DEPOIS QUE TODAS PERGUNTAS TIVEREM UMA RESPOSTA (MESMO QUE VAZIO)
   useEffect(() => {
     const todasRespondidas = perguntas.every(pergunta => respostas[pergunta.id] !== undefined);
-    
+
     if (questionarioAtivado && tempoRestante === 0 && !respostasEnviadas && todasRespondidas) {
       enviarRespostas();
     }
   }, [respostas, tempoRestante, respostasEnviadas, perguntas]);
-  
-  
+
+
 
   const handleRespostaChange = (respostaSelecionada: string) => {
     setRespostas((prevRespostas) => ({
@@ -427,6 +436,36 @@ const Questionario: React.FC = () => {
     }
   };
 
+  const handleAdicionaisMateriais = async () => {
+    const materiaisArray = linksMateriais.split(",").map(material => material.trim().replace(/^'|'$/g, ''));
+      const materiaisJSON = JSON.stringify(materiaisArray);
+    try {
+      const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/conteudos/${conteudoId}/materiais`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          materiais: materiaisJSON,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Materiais atualizados com sucesso:');
+        setEditarLinkVideo(false);
+        window.location.reload();
+
+      } else {
+        console.error('Erro ao atualizar link do vídeo:', data.message);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar link do vídeo:', error);
+    }
+  };
+
   const ativarModal = () => {
     setShowModalComponentePergunta(true);
   };
@@ -531,6 +570,11 @@ const Questionario: React.FC = () => {
                   <AiOutlinePlus className="icon" />
                 </button>
 
+                <span>Adicionar materiais</span>
+                <button className="button-adicionar-conteudo" onClick={handleAdicionarMateriais}>
+                  <AiOutlinePlus className="icon" />
+                </button>
+
               </>
             )}
           </div>
@@ -545,6 +589,20 @@ const Questionario: React.FC = () => {
               />
 
               <button onClick={handleSalvarEditLinkVideo}>Salvar</button>
+            </div>
+
+          )}
+
+          {adicionarMateriais && (
+            <div className="novo-questionario-container">
+              <input
+                type="text"
+                placeholder="Links dos materiais"
+                value={linksMateriais}
+                onChange={(e) => setLinksMateriais(e.target.value)}
+              />
+
+              <button onClick={handleAdicionaisMateriais}>Salvar</button>
             </div>
 
           )}
@@ -605,7 +663,7 @@ const Questionario: React.FC = () => {
           )}
 
           {
-            !mostrarDescricaoConteudo && materiais && materiais?.length > 0 && (
+            !mostrarDescricaoConteudo && materiais && materiais?.length > 0 && materiais[0] !== "" && (
               <div className='materiais-estudo'>
                 <h2>Materiais para estudo</h2>
                 <ul className='list-materiais'>
