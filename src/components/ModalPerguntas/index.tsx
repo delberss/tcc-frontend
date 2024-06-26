@@ -20,7 +20,7 @@ interface ModalProps {
     onClose: () => void;
     onDelete?: (id: number) => void;
     onSave?: (pergunta: Pergunta) => void;
-    pergunta: Pergunta; // Adicione esta linha
+    pergunta: Pergunta; 
 }
 
 

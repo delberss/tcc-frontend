@@ -7,8 +7,8 @@ interface YouTubePlayerProps {
   setMomentoVideo: React.Dispatch<React.SetStateAction<number>>;
   momentoVideo: number;
   perguntaAtual: number;
-  videoConteudo: string; // Tipo string para armazenar URLs de vídeos
-  conjuntoMinutagemPergunta: Array<number>; // Especificando que o array contém números inteiros
+  videoConteudo: string; 
+  conjuntoMinutagemPergunta: Array<number>; 
 
 }
 
@@ -43,7 +43,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoConteudo, conjuntoMi
     tag.src = 'https://www.youtube.com/iframe_api';
 
     const firstScriptTag = document.getElementsByTagName('script')[0];
-    if (!firstScriptTag.parentNode) return; // Verifica se parentNode é nulo
+    if (!firstScriptTag.parentNode) return; 
 
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -62,10 +62,10 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoConteudo, conjuntoMi
           fs: 0,
           rel: 0,
           loop: 1,
-          start: 0, // Começa sempre do 0 inicialmente
+          start: 0, 
           autohide: 1,
           showinfo: 0,
-          iv_load_policy: user?.tipo_usuario === 'admin' ? 1 : 0, // Remove anotações
+          iv_load_policy: user?.tipo_usuario === 'admin' ? 1 : 0, 
         },
         events: {
           onReady: onPlayerReady,
@@ -74,16 +74,15 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoConteudo, conjuntoMi
     }
       function onPlayerReady(event: any) {
       event.target.playVideo();
-      event.target.seekTo(momentoVideo || 0); // Define o ponto de partida após o vídeo estar pronto
+      event.target.seekTo(momentoVideo || 0); 
       checkVideoTime();
     }
 
     function checkVideoTime() {
       setInterval(() => {
         if (player && player.getCurrentTime) {
-          const currentTime = Math.floor(player.getCurrentTime()); // Arredonda para o número inteiro mais próximo
+          const currentTime = Math.floor(player.getCurrentTime()); 
           
-          // Verifica se há valores em conjuntoMinutagemPergunta
           if (conjuntoMinutagemPergunta.length > 0) {
             conjuntoMinutagemPergunta.forEach((minutagem, index) => {
               if (currentTime === minutagem && perguntaAtual === index) {
@@ -111,7 +110,6 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ videoConteudo, conjuntoMi
     };
   }, [playerRef, setVideoPausado, setMomentoVideo, momentoVideo, perguntaAtual, videoConteudo]);
 
-  // Define o estilo para o elemento do vídeo para desativar os eventos de clique
   const videoStyle: React.CSSProperties = {};
   if (user?.tipo_usuario !== 'admin') {
     videoStyle.pointerEvents = 'none';

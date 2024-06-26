@@ -1,4 +1,3 @@
-// About.tsx
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -28,6 +27,13 @@ const About: React.FC = () => {
           <li>Frequente a plataforma todos os dias - A estrela na parte superior direito indica
             seu nível de empenho
           </li>
+        </ul>
+      </div>
+
+      <div className='sobre-conteudos'>
+        <h2>Como liberar os próximos conteúdos?</h2>
+        <ul className='lista-sobre-conteudos'>
+          <li>Acerte pelo menos 75% dos questionários</li>
         </ul>
       </div>
 

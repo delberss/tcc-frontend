@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './index.css';
 import { useNavigate } from 'react-router-dom';
 import { getButtonStyle } from '../../../color-estudos';
-import { AiOutlinePlus } from 'react-icons/ai'; // Importando o ícone de adição do React Icons
+import { AiOutlinePlus } from 'react-icons/ai';
 import { useAuth } from '../../AuthContext';
 
 interface PreferenciaEstudo {
   id: number;
   nome: string;
-  linguagens: string[]; // Defina a propriedade 'linguagens' como um array de strings
+  linguagens: string[];
 }
 
 
@@ -19,14 +19,14 @@ const Estudos: React.FC = () => {
   const [tiposDeEstudo, setTiposDeEstudo] = useState<string[]>([]);
   const [estudos, setEstudos] = useState([]);
 
-  const [novoEstudoNome, setNovoEstudoNome] = useState<string>(''); // Estado para armazenar o nome do novo estudo
-  const [novoEstudoDescricao, setNovoEstudoDescricao] = useState<string>(''); // Estado para armazenar o nome do novo estudo
+  const [novoEstudoNome, setNovoEstudoNome] = useState<string>('');
+  const [novoEstudoDescricao, setNovoEstudoDescricao] = useState<string>('');
   
-  const [novoEstudoLinguagens, setNovoEstudoLinguagens] = useState<string>(''); // Estado para armazenar o nome do novo estudo
+  const [novoEstudoLinguagens, setNovoEstudoLinguagens] = useState<string>('');
 
-  const [novoEstudoLink, setNovoEstudoLink] = useState<string>(''); // Estado para armazenar o nome do novo estudo
+  const [novoEstudoLink, setNovoEstudoLink] = useState<string>('');
 
-  const [mostrarCampoNovoEstudo, setMostrarCampoNovoEstudo] = useState<boolean>(false); // Estado para controlar a exibição do campo de novo estudo
+  const [mostrarCampoNovoEstudo, setMostrarCampoNovoEstudo] = useState<boolean>(false); 
 
   const [informacoesEstudo, setInformacoesEstudo] = useState<string[]>([]);
   const [exibirTodosEstudos, setExibirTodosEstudos] = useState(user?.tipo_usuario === 'admin' ? true : false);
@@ -48,12 +48,10 @@ const Estudos: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch preferenciaEstudo do usuário
         const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/user-preference-study/${user?.id}`);
         const dataUsuario = await responseUsuario.json();
 
         if (dataUsuario.success) {
-          // Atualiza o estado com os dados obtidos
           setPreferenciaEstudo(dataUsuario.preferenciaEstudos);
         } else {
           console.error('Erro ao obter preferenciaEstudo:', dataUsuario.message);

@@ -1,4 +1,3 @@
-// About.tsx
 import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import './index.css';
@@ -35,7 +34,6 @@ const Conquistas: React.FC = () => {
         {conquistas.map((conquista, index) => (
           <li key={index} className={`conquista-item ${isConquistaConcluida(conquista) ? "conquista-concluida" : ""}`} title={conquista.descricao}
           >
-            {/* Mapeando a conquista para a imagem correspondente */}
             <img className='imgConquista' src={getImagemConquista(conquista.nome_conquista)} alt="" />
             <strong>{conquista.nome_conquista}</strong>
           </li>
@@ -46,7 +44,6 @@ const Conquistas: React.FC = () => {
     );
   };
 
-  // Função para obter a imagem correta com base no nome da conquista
   const getImagemConquista = (nomeConquista: string): string => {
     switch (nomeConquista) {
       case 'Primeiro conteúdo concluído':
@@ -78,7 +75,6 @@ const Conquistas: React.FC = () => {
     if (user !== null) {
       const fetchData = async () => {
         try {
-          // Fetch conquistas do usuário
           const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/conquistas-usuario/${user?.id}`);
           const dataUsuario = await responseUsuario.json();
           if (responseUsuario.ok) {
@@ -87,7 +83,6 @@ const Conquistas: React.FC = () => {
             console.error('Erro na requisição de conquistas do usuário:', dataUsuario.message);
           }
 
-          // Fetch todas as conquistas
           const responseTodas = await fetch(`${import.meta.env.REACT_APP_API_URL}/conquistas`);
           const dataTodas = await responseTodas.json();
 

@@ -1,5 +1,3 @@
-// ModalConfirmacao.js
-
 import React from 'react';
 import './index.css';
 
@@ -8,8 +6,8 @@ type SetQuestionarioAtivado = React.Dispatch<React.SetStateAction<boolean>>;
 interface ModalProps {
     onClose: () => void;
     mensagem: string;
-    onConfirm?: () => void; // Adicionando propriedade para confirmar a exclusão
-    setQuestionarioAtivado?: SetQuestionarioAtivado; // Adicionando '?' para tornar opcional
+    onConfirm?: () => void; 
+    setQuestionarioAtivado?: SetQuestionarioAtivado; 
 }
 
 const ModalConfirmacao: React.FC<ModalProps> = ({ onClose, mensagem, onConfirm, setQuestionarioAtivado }) => {
@@ -19,7 +17,7 @@ const ModalConfirmacao: React.FC<ModalProps> = ({ onClose, mensagem, onConfirm, 
 
     const handleSimClick = () => {
         if(onConfirm){
-            onConfirm(); // Chamando a função de confirmação quando o usuário clica em "Sim"
+            onConfirm(); 
             window.location.reload();
             onClose();
         }

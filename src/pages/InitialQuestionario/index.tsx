@@ -61,13 +61,11 @@ const InitialQuestionario: React.FC = () => {
   
     setRespostasPorPergunta((prevState) => {
       if (questions[questionId - 1].opcoes.length === 1) {
-        // Se a pergunta tiver apenas uma opção, atualize diretamente
         return {
           ...prevState,
           [questionId]: checked ? [value] : []
         };
       } else {
-        // Se a pergunta tiver múltiplas opções, atualize conforme necessário
         const newSelectedOptions = checked
           ? [...(prevState[questionId] || []), value]
           : (prevState[questionId] || []).filter((option) => option !== value);
@@ -136,9 +134,7 @@ const InitialQuestionario: React.FC = () => {
             <label>{`${question.id}. ${question.text}`}</label>
 
             <div className="radio-options">
-              {/* Verifica se é a terceira pergunta */}
               {question.id === 3 ? (
-                // Se for a terceira pergunta, usa input do tipo radio
                 question.opcoes.map((option) => (
                   <Alternativa
                     key={option}
@@ -150,7 +146,6 @@ const InitialQuestionario: React.FC = () => {
 
                 ))
               ) : (
-                // Se não for a terceira pergunta, usa input do tipo checkbox
                 question.opcoes.map((option) => (
                   <Alternativa
                     key={option}

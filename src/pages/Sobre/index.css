@@ -15,12 +15,14 @@
 }
 
 
-.lista-sobre-pontuacoes{
+.lista-sobre-pontuacoes,
+.lista-sobre-conteudos{
   list-style: none;
 }
 
 .sobre-o-projeto,
-.sobre-pontuacoes
+.sobre-pontuacoes,
+.sobre-conteudos
 {
   max-width: 600px;
   margin: auto;
@@ -31,7 +33,8 @@
   text-align: center;
 }
 
-.sobre-pontuacoes li{
+.sobre-pontuacoes li,
+.lista-sobre-conteudos li{
   list-style: inside;
   text-align: start;
 }
@@ -40,5 +43,5 @@
   color: rgb(7, 62, 77);
   font-size: 1.7rem;
   text-shadow: 0 0 2px #000000;
-  font-weight: 800; /* ou font-weight: bolder; */
+  font-weight: 800; 
 }

@@ -1,4 +1,3 @@
-// Conteudo.tsx
 import React, { useState, useEffect } from 'react';
 import './index.css';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -165,13 +164,12 @@ const Conteudo: React.FC = () => {
           const conclusao = await contudoConcluido(conteudo.id);
           novasConclusoes[conteudo.id] = conclusao;
 
-          // Se o conteúdo não foi concluído, busca as quantidades
           if (!conclusao) {
             await fetchQuantidades(conteudo.id);
           }
         } catch (error) {
           console.error(`Erro ao buscar conclusão e quantidades do conteúdo ${conteudo.id}:`, error);
-          novasConclusoes[conteudo.id] = false; // ou lidar com o erro de outra forma
+          novasConclusoes[conteudo.id] = false; 
         }
       }
 

@@ -1,9 +1,8 @@
-// SubmitButton.tsx
 import React from 'react';
 
 interface SubmitButtonProps {
   label: string;
-  className?: string; // Tornar className opcional
+  className?: string; 
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({ label, className = 'logar' }) => {
