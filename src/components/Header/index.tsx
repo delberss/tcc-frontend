@@ -95,10 +95,13 @@ const Header: React.FC = () => {
       </div>
 
       <div className='user-section'>
-        <div className="star-container" title="Dias seguidos de estudos">
+        {
+          user?.tipo_usuario === 'estudante' &&  <div className="star-container" title="Dias seguidos de estudos">
           <FaStar className="star-icon"/>
           <span className="star-text">{diasSeguidos}</span>
         </div>
+        }
+       
         <UserSection
           isAuthenticated={isAuthenticated}
           user={user}
