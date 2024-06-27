@@ -46,11 +46,11 @@ const Conquistas: React.FC = () => {
 
   const getImagemConquista = (nomeConquista: string): string => {
     switch (nomeConquista) {
-      case 'Primeiro conteúdo concluído':
+      case 'Primeiro conteúdo 100%':
         return imgConquista1;
-      case '5 conteúdos concluídos':
+      case '5 conteúdos 100%':
         return imgConquista2;
-      case '10 conteúdos concluídos':
+      case '10 conteúdos 100%':
         return imgConquista3;
       case 'Estudo Backend':
         return imgConquista4;
