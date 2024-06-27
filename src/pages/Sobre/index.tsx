@@ -33,7 +33,7 @@ const About: React.FC = () => {
       <div className='sobre-conteudos'>
         <h2>Como liberar os próximos conteúdos?</h2>
         <ul className='lista-sobre-conteudos'>
-          <li>Acerte pelo menos 75% dos questionários</li>
+          <li>Acerte pelo menos 60% dos questionários</li>
         </ul>
       </div>
 
