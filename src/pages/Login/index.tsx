@@ -15,18 +15,14 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const location = useLocation();
-
   const emailRegister = location?.state?.emailRegister;
-
 
   const [formData, setFormData] = useState<FormData>({
     emailOrUsername: emailRegister ? emailRegister : '',
     password: '',
   });
-  
 
   const [formError, setFormError] = useState<string | null>(null);
-
   const [userType, setUserType] = useState<string>('estudante');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +49,7 @@ const Login: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...formData, userType }), // Adicionando userType ao corpo da requisição
+        body: JSON.stringify({ ...formData, userType }), // Adiciona userType ao corpo da requisição
       });
 
       if (response.status === 200) {
@@ -65,12 +61,11 @@ const Login: React.FC = () => {
           userData: {
             ...formData,
             ...(formData.emailOrUsername.includes('@')
-              ? { email: formData.emailOrUsername } // Se contiver '@', atribui como email
-              : { username: formData.emailOrUsername } // Se não contiver '@', atribui como username
-            )
+              ? { email: formData.emailOrUsername }
+              : { username: formData.emailOrUsername }
+            ),
           },
         };
-        
 
         if (userType.toLocaleLowerCase() === 'estudante' && user.preferenciaEstudo === null) {
           navigate('/form-register', { state: nextPageState });
@@ -97,16 +92,24 @@ const Login: React.FC = () => {
     }
   };
 
-  const toggleUserType = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setUserType(userType === 'estudante' ? 'admin' : 'estudante');
-  };
-
   return (
     <div className='container-login'>
       <h2>Login</h2>
 
       <form className='form-login' onSubmit={handleSubmit}>
+        <div className='tipoUsuario'>
+          <label htmlFor='userType' style={{ margin: '0px 10px 0px 0px' }}>Tipo de Usuário:</label>
+          <select
+            id='userType'
+            name='userType'
+            value={userType}
+            onChange={(e) => setUserType(e.target.value)}
+          >
+            <option value='estudante'>Estudante</option>
+            <option value='admin'>Administrador</option>
+          </select>
+        </div>
+
         <FormField
           label='Email ou Usuário'
           type='text'
@@ -130,11 +133,6 @@ const Login: React.FC = () => {
         <ErrorMessage message={formError} />
 
         <SubmitButton label='Logar' />
-
-        <button className={`toggle-button ${userType === 'estudante' ? '' : 'admin'}`} onClick={toggleUserType}>
-          <span className='text'>{userType === 'admin' ? 'Administrador' : userType}</span>
-          <div className='slider'></div>
-        </button>
 
         <div className='register-from-login'>
           <span>
