@@ -19,22 +19,27 @@ import { FaStar } from 'react-icons/fa';
 
 const Conquistas: React.FC = () => {
   const { user } = useAuth();
-  const [conquistasUsuario, setConquistasUsuario] = useState<Array<{ nome_conquista: string, descricao: string }>>([]);
-  const [todasConquistas, setTodasConquistas] = useState<Array<{ nome_conquista: string, descricao: string }>>([]);
+  const [conquistasUsuario, setConquistasUsuario] = useState<Array<{ id: number, nome_conquista: string, descricao: string }>>([]);
+  const [todasConquistas, setTodasConquistas] = useState<Array<{ id: number, nome_conquista: string, descricao: string }>>([]);
 
   const isConquistaConcluida = (conquista: { nome_conquista: string }) =>
     conquistasUsuario.some((c) => c.nome_conquista === conquista.nome_conquista);
-
   const renderizarConquistas = (
-    conquistas: Array<{ nome_conquista: string, descricao: string }>,
+    conquistas: Array<{ id: number, nome_conquista: string, descricao: string }>,
     isConquistaConcluida: (conquista: { nome_conquista: string }) => boolean
   ) => {
-    return conquistas.length > 0 ? (
+    // Ordena as conquistas pelo id
+    const conquistasOrdenadas = [...conquistas].sort((a, b) => a.id - b.id);
+
+    return conquistasOrdenadas.length > 0 ? (
       <ul>
-        {conquistas.map((conquista, index) => (
-          <li key={index} className={`conquista-item ${isConquistaConcluida(conquista) ? "conquista-concluida" : ""}`} title={conquista.descricao}
+        {conquistasOrdenadas.map((conquista) => (
+          <li
+            key={conquista.id}
+            className={`conquista-item ${isConquistaConcluida(conquista) ? "conquista-concluida" : ""}`}
+            title={conquista.descricao}
           >
-            <img className='imgConquista' src={getImagemConquista(conquista.nome_conquista)} alt="" />
+            <img className='imgConquista' src={getImagemConquista(conquista.nome_conquista)} alt={conquista.nome_conquista} />
             <strong>{conquista.nome_conquista}</strong>
           </li>
         ))}
@@ -116,12 +121,12 @@ const Conquistas: React.FC = () => {
             <strong>Conquista Pendente</strong>
           </div>
           <div className="star-container" title="Dias seguidos de estudos">
-            
-            <div  className="conquista-legenda">
+
+            <div className="conquista-legenda">
               <FaStar className="star-icon-conquistas" />
               <strong className='text-star-conquista'>Dias seguidos logado</strong>
             </div>
-            
+
           </div>
         </div>
 
