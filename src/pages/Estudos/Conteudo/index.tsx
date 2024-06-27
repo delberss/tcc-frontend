@@ -31,8 +31,7 @@ const Conteudo: React.FC = () => {
   const [mostrarAssuntos, setMostrarAssuntos] = useState(true);
   const [quantidadeAcertos, setQuantidadeAcertos] = useState<Record<number, number>>({});
   const [quantidadePerguntas, setQuantidadePerguntas] = useState<Record<number, number>>({});
-
-
+  const [conteudosConcluidos, setConteudosConcluidos] = useState<number[]>([]);
   const [novoConteudoNome, setNovoConteudoNome] = useState<string>('');
   const [novoConteudoDescricao, setNovoConteudoDescricao] = useState<string>('');
   const [novoConteudoPontos, setNovoConteudoPontos] = useState<number>(0);
@@ -54,6 +53,26 @@ const Conteudo: React.FC = () => {
       }
     }
   }, [user, navigate]);
+
+
+  useEffect(() => {
+    const fetchConclusoes = async () => {
+
+      try {
+        const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/conteudos-concluidos/${user?.id}`);
+        const data = await response.json();
+
+        if (data.success) {
+          setConteudosConcluidos(data.conteudos_completos);
+          console.log(data.conteudos_completos)
+        } 
+      } catch (error) {
+        console.error('Erro ao buscar conclusões:', error);
+      }
+    };
+
+    fetchConclusoes();
+  }, [conclusoes, conteudos, token]);
 
 
   const fetchData = async (url: string) => {
@@ -276,10 +295,8 @@ const Conteudo: React.FC = () => {
   };
 
   const conteudoDesbloqueado = (idConteudo: any, index?: number) => {
-    if(conclusoes[idConteudo]){
-      return false;
-    }
-    if(index === 0 || conclusoes[idConteudo-1]){
+
+    if (index === 0 || conteudosConcluidos.includes(idConteudo - 1)) {
       return true;
     }
     
@@ -290,7 +307,7 @@ const Conteudo: React.FC = () => {
       return false;
     }
 
-    return qtdAcertos >= (qtdPerguntas * 0.75);
+    return qtdAcertos >= (qtdPerguntas * 0.60);
   }
 
   return user ? (
@@ -355,13 +372,13 @@ const Conteudo: React.FC = () => {
         <ul className='conteudos-list'>
           {conteudos.map((conteudo, index) => (
             <li
-              onClick={conteudoDesbloqueado(conteudo.id, index) || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo, conteudo.descricao, conteudo.pontos, conteudo.tempomaximo) : undefined}
+              onClick={index === 0 || conteudoDesbloqueado(conteudo.id, index) || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo, conteudo.descricao, conteudo.pontos, conteudo.tempomaximo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
-              className={`item-${index} conteudo-item ${conclusoes[conteudo.id] && user?.tipo_usuario !== 'admin' ?
+              className={`item-${index} conteudo-item ${conteudosConcluidos[conteudo.id] && user?.tipo_usuario !== 'admin' ?
                 'concluido' : ''} ${conteudoDesbloqueado(conteudo.id) || index == 0 ||
                   user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'}`}
-              title={conteudoDesbloqueado(conteudo.id) || index == 0 || user?.tipo_usuario === 'admin' ? '' : 'Conteúdo bloqueado. Acerte pelo menos 75% do conteúdo anterior.'}
+              title={conteudoDesbloqueado(conteudo.id) || index == 0 || user?.tipo_usuario === 'admin' ? '' : 'Conteúdo bloqueado. Acerte pelo menos 60% do conteúdo anterior.'}
 
             >
               <div className='conteudo-detalhes'>
@@ -374,8 +391,8 @@ const Conteudo: React.FC = () => {
                   </div>
 
                   {conclusoes[conteudo.id] ? (
-                    <div className={`icone-conclusao no-cursor`}>
-                      <FaCheck />
+                    <div className={`icone-conclusao`}>
+                      <span>100%</span>
                     </div>
                   ) : (
                     renderizaPerguntasAcertos(conteudo, index)
