@@ -198,11 +198,12 @@ const Conteudo: React.FC = () => {
     fetchConclusoes();
   }, [conteudos, token]);
 
-  const abrirQuestionario = (conteudoId: number, titulo: string, descricao: string,pontos: number, tempomaximo: number) => {
+  const abrirQuestionario = (conteudoId: number, conteudoConcluido: boolean, titulo: string, descricao: string,pontos: number, tempomaximo: number) => {
     setConteudoSelecionado(conteudoId);
     navigate(`/estudos/${tipo}/${conteudoId}`, {
       state: {
         conteudoId: conteudoId,
+        conteudoConcluido: conteudoConcluido,
         titulo: titulo,
         descricao: descricao,
         pontos: pontos,
@@ -372,7 +373,7 @@ const Conteudo: React.FC = () => {
         <ul className='conteudos-list'>
           {conteudos.map((conteudo, index) => (
             <li
-              onClick={index === 0 || conteudoDesbloqueado(conteudo.id, index) || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudo.titulo, conteudo.descricao, conteudo.pontos, conteudo.tempomaximo) : undefined}
+              onClick={index === 0 || conteudoDesbloqueado(conteudo.id, index) || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudosConcluidos.includes(conteudo.id), conteudo.titulo, conteudo.descricao, conteudo.pontos, conteudo.tempomaximo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
               className={`item-${index} conteudo-item ${conteudosConcluidos[conteudo.id] && user?.tipo_usuario !== 'admin' ?

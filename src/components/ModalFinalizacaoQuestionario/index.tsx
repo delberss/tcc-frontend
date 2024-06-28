@@ -18,9 +18,10 @@ interface ModalProps {
   pergunta?: Pergunta | null; // Adicione esta linha
   qtdPerguntas: number;
   pontos: number;
+  conteudoConcluido: boolean;
 }
 
-const ModalFinalizacaoQuestionario: React.FC<ModalProps> = ({ onClose, qtdAcertos, qtdPerguntas, pontos }) => {
+const ModalFinalizacaoQuestionario: React.FC<ModalProps> = ({ onClose, qtdAcertos, qtdPerguntas, pontos, conteudoConcluido }) => {
   const navigate = useNavigate();
 
   const handleModalClose = () => {
@@ -35,16 +36,27 @@ const ModalFinalizacaoQuestionario: React.FC<ModalProps> = ({ onClose, qtdAcerto
     if(qtdPerguntas == undefined){
       qtdPerguntas = 0;
     }
-    return qtdAcertos >= (qtdPerguntas * 0.75);
+    return qtdAcertos >= (qtdPerguntas * 0.60);
   }
 
   let mensagem = "";
-  if (qtdAcertos === qtdPerguntas) {
-    mensagem = `Parabéns! Você acertou todas as questões e ganhou ${pontos} pontos!`;
-  } else if (proxConteudoDesbloqueado(qtdAcertos, qtdPerguntas)) {
-    mensagem = "Tente novamente para ganhar os pontos. Próximo conteúdo desbloqueado";
-  } else {
-    mensagem = "Revise os materiais novamente e tente novamente.";
+
+  if(!conteudoConcluido){
+    if (qtdAcertos === qtdPerguntas) {
+      mensagem = `Parabéns! Você ganhou ${pontos} pontos e acertou 100% do questionário!`;
+    } else if (proxConteudoDesbloqueado(qtdAcertos, qtdPerguntas)) {
+      mensagem = `Parabéns! Você ganhou ${pontos} pontos. Próximo conteúdo desbloqueado`;
+    } else {
+      mensagem = "Revise os materiais novamente.";
+    }
+  } else{
+    if (qtdAcertos === qtdPerguntas) {
+      mensagem = `Parabéns! Você acertou 100% do questionário!`;
+    } else if (proxConteudoDesbloqueado(qtdAcertos, qtdPerguntas)) {
+      mensagem = `Parabéns! Você acertou mais de 60% do questionário`;
+    } else {
+      mensagem = "Revise os materiais novamente.";
+    }
   }
 
   return (

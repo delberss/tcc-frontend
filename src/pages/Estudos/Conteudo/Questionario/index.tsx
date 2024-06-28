@@ -39,6 +39,7 @@ const Questionario: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   let conteudoId = location.state.conteudoId;
+  let conteudoConcluido = location.state.conteudoConcluido;
   let titulo = location.state.titulo;
   let descricao = location.state.descricao;
   let pontos = location.state.pontos;
@@ -531,7 +532,7 @@ const Questionario: React.FC = () => {
         />
       )}
       {showModal &&
-        <ModalFinalizacaoQuestionario onClose={() => setShowModal(false)} qtdAcertos={qtdAcertos} qtdPerguntas={perguntas.length} pontos={pontos} />}
+        <ModalFinalizacaoQuestionario onClose={() => setShowModal(false)} qtdAcertos={qtdAcertos} qtdPerguntas={perguntas.length} pontos={pontos} conteudoConcluido={conteudoConcluido}/>}
       {!questionarioAtivado ? (
         <div className='ativar-questionario'>
           <div>
