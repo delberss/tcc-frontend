@@ -11,6 +11,7 @@ import imgConquista6 from '../../assets/6.png'
 import imgConquista7 from '../../assets/7.png'
 import imgConquista8 from '../../assets/8.png'
 import imgConquista9 from '../../assets/9.png'
+import imgConquista10 from '../../assets/10.png'
 import medalha from '../../assets/medalha.png'
 
 import { FaStar } from 'react-icons/fa';
@@ -29,11 +30,32 @@ const Conquistas: React.FC = () => {
     isConquistaConcluida: (conquista: { nome_conquista: string }) => boolean
   ) => {
     // Ordena as conquistas pelo id
-    const conquistasOrdenadas = [...conquistas].sort((a, b) => a.id - b.id);
+    const conquistasOrdenadasPorId = [...conquistas].sort((a, b) => a.id - b.id);
 
-    return conquistasOrdenadas.length > 0 ? (
+    // Separa as primeiras 4 conquistas
+    const primeirasQuatroConquistas = conquistasOrdenadasPorId.slice(0, 4);
+
+    // Conquistas restantes ordenadas por nome_conquista
+    const conquistasRestantes = conquistasOrdenadasPorId.slice(4).sort((a, b) =>
+      a.nome_conquista.localeCompare(b.nome_conquista)
+    );
+
+    return (
       <ul>
-        {conquistasOrdenadas.map((conquista) => (
+        {/* Renderiza as primeiras 4 conquistas */}
+        {primeirasQuatroConquistas.map((conquista) => (
+          <li
+            key={conquista.id}
+            className={`conquista-item ${isConquistaConcluida(conquista) ? "conquista-concluida" : ""}`}
+            title={conquista.descricao}
+          >
+            <img className='imgConquista' src={getImagemConquista(conquista.nome_conquista)} alt={conquista.nome_conquista} />
+            <strong>{conquista.nome_conquista}</strong>
+          </li>
+        ))}
+
+        {/* Renderiza as conquistas restantes ordenadas por nome_conquista */}
+        {conquistasRestantes.map((conquista) => (
           <li
             key={conquista.id}
             className={`conquista-item ${isConquistaConcluida(conquista) ? "conquista-concluida" : ""}`}
@@ -44,10 +66,9 @@ const Conquistas: React.FC = () => {
           </li>
         ))}
       </ul>
-    ) : (
-      <p>Nenhuma conquista disponível.</p>
     );
   };
+
 
   const getImagemConquista = (nomeConquista: string): string => {
     switch (nomeConquista) {
@@ -57,6 +78,8 @@ const Conquistas: React.FC = () => {
         return imgConquista2;
       case '10 conteúdos concluídos':
         return imgConquista3;
+      case 'Estudo Algoritmos':
+        return imgConquista10
       case 'Estudo Backend':
         return imgConquista4;
       case 'Estudo Frontend':

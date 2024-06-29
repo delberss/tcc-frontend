@@ -21,12 +21,12 @@ const Estudos: React.FC = () => {
 
   const [novoEstudoNome, setNovoEstudoNome] = useState<string>('');
   const [novoEstudoDescricao, setNovoEstudoDescricao] = useState<string>('');
-  
+
   const [novoEstudoLinguagens, setNovoEstudoLinguagens] = useState<string>('');
 
   const [novoEstudoLink, setNovoEstudoLink] = useState<string>('');
 
-  const [mostrarCampoNovoEstudo, setMostrarCampoNovoEstudo] = useState<boolean>(false); 
+  const [mostrarCampoNovoEstudo, setMostrarCampoNovoEstudo] = useState<boolean>(false);
 
   const [informacoesEstudo, setInformacoesEstudo] = useState<string[]>([]);
   const [exibirTodosEstudos, setExibirTodosEstudos] = useState(user?.tipo_usuario === 'admin' ? true : false);
@@ -36,12 +36,12 @@ const Estudos: React.FC = () => {
 
   useEffect(() => {
     if (!user) {
-        const storedUser = localStorage.getItem('user');
-        if (!storedUser) {
-            navigate('/login');
-        }
+      const storedUser = localStorage.getItem('user');
+      if (!storedUser) {
+        navigate('/login');
+      }
     }
-}, [user, navigate]);
+  }, [user, navigate]);
 
 
 
@@ -233,7 +233,11 @@ const Estudos: React.FC = () => {
         preferenciaEstudo ? (
           <div className='container-estudos'>
             {preferenciaEstudo
+              // Filtra estudos com base no termo de busca nas linguagens
               .filter(estudo => termoBusca === '' || estudo.linguagens.some(linguagem => linguagem.toLowerCase().includes(termoBusca.toLowerCase())))
+              // Ordena os estudos pelo nome em ordem alfabética
+              .sort((a, b) => a.nome.toLowerCase().localeCompare(b.nome.toLowerCase()))
+              // Mapeia os estudos filtrados e ordenados para renderizar botões
               .map((estudo, index) => (
                 <button
                   className={`button-${estudo.nome.toLowerCase()} button-estudos`}
@@ -245,8 +249,7 @@ const Estudos: React.FC = () => {
                 </button>
               ))}
           </div>
-
-        ) : null // Adicione um retorno nulo se preferenciaEstudo for falso ou vazio
+        ) : null // Retorna nulo se preferenciaEstudo for falso ou vazio
       )}
 
 
