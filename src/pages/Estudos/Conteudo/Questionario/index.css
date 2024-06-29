@@ -42,8 +42,9 @@
 
   .botoes{
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
   }
 
   .unico-botao{
@@ -65,9 +66,9 @@
   .button-questionario {
     width: 40%;
     align-self: center;
-    margin-top: 20px;
     padding: 15px 30px;
 
+    margin: 0 10px 0px;
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -80,6 +81,9 @@
     background-color: #0056b3;
   }
   
+  .messagem-resposta{
+    margin-right: 10px;
+  }
 
   .questionario-off{
     display: flex;
@@ -99,6 +103,12 @@
   
   .button-voltar:hover {
     background-color: #0056b3;
+  }
+
+  .button-questionario:disabled {
+    background-color: transparent; /* Remove a cor de fundo */
+    color: grey; /* Ajusta a cor do texto se necessário */
+    cursor: not-allowed; /* Muda o cursor para indicar que está desabilitado */
   }
   
   .icon {
@@ -265,7 +275,7 @@
 
 /*================= FEEDBACK E INSTRUÇÕES ==========*/
 
-.feedback-e-instrucoes{
+.instrucoes{
   display: flex;
   justify-content: space-between;
   align-items: start;
@@ -443,4 +453,18 @@ teste de colocar o video
 .edit-link-icon{
   display: flex;
   align-items: center;
+}
+
+/* styles.css */
+.mensagem-resposta {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.mensagem-resposta.correta {
+  color: green;
+}
+
+.mensagem-resposta.incorreta {
+  color: red;
 }

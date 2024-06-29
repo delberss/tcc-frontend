@@ -55,13 +55,13 @@ const Questionario: React.FC = () => {
   const [adicionarMateriais, setAdicionarMateriais] = useState<boolean>(false);
 
   const [mostrarDescricaoConteudo, setMostrarDescricaoConteudo] = useState(false);
-
-
+  const [message, setMessage] = useState('');
+  const [respostaConfirmada, setRespostaConfirmada] = useState(false);
 
 
   const [respostas, setRespostas] = useState<{ [key: number]: string }>({});
   const [perguntaAtual, setPerguntaAtual] = useState(0);
-  const [tempoRestante, setTempoRestante] = useState(videoConteudo ? 30 : 90);
+  const [tempoRestante, setTempoRestante] = useState(videoConteudo ? 30 : 5);
   const [questionarioAtivado, setQuestionarioAtivado] = useState(false);
 
   const [editingPerguntaId, setEditingPerguntaId] = useState<number | null>(null);
@@ -102,6 +102,8 @@ const Questionario: React.FC = () => {
 
   const [showModalComponente, setShowModalComponente] = useState(false);
   const [showModalComponentePergunta, setShowModalComponentePergunta] = useState(false);
+  const [resetTimer, setResetTimer] = useState(false);
+
 
 
   const ativarQuestionario = () => {
@@ -191,24 +193,29 @@ const Questionario: React.FC = () => {
 
 
   useEffect(() => {
-    if (!tempoCongelado && questionarioAtivado && videoPausado || !videoConteudo) {
+    if (!tempoCongelado && questionarioAtivado && (videoPausado || !videoConteudo)) {
       let startTime = Date.now();
+      let intervalId;
 
       const updateTimer = () => {
         const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-        const remainingTime = Math.max(videoConteudo ? 30 - elapsedTime : 90 - elapsedTime, 0);
+        const remainingTime = Math.max((videoConteudo ? 30 : 5) - elapsedTime, 0);
 
         setTempoRestante(remainingTime);
+
+        if (remainingTime === 0) {
+          clearInterval(intervalId);
+        }
       };
 
-      const intervalId = setInterval(updateTimer, 1000);
+      updateTimer(); // Chamada inicial para atualizar imediatamente
+      intervalId = setInterval(updateTimer, 1000);
 
       return () => {
         clearInterval(intervalId);
       };
     }
-  }, [tempoCongelado, questionarioAtivado, videoPausado]);
-
+  }, [tempoCongelado, questionarioAtivado, videoPausado, videoConteudo, resetTimer]);
 
   useEffect(() => {
     if (questionarioAtivado && !respostasEnviadas && tempoRestante === 0) {
@@ -221,15 +228,13 @@ const Questionario: React.FC = () => {
 
       if (perguntaAtual < perguntas.length - 1) {
         setPerguntaAtual((prevPergunta) => prevPergunta + 1);
-        if (videoConteudo) {
-          setTempoRestante(30);
-        } else {
-          setTempoRestante(90);
-        }
+        setTempoRestante(videoConteudo ? 30 : 5);
+        setResetTimer((prev) => !prev); // Alternar o estado para reiniciar o temporizador
         setVideoPausado(false);
       }
     }
-  }, [tempoRestante, respostas, perguntas, perguntaAtual]);
+  }, [tempoRestante, questionarioAtivado, respostasEnviadas, respostas, perguntas, perguntaAtual, videoConteudo]);
+
 
   // SÓ VAI CHAMAR A API DE RESPOSTAS DEPOIS QUE TODAS PERGUNTAS TIVEREM UMA RESPOSTA (MESMO QUE VAZIO)
   useEffect(() => {
@@ -249,11 +254,31 @@ const Questionario: React.FC = () => {
     }));
   };
 
+  const handleVerificarResposta = async (idPergunta: any, respostaUsuario: any) => {
+    try {
+      const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/verificarResposta?idPergunta=${idPergunta}&respostaUsuario=${respostaUsuario}`);
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage(data.isCorrect ? 'Resposta correta!' : 'Resposta incorreta.');
+        setRespostaConfirmada(true); // Desabilitar inputs após a confirmação da resposta
+        setTempoCongelado(true); // Congelar
+      } else {
+        setMessage(data.message);
+      }
+    } catch (error) {
+      console.error('Erro ao verificar resposta:', error);
+      setMessage('Erro ao verificar resposta');
+    }
+  };
+
+
+
   const handleAvancar = () => {
     if (videoConteudo) {
       setTempoRestante(30);
     } else {
-      setTempoRestante(90);
+      setTempoRestante(5);
     }
 
     if (!respostas[perguntas[perguntaAtual].id]) {
@@ -262,8 +287,15 @@ const Questionario: React.FC = () => {
     }
 
     if (perguntaAtual < perguntas.length - 1) {
-      setPerguntaAtual((prevPergunta) => prevPergunta + 1);
-      setVideoPausado(false);
+      if (respostaConfirmada) {
+        setPerguntaAtual((prevPergunta) => prevPergunta + 1);
+        setMessage('');
+        setRespostaConfirmada(false);
+        setVideoPausado(false);
+        setTempoCongelado(false);
+      } else {
+        alert('Por favor, Confirme sua resposta.');
+      }
     } else {
       enviarRespostas();
     }
@@ -439,7 +471,7 @@ const Questionario: React.FC = () => {
 
   const handleAdicionaisMateriais = async () => {
     const materiaisArray = linksMateriais.split(",").map(material => material.trim().replace(/^'|'$/g, ''));
-      const materiaisJSON = JSON.stringify(materiaisArray);
+    const materiaisJSON = JSON.stringify(materiaisArray);
     try {
       const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/conteudos/${conteudoId}/materiais`, {
         method: 'PUT',
@@ -522,6 +554,9 @@ const Questionario: React.FC = () => {
     );
   };
 
+
+  const mensagemClasse = message === 'Resposta correta!' ? 'correta' : message === 'Resposta incorreta.' ? 'incorreta' : '';
+
   return (
     <div className='questionario'>
       {showModalComponente && (
@@ -532,7 +567,7 @@ const Questionario: React.FC = () => {
         />
       )}
       {showModal &&
-        <ModalFinalizacaoQuestionario onClose={() => setShowModal(false)} qtdAcertos={qtdAcertos} qtdPerguntas={perguntas.length} pontos={pontos} conteudoConcluido={conteudoConcluido}/>}
+        <ModalFinalizacaoQuestionario onClose={() => setShowModal(false)} qtdAcertos={qtdAcertos} qtdPerguntas={perguntas.length} pontos={pontos} conteudoConcluido={conteudoConcluido} />}
       {!questionarioAtivado ? (
         <div className='ativar-questionario'>
           <div>
@@ -682,22 +717,7 @@ const Questionario: React.FC = () => {
 
           {
             !mostrarDescricaoConteudo &&
-            <div className='feedback-e-instrucoes'>
-              {
-                perguntasErradas.length > 0 ? (
-                  <div className='feeback-perguntas'>
-                    <h2>Feedback</h2>
-                    <span className='text-span'>Estude mais sobre</span>
-                    <MdFeedback className='icon-feedback' title='Feedback baseado na última tentativa' />
-                    <ul>
-                      {perguntasErradas.map((pergunta) => (
-                        <li key={pergunta?.id}>{pergunta?.pergunta}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null
-              }
-
+            <div className='instrucoes'>
               <div className='instrucoes-estudo'>
                 <h2>Instruções antes de iniciar o questionário</h2>
                 <ul>
@@ -789,6 +809,7 @@ const Questionario: React.FC = () => {
                           value='A'
                           checked={respostas[perguntas[perguntaAtual].id] === 'A'}
                           onChange={() => handleRespostaChange('A')}
+                          disabled={respostaConfirmada} // Desabilitar se resposta confirmada
                         />
                       </div>
 
@@ -800,6 +821,7 @@ const Questionario: React.FC = () => {
                           value='B'
                           checked={respostas[perguntas[perguntaAtual].id] === 'B'}
                           onChange={() => handleRespostaChange('B')}
+                          disabled={respostaConfirmada} // Desabilitar se resposta confirmada
                         />
                       </div>
 
@@ -811,6 +833,7 @@ const Questionario: React.FC = () => {
                           value='C'
                           checked={respostas[perguntas[perguntaAtual].id] === 'C'}
                           onChange={() => handleRespostaChange('C')}
+                          disabled={respostaConfirmada} // Desabilitar se resposta confirmada
                         />
                       </div>
 
@@ -822,21 +845,35 @@ const Questionario: React.FC = () => {
                           value='D'
                           checked={respostas[perguntas[perguntaAtual].id] === 'D'}
                           onChange={() => handleRespostaChange('D')}
+                          disabled={respostaConfirmada} // Desabilitar se resposta confirmada
                         />
                       </div>
                     </div>
 
                     <div className={`botoes outros-botoes'}`}>
+                      {
+                        message.length === 0 ? (
+                          <button
+                            className='button-questionario'
+                            type='button'
+                            onClick={() => handleVerificarResposta(perguntas[perguntaAtual].id, respostas[perguntas[perguntaAtual].id])}
+                            disabled={!respostas[perguntas[perguntaAtual].id]} // Desabilitar enquanto não houver resposta
+                          >
+                            Confirmar resposta
+                          </button>
+                        ) : (
+                          <p className={`mensagem-resposta ${mensagemClasse}`}>{message}</p>
+                        )
+                      }
                       <button
                         className='button-questionario'
                         type='button'
                         onClick={handleAvancar}
+                        disabled={!respostaConfirmada}
                       >
                         {perguntaAtual < perguntas.length - 1 ? 'Próxima' : 'Finalizar'}
                       </button>
                     </div>
-
-
                   </form>
 
                   {user?.tipo_usuario === 'admin' && renderizarPerguntas()}
