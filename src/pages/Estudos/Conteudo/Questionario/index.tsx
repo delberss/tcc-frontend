@@ -61,7 +61,7 @@ const Questionario: React.FC = () => {
 
   const [respostas, setRespostas] = useState<{ [key: number]: string }>({});
   const [perguntaAtual, setPerguntaAtual] = useState(0);
-  const [tempoRestante, setTempoRestante] = useState(videoConteudo ? 30 : 5);
+  const [tempoRestante, setTempoRestante] = useState(videoConteudo ? 30 : 90);
   const [questionarioAtivado, setQuestionarioAtivado] = useState(false);
 
   const [editingPerguntaId, setEditingPerguntaId] = useState<number | null>(null);
@@ -195,11 +195,11 @@ const Questionario: React.FC = () => {
   useEffect(() => {
     if (!tempoCongelado && questionarioAtivado && (videoPausado || !videoConteudo)) {
       let startTime = Date.now();
-      let intervalId;
+      let intervalId: any;
 
       const updateTimer = () => {
         const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-        const remainingTime = Math.max((videoConteudo ? 30 : 5) - elapsedTime, 0);
+        const remainingTime = Math.max((videoConteudo ? 30 : 90) - elapsedTime, 0);
 
         setTempoRestante(remainingTime);
 
@@ -228,7 +228,7 @@ const Questionario: React.FC = () => {
 
       if (perguntaAtual < perguntas.length - 1) {
         setPerguntaAtual((prevPergunta) => prevPergunta + 1);
-        setTempoRestante(videoConteudo ? 30 : 5);
+        setTempoRestante(videoConteudo ? 30 : 90);
         setResetTimer((prev) => !prev); // Alternar o estado para reiniciar o temporizador
         setVideoPausado(false);
       }
@@ -270,6 +270,10 @@ const Questionario: React.FC = () => {
       console.error('Erro ao verificar resposta:', error);
       setMessage('Erro ao verificar resposta');
     }
+
+    if (!(perguntaAtual < perguntas.length - 1)) {
+      enviarRespostas();
+    }
   };
 
 
@@ -278,7 +282,7 @@ const Questionario: React.FC = () => {
     if (videoConteudo) {
       setTempoRestante(30);
     } else {
-      setTempoRestante(5);
+      setTempoRestante(90);
     }
 
     if (!respostas[perguntas[perguntaAtual].id]) {
