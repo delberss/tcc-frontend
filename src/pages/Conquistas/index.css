@@ -46,7 +46,9 @@
   .container-conquistas li strong {
     display: block;
     font-size: 1.2rem;
+    margin-top: 5px;
     margin-bottom: 10px;
+    font-family: monospace;
   }
   
   .conquista-concluida {
@@ -59,6 +61,7 @@
   .container-conquistas .legenda {
     margin-top: 20px;
     text-align: left;
+    font-family: monospace;
   }
   
   .container-conquistas .conquista-legenda {
@@ -118,4 +121,9 @@
   .text-star-conquista{
     margin-left: 8px;
     color: white;
+  }
+
+  .text-conquistas{
+    font-family: monospace;
+    font-size: 1.6rem;
   }

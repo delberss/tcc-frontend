@@ -863,20 +863,26 @@ const Questionario: React.FC = () => {
                             onClick={() => handleVerificarResposta(perguntas[perguntaAtual].id, respostas[perguntas[perguntaAtual].id])}
                             disabled={!respostas[perguntas[perguntaAtual].id]} // Desabilitar enquanto não houver resposta
                           >
-                            Confirmar resposta
+                            
+                            {perguntaAtual < perguntas.length - 1 ? 'Confirmar resposta' : 'Confirmar e finalizar'}
+
                           </button>
                         ) : (
                           <p className={`mensagem-resposta ${mensagemClasse}`}>{message}</p>
                         )
                       }
-                      <button
+                      {
+                        perguntaAtual < perguntas.length - 1 &&
+                        <button
                         className='button-questionario'
                         type='button'
                         onClick={handleAvancar}
                         disabled={!respostaConfirmada}
                       >
-                        {perguntaAtual < perguntas.length - 1 ? 'Próxima' : 'Finalizar'}
+                       Próxima
                       </button>
+                      }
+                      
                     </div>
                   </form>
 

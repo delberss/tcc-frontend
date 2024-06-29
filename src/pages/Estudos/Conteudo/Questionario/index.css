@@ -462,9 +462,13 @@ teste de colocar o video
 }
 
 .mensagem-resposta.correta {
-  color: green;
+  color: rgb(47, 225, 47);
+  font-size: 1.2rem;
+  font-family: monospace;
 }
 
 .mensagem-resposta.incorreta {
-  color: red;
+  color: rgb(248, 92, 92);
+  font-size: 1.2rem;
+  font-family: monospace;
 }

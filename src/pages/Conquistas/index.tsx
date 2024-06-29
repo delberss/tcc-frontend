@@ -107,7 +107,7 @@ const Conquistas: React.FC = () => {
   return (
     <div className='container-conquistas'>
       <Outlet />
-      <h2>Conquistas</h2>
+      <h2 className='text-conquistas'>Conquistas</h2>
 
       <div className='legenda-conquistas'>
         <div className="legenda">
