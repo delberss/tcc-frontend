@@ -271,7 +271,7 @@ const Conteudo: React.FC = () => {
       const isNonClickable = liElement.classList.contains('non-clickable');
 
       return !isNonClickable ? (
-        <div className='quantidades no-cursor'>
+        <div className='quantidades' title='Respostas corretas/Perguntas'>
           <span>{quantidadeAcertos?.[conteudo.id] || 0}</span>
           <span>/</span>
           <span>{quantidadePerguntas?.[conteudo.id] || 0}</span>
@@ -393,7 +393,7 @@ const Conteudo: React.FC = () => {
 
                   {conclusoes[conteudo.id] ? (
                     <div className={`icone-conclusao`}>
-                      <span>100%</span>
+                      <span title='Você acertou 100% do conteúdo'>100%</span>
                     </div>
                   ) : (
                     renderizaPerguntasAcertos(conteudo, index)

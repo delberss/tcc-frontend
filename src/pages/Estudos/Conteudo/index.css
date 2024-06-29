@@ -55,7 +55,7 @@
     height: 100%;
   }
   
-  .icone-conclusao {
+  /* .icone-conclusao {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -66,7 +66,7 @@
     margin-right: 10px;
     color: #000;
     cursor: none  !important;
-  }
+  } */
   
   .conteudo-info {
     display: flex;
@@ -98,7 +98,6 @@
   background-color: #ffffffc4;
   border-radius: 50%;
   margin-right: 10px;
-  cursor: none  !important;
   color: #000;
 }
 
