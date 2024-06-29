@@ -213,19 +213,22 @@ const Estudos: React.FC = () => {
 
       {exibirTodosEstudos ? (
         <div className='container-estudos'>
-          {estudos && estudos.length > 0 && estudos
-            .filter((estudo: any) => termoBusca === '' || (estudo.linguagens && estudo.linguagens.some((linguagem: string) => linguagem.toLowerCase().includes(termoBusca.toLowerCase()))))
-            .map((estudo: any, index: number) => (
-              <button
-                key={index}
-                className={`button-${estudo.nome.toLowerCase()} button-estudos`}
-                style={getButtonStyle(estudo.nome)}
-                onClick={() => navigate(`/estudos/${encodeURIComponent(estudo.nome.toLowerCase())}`)}
-              >
-                {estudo.nome}
-              </button>
-            ))}
+          {estudos && estudos.length > 0 &&
+            estudos
+              .filter((estudo: any) => termoBusca === '' || (estudo.linguagens && estudo.linguagens.some((linguagem: string) => linguagem.toLowerCase().includes(termoBusca.toLowerCase()))))
+              .sort((a: any, b: any) => a.nome.toLowerCase().localeCompare(b.nome.toLowerCase())) // Ordena os estudos por nome
+              .map((estudo: any, index: number) => (
+                <button
+                  key={index}
+                  className={`button-${estudo.nome.toLowerCase()} button-estudos`}
+                  style={getButtonStyle(estudo.nome)}
+                  onClick={() => navigate(`/estudos/${encodeURIComponent(estudo.nome.toLowerCase())}`)}
+                >
+                  {estudo.nome}
+                </button>
+              ))}
         </div>
+
 
 
 
