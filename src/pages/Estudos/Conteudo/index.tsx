@@ -54,7 +54,6 @@ const Conteudo: React.FC = () => {
     }
   }, [user, navigate]);
 
-
   useEffect(() => {
     const fetchConclusoes = async () => {
 
@@ -122,6 +121,7 @@ const Conteudo: React.FC = () => {
     fetchEstudo();
   }, [tipo]);
 
+
   useEffect(() => {
     const fetchConclusoes = async () => {
       const novasConclusoes: Record<number, boolean> = {};
@@ -140,7 +140,7 @@ const Conteudo: React.FC = () => {
     };
 
     fetchConclusoes();
-  }, [conteudos]);
+  }, [conteudos, mostrarAssuntos]);
 
   const contudoConcluido = async (conteudoId: number) => {
     try {
