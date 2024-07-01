@@ -12,6 +12,8 @@ import { FaQuestionCircle, FaTrash } from 'react-icons/fa';
 import ModalEditarPergunta from '../../../../components/ModalPerguntas';
 import ModalFinalizacaoQuestionario from '../../../../components/ModalFinalizacaoQuestionario';
 import { converterParaSegundos } from '../../../../funcoes/converterParaSegundos';
+import { IoIosHappy } from "react-icons/io";
+import { RiEmotionUnhappyFill } from "react-icons/ri";
 
 
 interface Pergunta {
@@ -863,26 +865,29 @@ const Questionario: React.FC = () => {
                             onClick={() => handleVerificarResposta(perguntas[perguntaAtual].id, respostas[perguntas[perguntaAtual].id])}
                             disabled={!respostas[perguntas[perguntaAtual].id]} // Desabilitar enquanto não houver resposta
                           >
-                            
+
                             {perguntaAtual < perguntas.length - 1 ? 'Confirmar resposta' : 'Confirmar e finalizar'}
 
                           </button>
                         ) : (
-                          <p className={`mensagem-resposta ${mensagemClasse}`}>{message}</p>
+                          <p className={`mensagem-resposta ${mensagemClasse}`}>
+                            {message}             
+                            {message === 'Resposta correta!' ? <IoIosHappy /> : <RiEmotionUnhappyFill />}
+                          </p>
                         )
                       }
                       {
                         perguntaAtual < perguntas.length - 1 &&
                         <button
-                        className='button-questionario'
-                        type='button'
-                        onClick={handleAvancar}
-                        disabled={!respostaConfirmada}
-                      >
-                       Próxima
-                      </button>
+                          className='button-questionario'
+                          type='button'
+                          onClick={handleAvancar}
+                          disabled={!respostaConfirmada}
+                        >
+                          Próxima
+                        </button>
                       }
-                      
+
                     </div>
                   </form>
 

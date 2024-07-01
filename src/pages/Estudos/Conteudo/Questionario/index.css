@@ -457,6 +457,8 @@ teste de colocar o video
 
 /* styles.css */
 .mensagem-resposta {
+  display: flex;
+  align-items: center;
   font-size: 1rem;
   font-weight: bold;
 }
