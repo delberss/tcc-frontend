@@ -474,3 +474,9 @@ teste de colocar o video
   font-size: 1.2rem;
   font-family: monospace;
 }
+
+.pontos-do-estudo{
+  text-decoration: inherit;
+  color: rgb(47, 225, 47);
+  font-family: monospace;
+}

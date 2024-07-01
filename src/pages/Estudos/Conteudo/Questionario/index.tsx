@@ -599,6 +599,10 @@ const Questionario: React.FC = () => {
             <div className='quantidades-questionario qtd-perguntas' title='Quantidade de perguntas'>
               <span>{perguntas.length || 0}</span>
             </div>
+
+            <div>
+              <span className='pontos-do-estudo'>{pontos} pontos</span>
+            </div>
           </div>
 
           <div>
