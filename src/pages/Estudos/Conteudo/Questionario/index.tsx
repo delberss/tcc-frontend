@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './index.css';
 import { useAuth } from '../../../../AuthContext';
-import { AiOutlineEdit, AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
 import { IoBookOutline } from "react-icons/io5";
 import { MdFeedback } from "react-icons/md";
 import { FiArrowLeft } from 'react-icons/fi';
@@ -55,6 +55,8 @@ const Questionario: React.FC = () => {
 
   const [editarLinkVideo, setEditarLinkVideo] = useState<boolean>(false);
   const [adicionarMateriais, setAdicionarMateriais] = useState<boolean>(false);
+  const [editarPerguntas, setEditarPerguntas] = useState<boolean>(false);
+
 
   const [mostrarDescricaoConteudo, setMostrarDescricaoConteudo] = useState(false);
   const [message, setMessage] = useState('');
@@ -118,6 +120,10 @@ const Questionario: React.FC = () => {
 
   const handleAdicionarMateriais = () => {
     setAdicionarMateriais(!adicionarMateriais);
+  };
+
+  const openEditarPerguntas = () => {
+    setEditarPerguntas(!editarPerguntas);
   };
 
   useEffect(() => {
@@ -602,20 +608,37 @@ const Questionario: React.FC = () => {
                   <>
                     <span>Adicionar vídeo</span>
                     <button className="button-adicionar-conteudo" onClick={handleEditarLinkVideo}>
-                      <AiOutlineEdit className="icon" />
+                      {
+                        !editarLinkVideo ? <AiOutlineEdit className="icon" /> : <AiOutlineMinus className="icon" />
+                      }
                     </button>
                   </>
                 )}
 
                 <span>Adicionar nova pergunta</span>
                 <button className="button-adicionar-conteudo" onClick={handleNovoQuestionario}>
-                  <AiOutlinePlus className="icon" />
+                  {
+                    !mostrarCampoQuestionario ? <AiOutlinePlus className="icon" /> : <AiOutlineMinus className="icon" />
+                  }
+
                 </button>
 
                 <span>Adicionar materiais</span>
                 <button className="button-adicionar-conteudo" onClick={handleAdicionarMateriais}>
-                  <AiOutlinePlus className="icon" />
+                  {
+                    !adicionarMateriais ? <AiOutlinePlus className="icon" /> : <AiOutlineMinus className="icon" />
+                  }
                 </button>
+
+                <span>Editar Perguntas</span>
+                <button className="button-adicionar-conteudo" onClick={openEditarPerguntas}>
+                  {
+                    !editarPerguntas ? <AiOutlineEdit className="icon" /> : <AiOutlineMinus className="icon" />
+                  }
+                </button>
+
+                {user?.tipo_usuario === 'admin' && editarPerguntas && renderizarPerguntas()}
+
 
               </>
             )}
@@ -625,7 +648,7 @@ const Questionario: React.FC = () => {
             <div className="novo-questionario-container">
               <input
                 type="text"
-                placeholder="Link do vídeo"
+                placeholder="Link do vídeo para questionário"
                 value={linkVideo}
                 onChange={(e) => setLinkVideo(e.target.value)}
               />
@@ -639,7 +662,7 @@ const Questionario: React.FC = () => {
             <div className="novo-questionario-container">
               <input
                 type="text"
-                placeholder="Links dos materiais"
+                placeholder="Links dos materiais. Ex: www.exemplo.com, www.exemplo2.com"
                 value={linksMateriais}
                 onChange={(e) => setLinksMateriais(e.target.value)}
               />
@@ -687,7 +710,7 @@ const Questionario: React.FC = () => {
 
               <input
                 type="text"
-                placeholder="Letra da resposta correta"
+                placeholder="Letra da resposta correta. Ex: A"
                 value={respostaCorreta}
                 onChange={(e) => setRespostaCorreta(e.target.value)}
               />
@@ -695,7 +718,7 @@ const Questionario: React.FC = () => {
               <input
                 title='Tempo em que a pergunta irá aparecer (segundos)'
                 type="text"
-                placeholder="Tempo para aparecer. Ex: 0:30 ou 30 (segs)"
+                placeholder="Tempo para aparecer no vídeo. Ex: 0:30 ou 30 (segs) (Opcional)"
                 value={minutagemPergunta}
                 onChange={(e) => setMinutagemPergunta(e.target.value)}
               />
@@ -779,7 +802,7 @@ const Questionario: React.FC = () => {
                               <div className="novo-questionario-container">
                                 <input
                                   type="text"
-                                  placeholder="Link do vídeo"
+                                  placeholder="Link do vídeo para questionário"
                                   value={linkVideo}
                                   onChange={(e) => setLinkVideo(e.target.value)}
                                 />
@@ -871,7 +894,7 @@ const Questionario: React.FC = () => {
                           </button>
                         ) : (
                           <p className={`mensagem-resposta ${mensagemClasse}`}>
-                            {message}             
+                            {message}
                             {message === 'Resposta correta!' ? <IoIosHappy /> : <RiEmotionUnhappyFill />}
                           </p>
                         )
@@ -891,7 +914,6 @@ const Questionario: React.FC = () => {
                     </div>
                   </form>
 
-                  {user?.tipo_usuario === 'admin' && renderizarPerguntas()}
                 </>
               )
           }

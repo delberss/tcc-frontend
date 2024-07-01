@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './index.css';
 import { useNavigate } from 'react-router-dom';
 import { getButtonStyle } from '../../../color-estudos';
-import { AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlinePlus, AiOutlineMinus, AiOutlineSearch } from 'react-icons/ai';
+
 import { useAuth } from '../../AuthContext';
 
 interface PreferenciaEstudo {
@@ -160,7 +161,9 @@ const Estudos: React.FC = () => {
 
         {user?.tipo_usuario === 'admin' && (
           <button className="button-adicionar" onClick={handleNovoEstudo}>
-            <AiOutlinePlus className="icon" />
+            {
+              !mostrarCampoNovoEstudo ? <AiOutlinePlus className="icon" /> : <AiOutlineMinus className="icon" />
+            }
           </button>
         )}
 
@@ -170,21 +173,21 @@ const Estudos: React.FC = () => {
         <div className="novo-estudo-container">
           <input
             type="text"
-            placeholder="Digite o nome do novo estudo"
+            placeholder="Nome do novo estudo"
             value={novoEstudoNome}
             onChange={(e) => setNovoEstudoNome(e.target.value)}
           />
 
           <input
             type="text"
-            placeholder="Digite a descrição"
+            placeholder="Descrição"
             value={novoEstudoDescricao}
             onChange={(e) => setNovoEstudoDescricao(e.target.value)}
           />
 
           <input
             type="text"
-            placeholder="Digite as linguagens/ferramentas. Ex: Python, Java"
+            placeholder="Linguagens/ferramentas. Ex: Python, Java"
             value={novoEstudoLinguagens}
             onChange={(e) => setNovoEstudoLinguagens(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -192,7 +195,7 @@ const Estudos: React.FC = () => {
 
           <input
             type="text"
-            placeholder="Digite o link de roadmap"
+            placeholder="Link do Roadmap"
             value={novoEstudoLink}
             onChange={(e) => setNovoEstudoLink(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -202,12 +205,15 @@ const Estudos: React.FC = () => {
       )}
 
       <div className='termoBuscaEstudo'>
-        <input
-          type="text"
-          placeholder="Buscar por linguagem/ferramenta"
-          value={termoBusca}
-          onChange={handleBuscaChange}
-        />
+        <div className='input-container'>
+          <AiOutlineSearch className='search-icon' />
+          <input
+            type="text"
+            placeholder="Buscar por linguagem/ferramenta"
+            value={termoBusca}
+            onChange={handleBuscaChange}
+          />
+        </div>
       </div>
 
 

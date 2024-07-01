@@ -151,7 +151,7 @@ const ModalEditarPergunta: React.FC<ModalProps> = ({ onClose, pergunta, onSave }
                                 type="text"
                                 value={editedPergunta.minutagempergunta}
                                 onChange={(e) => handleChange(e, 'minutagempergunta')}
-                                placeholder="Minutagem"
+                                placeholder="Minutagem. Ex: 0:30 ou 30 (segs)"
                             />
                         </div>
 

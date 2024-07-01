@@ -154,3 +154,22 @@
 .termoBuscaEstudo input:focus {
   outline: none;
 }
+
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px; /* Ajuste conforme necessário */
+  color: #888; /* Ajuste a cor conforme necessário */
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 10px;
+}

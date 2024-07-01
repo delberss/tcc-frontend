@@ -34,7 +34,7 @@ const Conteudo: React.FC = () => {
   const [conteudosConcluidos, setConteudosConcluidos] = useState<number[]>([]);
   const [novoConteudoNome, setNovoConteudoNome] = useState<string>('');
   const [novoConteudoDescricao, setNovoConteudoDescricao] = useState<string>('');
-  const [novoConteudoPontos, setNovoConteudoPontos] = useState<number>(0);
+  const [novoConteudoPontos, setNovoConteudoPontos] = useState<number | null>(null);
   const [linkVideo, setLinkVideo] = useState<string>('');
   const [novoConteudoMateriais, setNovoConteudoMateriais] = useState<string>('');
   const [mostrarCampoConteudo, setMostrarCampoConteudo] = useState<boolean>(false);
@@ -65,7 +65,7 @@ const Conteudo: React.FC = () => {
         if (data.success) {
           setConteudosConcluidos(data.conteudos_completos);
           console.log(data.conteudos_completos)
-        } 
+        }
       } catch (error) {
         console.error('Erro ao buscar conclusões:', error);
       }
@@ -188,7 +188,7 @@ const Conteudo: React.FC = () => {
           }
         } catch (error) {
           console.error(`Erro ao buscar conclusão e quantidades do conteúdo ${conteudo.id}:`, error);
-          novasConclusoes[conteudo.id] = false; 
+          novasConclusoes[conteudo.id] = false;
         }
       }
 
@@ -198,7 +198,7 @@ const Conteudo: React.FC = () => {
     fetchConclusoes();
   }, [conteudos, token]);
 
-  const abrirQuestionario = (conteudoId: number, conteudoConcluido: boolean, titulo: string, descricao: string,pontos: number, tempomaximo: number) => {
+  const abrirQuestionario = (conteudoId: number, conteudoConcluido: boolean, titulo: string, descricao: string, pontos: number, tempomaximo: number) => {
     setConteudoSelecionado(conteudoId);
     navigate(`/estudos/${tipo}/${conteudoId}`, {
       state: {
@@ -300,16 +300,25 @@ const Conteudo: React.FC = () => {
     if (index === 0 || conteudosConcluidos.includes(idConteudo - 1)) {
       return true;
     }
-    
-    let qtdPerguntas = quantidadePerguntas?.[idConteudo-1];
-    let qtdAcertos = quantidadeAcertos?.[idConteudo-1];
 
-    if(qtdAcertos === undefined || qtdAcertos === 0 || qtdPerguntas === undefined){
+    let qtdPerguntas = quantidadePerguntas?.[idConteudo - 1];
+    let qtdAcertos = quantidadeAcertos?.[idConteudo - 1];
+
+    if (qtdAcertos === undefined || qtdAcertos === 0 || qtdPerguntas === undefined) {
       return false;
     }
 
     return qtdAcertos >= (qtdPerguntas * 0.60);
   }
+
+  const handleChangeInputPontos = (e: any) => {
+    const value = e.target.value;
+    const numberValue = value === '' ? null : parseInt(value);
+
+    if (numberValue === null || numberValue >= 0) {
+      setNovoConteudoPontos(numberValue);
+    }
+  };
 
   return user ? (
     <div className={`container-estudos-generico`}>
@@ -332,12 +341,12 @@ const Conteudo: React.FC = () => {
         <div className="novo-conteudo-container">
           <input
             type="text"
-            placeholder="Digite o nome do novo conteúdo"
+            placeholder="Nome do novo conteúdo"
             value={novoConteudoNome}
             onChange={(e) => setNovoConteudoNome(e.target.value)}
           />
           <textarea
-            placeholder="Digite a descrição do conteúdo"
+            placeholder="Descrição do conteúdo"
             value={novoConteudoDescricao}
             onChange={(e) => setNovoConteudoDescricao(e.target.value)}
             style={{ width: '95%', padding: '10px', marginBottom: '10px', resize: 'none' }}
@@ -345,7 +354,7 @@ const Conteudo: React.FC = () => {
 
           <input
             type="text"
-            placeholder="Link do vídeo"
+            placeholder="Link do vídeo para questionário (Opcional)"
             value={linkVideo}
             onChange={(e) => setLinkVideo(e.target.value)}
           />
@@ -354,13 +363,14 @@ const Conteudo: React.FC = () => {
             title='Pontos'
             type="number"
             placeholder="Pontos"
-            value={novoConteudoPontos}
-            onChange={(e) => setNovoConteudoPontos(parseInt(e.target.value))}
+            value={novoConteudoPontos === null ? '' : novoConteudoPontos}
+            onChange={handleChangeInputPontos}
+            min="0" // Também adiciona o atributo min para evitar valores negativos
           />
 
           <input
             type="text"
-            placeholder="Materiais"
+            placeholder="Materiais. Ex: www.exemplo.com, www.exemplo2.com"
             value={novoConteudoMateriais}
             onChange={(e) => setNovoConteudoMateriais(e.target.value)}
           />
