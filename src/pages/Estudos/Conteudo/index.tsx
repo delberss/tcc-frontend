@@ -296,23 +296,25 @@ const Conteudo: React.FC = () => {
   };
 
   const conteudoDesbloqueado = (idConteudo: number, index?: number) => {
+    const indexConteudo = conteudos.findIndex(conteudo => conteudo.id === idConteudo);
+
+    let idConteudoAnterior = conteudos[indexConteudo - 1]?.id;
+    
     if (index === 0) {
       return true; // Primeiro conteúdo sempre está desbloqueado
     }
-  
-    const conteudoAnterior = conteudos.find(conteudo => conteudo.id === idConteudo - 1);
-  
-    if (!conteudoAnterior || conteudosConcluidos.includes(idConteudo - 1)) {
-      return true; // Se o conteúdo anterior não existe ou foi concluído, desbloqueia este conteúdo
+
+    if (conteudosConcluidos.includes(idConteudoAnterior)) {
+      return true;
     }
-  
+
     let qtdPerguntas = quantidadePerguntas?.[idConteudo - 1];
     let qtdAcertos = quantidadeAcertos?.[idConteudo - 1];
-  
+
     if (qtdAcertos === undefined || qtdAcertos === 0 || qtdPerguntas === undefined) {
       return false; // Se não houver informações suficientes sobre o desempenho do usuário, bloqueia o conteúdo
     }
-  
+
     return qtdAcertos >= (qtdPerguntas * 0.60);
   }
 
