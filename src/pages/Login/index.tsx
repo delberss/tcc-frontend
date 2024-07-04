@@ -31,6 +31,12 @@ const Login: React.FC = () => {
       ...formData,
       [name]: value,
     });
+
+    if (name === 'emailOrUsername' && (value === 'admin' || value === 'admin@admin')) {
+      setUserType('admin');
+    } else if (name === 'emailOrUsername') {
+      setUserType('estudante');
+    }
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -67,7 +73,7 @@ const Login: React.FC = () => {
           },
         };
 
-        if (userType.toLocaleLowerCase() === 'estudante' && user.preferenciaEstudo === null) {
+         if (userType.toLocaleLowerCase() === 'estudante' && user.preferenciaEstudo === null) {
           navigate('/form-register', { state: nextPageState });
         } else {
           navigate('/conquistas', { state: nextPageState });
@@ -97,19 +103,6 @@ const Login: React.FC = () => {
       <h2>Login</h2>
 
       <form className='form-login' onSubmit={handleSubmit}>
-        <div className='tipoUsuario'>
-          <label htmlFor='userType' style={{ margin: '0px 10px 0px 0px' }}>Tipo de Usuário:</label>
-          <select
-            id='userType'
-            name='userType'
-            value={userType}
-            onChange={(e) => setUserType(e.target.value)}
-          >
-            <option value='estudante'>Estudante</option>
-            <option value='admin'>Administrador</option>
-          </select>
-        </div>
-
         <FormField
           label='Email ou Usuário'
           type='text'
