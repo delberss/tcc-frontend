@@ -7,6 +7,8 @@
   }
 
   .conteudo-item {
+    position: relative;
+    padding-right: 30px; /* Ajuste conforme necessário */
     background-color: rgb(33, 48, 48);
     color: #fff;
     margin: 10px;
@@ -24,9 +26,26 @@
     box-shadow: 1px 1px px rgb(40, 82, 94);
   }
 
+  .conteudo-concluido-indicator {
+    position: absolute;
+    top: 5px; /* Ajuste conforme necessário */
+    right: 5px; /* Ajuste conforme necessário */
+    color: black; /* Cor do check em preto */
+    font-size: 20px; /* Ajuste conforme necessário */
+    background-color: rgba(28, 226, 28, 0.785); /* Cor de fundo verde */
+    border-radius: 50%; /* Tornar o fundo circular */
+    padding: 4px; /* Ajuste conforme necessário */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .espaco-titulo{
+    width: 90%;
+  }
+
   .titulo-conteudo{
     text-transform: uppercase;
-
   }
 
   .container-estudos-generico {

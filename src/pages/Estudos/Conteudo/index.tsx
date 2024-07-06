@@ -7,6 +7,7 @@ import { FiArrowLeft } from 'react-icons/fi';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { } from 'react-icons/fa';
 import { getButtonStyleByType, getButtonStyle } from '../../../../color-estudos';
+import { FaCheckCircle } from 'react-icons/fa';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { FaLock } from 'react-icons/fa';
 import { IoRocket } from "react-icons/io5";
@@ -271,7 +272,7 @@ const Conteudo: React.FC = () => {
       const isNonClickable = liElement.classList.contains('non-clickable');
 
       return !isNonClickable ? (
-        <div className='quantidades' title='Respostas corretas/Perguntas'>
+        <div className='quantidades' title='Respostas corretas/Perguntas - Última tentativa'>
           <span>{quantidadeAcertos?.[conteudo.id] || 0}</span>
           <span>/</span>
           <span>{quantidadePerguntas?.[conteudo.id] || 0}</span>
@@ -299,7 +300,7 @@ const Conteudo: React.FC = () => {
     const indexConteudo = conteudos.findIndex(conteudo => conteudo.id === idConteudo);
 
     let idConteudoAnterior = conteudos[indexConteudo - 1]?.id;
-    
+
     if (index === 0) {
       return true; // Primeiro conteúdo sempre está desbloqueado
     }
@@ -393,15 +394,15 @@ const Conteudo: React.FC = () => {
               onClick={index === 0 || conteudoDesbloqueado(conteudo.id, index) || user?.tipo_usuario === 'admin' ? () => abrirQuestionario(conteudo.id, conteudosConcluidos.includes(conteudo.id), conteudo.titulo, conteudo.descricao, conteudo.pontos, conteudo.tempomaximo) : undefined}
               key={index}
               style={getButtonStyle(tipo)}
-              className={`item-${index} conteudo-item ${conteudosConcluidos[conteudo.id] && user?.tipo_usuario !== 'admin' ?
-                'concluido' : ''} ${conteudoDesbloqueado(conteudo.id) || index == 0 ||
-                  user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'}`}
-              title={conteudoDesbloqueado(conteudo.id) || index == 0 || user?.tipo_usuario === 'admin' ? '' : 'Conteúdo bloqueado. Acerte pelo menos 60% do conteúdo anterior.'}
-
+              className={`item-${index} conteudo-item ${conteudosConcluidos.includes(conteudo.id) && user?.tipo_usuario !== 'admin' ? 'concluido' : ''} ${conteudoDesbloqueado(conteudo.id) || index === 0 || user?.tipo_usuario === 'admin' ? 'cursor-pointer' : 'non-clickable'}`}
+              title={conteudoDesbloqueado(conteudo.id) || index === 0 || user?.tipo_usuario === 'admin' ? '' : 'Conteúdo bloqueado. Acerte pelo menos 60% do conteúdo anterior.'}
             >
+              {conteudosConcluidos.includes(conteudo.id) && (
+                <FaCheck className="conteudo-concluido-indicator" title='Conteúdo já concluído'/>
+              )}
               <div className='conteudo-detalhes'>
                 <div className='conteudo-info'>
-                  <div>
+                  <div className='espaco-titulo'>
                     <strong className='titulo-conteudo'>{conteudo.titulo}</strong>
                   </div>
                   <div>
