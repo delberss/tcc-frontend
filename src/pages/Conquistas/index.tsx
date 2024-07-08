@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import './index.css';
 import { useAuth } from '../../AuthContext';
@@ -15,34 +15,27 @@ import imgConquista10 from '../../assets/10.png'
 import medalha from '../../assets/medalha.png'
 
 import { FaStar } from 'react-icons/fa';
-
-
+import { useConquistasStore } from '../../store/useConquistasStore';
 
 const Conquistas: React.FC = () => {
   const { user } = useAuth();
-  const [conquistasUsuario, setConquistasUsuario] = useState<Array<{ id: number, nome_conquista: string, descricao: string }>>([]);
-  const [todasConquistas, setTodasConquistas] = useState<Array<{ id: number, nome_conquista: string, descricao: string }>>([]);
+  const { conquistasUsuario, todasConquistas, fetchConquistasUsuario, fetchTodasConquistas } = useConquistasStore();
 
   const isConquistaConcluida = (conquista: { nome_conquista: string }) =>
     conquistasUsuario.some((c) => c.nome_conquista === conquista.nome_conquista);
+
   const renderizarConquistas = (
     conquistas: Array<{ id: number, nome_conquista: string, descricao: string }>,
     isConquistaConcluida: (conquista: { nome_conquista: string }) => boolean
   ) => {
-    // Ordena as conquistas pelo id
     const conquistasOrdenadasPorId = [...conquistas].sort((a, b) => a.id - b.id);
-
-    // Separa as primeiras 4 conquistas
     const primeirasQuatroConquistas = conquistasOrdenadasPorId.slice(0, 4);
-
-    // Conquistas restantes ordenadas por nome_conquista
     const conquistasRestantes = conquistasOrdenadasPorId.slice(4).sort((a, b) =>
       a.nome_conquista.localeCompare(b.nome_conquista)
     );
 
     return (
       <ul>
-        {/* Renderiza as primeiras 4 conquistas */}
         {primeirasQuatroConquistas.map((conquista) => (
           <li
             key={conquista.id}
@@ -53,8 +46,6 @@ const Conquistas: React.FC = () => {
             <strong>{conquista.nome_conquista}</strong>
           </li>
         ))}
-
-        {/* Renderiza as conquistas restantes ordenadas por nome_conquista */}
         {conquistasRestantes.map((conquista) => (
           <li
             key={conquista.id}
@@ -69,7 +60,6 @@ const Conquistas: React.FC = () => {
     );
   };
 
-
   const getImagemConquista = (nomeConquista: string): string => {
     switch (nomeConquista) {
       case 'Primeiro conteúdo concluído':
@@ -79,7 +69,7 @@ const Conquistas: React.FC = () => {
       case '10 conteúdos concluídos':
         return imgConquista3;
       case 'Estudo Algoritmos':
-        return imgConquista10
+        return imgConquista10;
       case 'Estudo Backend':
         return imgConquista4;
       case 'Estudo Frontend':
@@ -94,44 +84,22 @@ const Conquistas: React.FC = () => {
         return imgConquista9;
       case 'Medalha':
         return medalha;
-
       default:
         return '';
     }
   };
+
   useEffect(() => {
     if (user !== null) {
-      const fetchData = async () => {
-        try {
-          const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/conquistas-usuario/${user?.id}`);
-          const dataUsuario = await responseUsuario.json();
-          if (responseUsuario.ok) {
-            setConquistasUsuario(dataUsuario.conquistasUsuario);
-          } else {
-            console.error('Erro na requisição de conquistas do usuário:', dataUsuario.message);
-          }
-
-          const responseTodas = await fetch(`${import.meta.env.REACT_APP_API_URL}/conquistas`);
-          const dataTodas = await responseTodas.json();
-
-          if (responseTodas.ok) {
-            setTodasConquistas(dataTodas.conquistas);
-          } else {
-            console.error('Erro na requisição de todas as conquistas:', dataTodas.message);
-          }
-        } catch (error) {
-          console.error('Erro:', error);
-        }
-      };
-      fetchData();
+      fetchConquistasUsuario(Number(user.id));
+      fetchTodasConquistas();
     }
-  }, [user]);
+  }, [user, fetchConquistasUsuario, fetchTodasConquistas]);
 
   return (
     <div className='container-conquistas'>
       <Outlet />
       <h2 className='text-conquistas'>Conquistas</h2>
-
       <div className='legenda-conquistas'>
         <div className="legenda">
           <p>Legenda</p>
@@ -144,15 +112,12 @@ const Conquistas: React.FC = () => {
             <strong>Conquista Pendente</strong>
           </div>
           <div className="star-container" title="Dias seguidos de estudos">
-
             <div className="conquista-legenda">
               <FaStar className="star-icon-conquistas" />
               <strong className='text-star-conquista'>Dias seguidos logado</strong>
             </div>
-
           </div>
         </div>
-
         {renderizarConquistas(todasConquistas, isConquistaConcluida)}
       </div>
     </div>

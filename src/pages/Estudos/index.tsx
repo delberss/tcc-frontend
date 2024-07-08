@@ -5,34 +5,19 @@ import { getButtonStyle } from '../../../color-estudos';
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineSearch } from 'react-icons/ai';
 
 import { useAuth } from '../../AuthContext';
-
-interface PreferenciaEstudo {
-  id: number;
-  nome: string;
-  linguagens: string[];
-}
-
+import { useEstudosStore } from '../../store/useEstudosStore';
 
 const Estudos: React.FC = () => {
   const { user } = useAuth();
-
   const navigate = useNavigate();
-  const [tiposDeEstudo, setTiposDeEstudo] = useState<string[]>([]);
-  const [estudos, setEstudos] = useState([]);
 
+  const { estudos, preferenciaEstudo, fetchEstudos, fetchPreferenciaEstudo, adicionarEstudo } = useEstudosStore();
   const [novoEstudoNome, setNovoEstudoNome] = useState<string>('');
   const [novoEstudoDescricao, setNovoEstudoDescricao] = useState<string>('');
-
   const [novoEstudoLinguagens, setNovoEstudoLinguagens] = useState<string>('');
-
   const [novoEstudoLink, setNovoEstudoLink] = useState<string>('');
-
   const [mostrarCampoNovoEstudo, setMostrarCampoNovoEstudo] = useState<boolean>(false);
-
-  const [informacoesEstudo, setInformacoesEstudo] = useState<string[]>([]);
   const [exibirTodosEstudos, setExibirTodosEstudos] = useState(user?.tipo_usuario === 'admin' ? true : false);
-  const [preferenciaEstudo, setPreferenciaEstudo] = useState<PreferenciaEstudo[] | null>(null);
-
   const [termoBusca, setTermoBusca] = useState<string>('');
 
   useEffect(() => {
@@ -44,44 +29,12 @@ const Estudos: React.FC = () => {
     }
   }, [user, navigate]);
 
-
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responseUsuario = await fetch(`${import.meta.env.REACT_APP_API_URL}/user-preference-study/${user?.id}`);
-        const dataUsuario = await responseUsuario.json();
-
-        if (dataUsuario.success) {
-          setPreferenciaEstudo(dataUsuario.preferenciaEstudos);
-        } else {
-          console.error('Erro ao obter preferenciaEstudo:', dataUsuario.message);
-        }
-      } catch (error) {
-        console.error('Erro:', error);
-      }
-    };
-
-    fetchData();
-  }, [user]);
-
-  useEffect(() => {
-    const fetchTiposDeEstudo = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/estudos`);
-        const data = await response.json();
-        const estudosData = data.map(({ id, nome, linguagens }: { id: number, nome: string, linguagens: string[] }) => ({ id, nome, linguagens }));
-
-        setEstudos(estudosData);
-        const tipos = data.map((estudo: any) => estudo.nome);
-        setTiposDeEstudo(tipos);
-      } catch (error) {
-        console.error('Erro ao buscar tipos de estudo:', error);
-      }
-    };
-
-    fetchTiposDeEstudo();
-  }, []);
+    if (user) {
+      fetchEstudos();
+      fetchPreferenciaEstudo(Number(user.id)); // Converta user.id para número aqui
+    }
+  }, [user, fetchEstudos, fetchPreferenciaEstudo]);
 
   const handleNovoEstudo = () => {
     setMostrarCampoNovoEstudo(!mostrarCampoNovoEstudo);
@@ -92,14 +45,13 @@ const Estudos: React.FC = () => {
       novoEstudoNome.trim() === '' ||
       novoEstudoDescricao.trim() === '' ||
       novoEstudoLinguagens.trim() === '' ||
-      novoEstudoLink.trim() === '' // Remova a vírgula extra aqui
+      novoEstudoLink.trim() === ''
     ) {
       alert('Por favor, preencha todos os campos antes de salvar.');
       return;
     }
 
-    const linguagensArray = novoEstudoLinguagens.split(",").map(linguagem => linguagem.trim()); // Convertendo a string de linguagens em um array
-
+    const linguagensArray = novoEstudoLinguagens.split(",").map(linguagem => linguagem.trim());
 
     try {
       const response = await fetch(`${import.meta.env.REACT_APP_API_URL}/adicionarEstudo`, {
@@ -111,12 +63,17 @@ const Estudos: React.FC = () => {
           nome: novoEstudoNome,
           descricao: novoEstudoDescricao,
           linguagens: linguagensArray,
-          link: novoEstudoLink
+          link: novoEstudoLink,
         }),
       });
 
       if (response.ok) {
-        setTiposDeEstudo([...tiposDeEstudo, novoEstudoNome]);
+        const novoEstudo = {
+          id: estudos.length + 1, // ajuste conforme necessário para o seu caso
+          nome: novoEstudoNome,
+          linguagens: linguagensArray,
+        };
+        adicionarEstudo(novoEstudo);
         window.location.reload();
       } else {
         if (response.status === 400) {
@@ -144,8 +101,6 @@ const Estudos: React.FC = () => {
   const handleBuscaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTermoBusca(event.target.value);
   };
-
-
 
   return (
     <>
@@ -216,7 +171,6 @@ const Estudos: React.FC = () => {
         </div>
       </div>
 
-
       {exibirTodosEstudos ? (
         <div className='container-estudos'>
           {estudos && estudos.length > 0 &&
@@ -234,19 +188,12 @@ const Estudos: React.FC = () => {
                 </button>
               ))}
         </div>
-
-
-
-
       ) : (
         preferenciaEstudo ? (
           <div className='container-estudos'>
             {preferenciaEstudo
-              // Filtra estudos com base no termo de busca nas linguagens
               .filter(estudo => termoBusca === '' || estudo.linguagens.some(linguagem => linguagem.toLowerCase().includes(termoBusca.toLowerCase())))
-              // Ordena os estudos pelo nome em ordem alfabética
               .sort((a, b) => a.nome.toLowerCase().localeCompare(b.nome.toLowerCase()))
-              // Mapeia os estudos filtrados e ordenados para renderizar botões
               .map((estudo, index) => (
                 <button
                   className={`button-${estudo.nome.toLowerCase()} button-estudos`}
@@ -258,11 +205,8 @@ const Estudos: React.FC = () => {
                 </button>
               ))}
           </div>
-        ) : null // Retorna nulo se preferenciaEstudo for falso ou vazio
+        ) : null
       )}
-
-
-
     </>
   );
 };

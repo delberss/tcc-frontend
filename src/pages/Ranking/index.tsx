@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '../../AuthContext'; // Importe o contexto de autenticação
 import './index.css';
 import { useNavigate } from 'react-router-dom';
+import { useStore } from '../../store/useRanking'; // Importe a loja Zustand
 
 interface User {
     id: number;
@@ -12,14 +13,11 @@ interface User {
     conquistas: number;
 }
 
-
-
 const Ranking: React.FC = () => {
     const { token, user } = useAuth();
-    const [users, setUsers] = useState<User[]>([]);
-    const [currentUserPosition, setCurrentUserPosition] = useState<number | null>(null);
-    const visibleUsers = users.slice(0, 20);
     const navigate = useNavigate();
+    const { users, setUsers, currentUserPosition, setCurrentUserPosition } = useStore();
+    const visibleUsers = users.slice(0, 20);
 
     useEffect(() => {
         if (!user) {
@@ -41,7 +39,6 @@ const Ranking: React.FC = () => {
                         },
                     });
 
-                    
                     if (!response.ok) {
                         throw new Error('Failed to fetch users');
                     }
@@ -49,8 +46,7 @@ const Ranking: React.FC = () => {
                     const data: User[] = await response.json();
 
                     const filteredUsers = data.filter(u => u.tipo_usuario === 'estudante');
-                      setUsers(filteredUsers);
-                      
+                    setUsers(filteredUsers);
     
                     const currentUserIndex = filteredUsers.findIndex((u) => user && u.email === user?.email);
                     setCurrentUserPosition(currentUserIndex + 1); // Adicione 1 porque as posições começam em 1
@@ -61,7 +57,7 @@ const Ranking: React.FC = () => {
     
             fetchUsers();
         }
-    }, [user]);
+    }, [token, user, setUsers, setCurrentUserPosition]);
     
 
     const medals = [
@@ -115,7 +111,6 @@ const Ranking: React.FC = () => {
             </table>
         </div>
     ) : <></>;
-    
 };
 
 export default Ranking;
